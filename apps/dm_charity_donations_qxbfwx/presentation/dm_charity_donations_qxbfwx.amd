@@ -55,6 +55,28 @@
       ]
     },
     {
+      "id": "stopdonationFlow",
+      "flowSteps": [
+        {
+          "id": "stopDonation",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "manageMyDonations",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "stopDonation"
+        },
+        {
+          "id": "manageMyDonations",
+          "endsFlow": true,
+          "taskId": "manageMyDonations"
+        }
+      ]
+    },
+    {
       "id": "updateCharityFlow",
       "flowSteps": [
         {
