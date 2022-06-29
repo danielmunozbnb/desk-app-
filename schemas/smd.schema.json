@@ -1,0 +1,613 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:workday:vps:smd:SiteModel",
+  "properties" : {
+    "id" : {
+      "type" : "string",
+      "description" : "Uniquely identifies this site on the tenant. PMD pages can reference this id using the <% site.id %> variable."
+    },
+    "globalLabelsEndPoint" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:pmd:tag:UiLabelsEndPoint",
+      "description" : "Endpoint where labels for widgets are retrieved from, referred to as 'globalLabelsEndpoint` in SMD.",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "required" : true,
+          "description" : "A String used for referencing this endpoint in the page builder.\nAccess data in the response from this endpoint with the syntax 'name.labelOfDataToBePulled'."
+        },
+        "url" : {
+          "type" : "string",
+          "description" : "A binding for the URL address of this endpoint: where the data will come from or be sent to."
+        },
+        "isCollection" : {
+          "type" : "boolean",
+          "description" : "When set to true, requests look at the size of the incoming data and retrieves the entirety of it through multiple requests.\nFor use with endpoints potentially retrieving large sets of data (>100 entries)."
+        },
+        "cacheable" : {
+          "type" : "boolean",
+          "description" : "When set to true, data retrieved from this endpoint will be cached for future requests.\nNOTE: Only set to true if data from this endpoint won't be updated frequently. Data from this endpoint may get stale since there is currently no way to cache invalidate."
+        },
+        "external" : {
+          "type" : "boolean",
+          "description" : "When set to true, authorization schemes and accept-language are not set in the header of the request to the endpoint. Used for requests outside of Workday."
+        },
+        "deferred" : {
+          "type" : "boolean",
+          "description" : "When set to true, this endpoint will not be called at the time of rendering the page.\nPrimarily used with the 'Fetch Data' widget for retrieving data based on selections made by the user on the page."
+        },
+        "exclude" : {
+          "type" : "string",
+          "description" : "When set to true, no attempts to call this endpoint will be made.\nSet to true when the URL for this endpoint could be invalid (Example: 'url': '${someData}' and 'someData' may be empty)."
+        },
+        "authType" : {
+          "type" : "string",
+          "description" : "The 'AuthType' you are using to authenticate requests to this endpoint.\nFor example, if SSO or USERAUTH, you are authenticating the request as the logged in user.\nMost other 'AuthTypes' are system level authentication.\nDifferent 'AuthType's can be used on different endpoints on the same page."
+        },
+        "useUserAuthWhenAvailable" : {
+          "type" : "boolean",
+          "description" : "When true, requests to this endpoint will use the userSession's 'AuthType' (if it is available) rather than the default (if a use 'AuthType' is available)."
+        },
+        "preprocessed" : {
+          "type" : "boolean",
+          "description" : "Do not set to 'true' unless you discuss your use case with a VPS developer.\nWhen true, data retrieved will not be treated as JSON."
+        },
+        "baseUrlType" : {
+          "type" : "string",
+          "description" : "WARNING: MAY BE DEPRECATED IN THE FUTURE.\nA String that designates the application this endpoint is being used for, and thereby the structure of the complete URL for this endpoint."
+        },
+        "bestEffort" : {
+          "type" : "boolean",
+          "description" : "When true, no error will be thrown when one normally would be. Instead, a JSON message will be received with an error message as a field."
+        },
+        "ignoreFailures" : {
+          "type" : "array",
+          "description" : "Takes a list of failures types to ignore. For all error codes associated with the failure type no error will be thrown when one normally would. Instead, a JSON message will be received with an error message as a field.  Supported values (with associated status code in [] which is not part of the request) are  ALL, AUTH_RELATED_ERRORS [401, 403, 407], BAD_REQUEST [400], UNAUTHORIZED [401], FORBIDDEN [403], NOT_FOUND [404], NOT_ACCEPTABLE [406], REQUEST_TIMEOUT [408], UNSUPPORTED_MEDIA_TYPE [415], INTERNAL_SERVER_ERROR [500], NOT_IMPLEMENTED [501], BAD_GATEWAY [502], SERVICE_UNAVAILABLE [503] and GATEWAY_TIMEOUT [504]",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:IgnoreFailureType",
+            "properties" : {
+              "id" : {
+                "type" : "string"
+              },
+              "code" : {
+                "type" : "integer",
+                "description" : "error code number"
+              },
+              "codeName" : {
+                "type" : "string",
+                "description" : "describes error code failure"
+              }
+            }
+          }
+        },
+        "search" : {
+          "type" : "boolean",
+          "description" : "Should be set to 'true' on an endpoint used for 'Faceted Search'.\nWhen 'true', the endpoint will attach query parameters to the URL necessary for 'Faceted Search' to function."
+        },
+        "service" : {
+          "type" : "string",
+          "description" : "An ID that maps this endpoint to a REST service."
+        },
+        "path" : {
+          "type" : "string",
+          "description" : "The path to a resource under a Workday service. This is used to create the fully qualified url for Workday services in conjunction with the service identifier property."
+        },
+        "headers" : {
+          "type" : "array",
+          "description" : "HTTP headers that are added to requests to this endpoint.'",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPointHeader",
+            "properties" : {
+              "name" : {
+                "type" : "string"
+              },
+              "value" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "A Workday ID that maps to an endpoint object in XpressO"
+        },
+        "httpMethod" : {
+          "type" : "string",
+          "description" : "A HTTP method for the Outbound Endpoint. It can have enumeration values as {GET, POST, PUT, DELETE}",
+          "enum" : [ "GET", "POST", "PUT", "PATCH", "DELETE" ]
+        },
+        "values" : {
+          "type" : "array",
+          "description" : "List of Value objects used for defining rest call parameters",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:Value",
+            "properties" : {
+              "outboundPath" : {
+                "type" : "string",
+                "description" : "Attribute for variable name. Based on the scope of the variable, it can be set as flow variable or session variable for subsequent use."
+              },
+              "value" : {
+                "type" : "string",
+                "description" : "Attribute for variable value whose name is specified in outboundPath attribute. It is binding object, so you can specify binding here."
+              },
+              "exclude" : {
+                "type" : "string",
+                "description" : "Attribute for exclude condition. If this attribute evaluates true, the variable will be set, otherwise it will be ignored."
+              }
+            }
+          }
+        },
+        "nested" : {
+          "type" : "object",
+          "id" : "urn:jsonschema:com:workday:vps:pmd:tag:NestedEndPointList",
+          "description" : "When set the data from nested endpoints will be bound to current endpoint name",
+          "properties" : {
+            "on" : {
+              "type" : "string",
+              "description" : "The list of endpoint information data"
+            },
+            "as" : {
+              "type" : "string",
+              "description" : "The reference to the current iterated object provided by the on attribute's input list"
+            },
+            "template" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+              "description" : "The endpoint template",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "required" : true,
+                  "description" : "A String used for referencing this endpoint in the page builder.\nAccess data in the response from this endpoint with the syntax 'name.labelOfDataToBePulled'."
+                },
+                "url" : {
+                  "type" : "string",
+                  "description" : "A binding for the URL address of this endpoint: where the data will come from or be sent to."
+                },
+                "isCollection" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, requests look at the size of the incoming data and retrieves the entirety of it through multiple requests.\nFor use with endpoints potentially retrieving large sets of data (>100 entries)."
+                },
+                "cacheable" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, data retrieved from this endpoint will be cached for future requests.\nNOTE: Only set to true if data from this endpoint won't be updated frequently. Data from this endpoint may get stale since there is currently no way to cache invalidate."
+                },
+                "external" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, authorization schemes and accept-language are not set in the header of the request to the endpoint. Used for requests outside of Workday."
+                },
+                "deferred" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, this endpoint will not be called at the time of rendering the page.\nPrimarily used with the 'Fetch Data' widget for retrieving data based on selections made by the user on the page."
+                },
+                "exclude" : {
+                  "type" : "string",
+                  "description" : "When set to true, no attempts to call this endpoint will be made.\nSet to true when the URL for this endpoint could be invalid (Example: 'url': '${someData}' and 'someData' may be empty)."
+                },
+                "authType" : {
+                  "type" : "string",
+                  "description" : "The 'AuthType' you are using to authenticate requests to this endpoint.\nFor example, if SSO or USERAUTH, you are authenticating the request as the logged in user.\nMost other 'AuthTypes' are system level authentication.\nDifferent 'AuthType's can be used on different endpoints on the same page."
+                },
+                "useUserAuthWhenAvailable" : {
+                  "type" : "boolean",
+                  "description" : "When true, requests to this endpoint will use the userSession's 'AuthType' (if it is available) rather than the default (if a use 'AuthType' is available)."
+                },
+                "preprocessed" : {
+                  "type" : "boolean",
+                  "description" : "Do not set to 'true' unless you discuss your use case with a VPS developer.\nWhen true, data retrieved will not be treated as JSON."
+                },
+                "baseUrlType" : {
+                  "type" : "string",
+                  "description" : "WARNING: MAY BE DEPRECATED IN THE FUTURE.\nA String that designates the application this endpoint is being used for, and thereby the structure of the complete URL for this endpoint."
+                },
+                "bestEffort" : {
+                  "type" : "boolean",
+                  "description" : "When true, no error will be thrown when one normally would be. Instead, a JSON message will be received with an error message as a field."
+                },
+                "ignoreFailures" : {
+                  "type" : "array",
+                  "description" : "Takes a list of failures types to ignore. For all error codes associated with the failure type no error will be thrown when one normally would. Instead, a JSON message will be received with an error message as a field.  Supported values (with associated status code in [] which is not part of the request) are  ALL, AUTH_RELATED_ERRORS [401, 403, 407], BAD_REQUEST [400], UNAUTHORIZED [401], FORBIDDEN [403], NOT_FOUND [404], NOT_ACCEPTABLE [406], REQUEST_TIMEOUT [408], UNSUPPORTED_MEDIA_TYPE [415], INTERNAL_SERVER_ERROR [500], NOT_IMPLEMENTED [501], BAD_GATEWAY [502], SERVICE_UNAVAILABLE [503] and GATEWAY_TIMEOUT [504]",
+                  "items" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:IgnoreFailureType"
+                  }
+                },
+                "search" : {
+                  "type" : "boolean",
+                  "description" : "Should be set to 'true' on an endpoint used for 'Faceted Search'.\nWhen 'true', the endpoint will attach query parameters to the URL necessary for 'Faceted Search' to function."
+                },
+                "service" : {
+                  "type" : "string",
+                  "description" : "An ID that maps this endpoint to a REST service."
+                },
+                "path" : {
+                  "type" : "string",
+                  "description" : "The path to a resource under a Workday service. This is used to create the fully qualified url for Workday services in conjunction with the service identifier property."
+                },
+                "headers" : {
+                  "type" : "array",
+                  "description" : "HTTP headers that are added to requests to this endpoint.'",
+                  "items" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPointHeader"
+                  }
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "A Workday ID that maps to an endpoint object in XpressO"
+                },
+                "httpMethod" : {
+                  "type" : "string",
+                  "description" : "A HTTP method for the Outbound Endpoint. It can have enumeration values as {GET, POST, PUT, DELETE}",
+                  "enum" : [ "GET", "POST", "PUT", "PATCH", "DELETE" ]
+                },
+                "values" : {
+                  "type" : "array",
+                  "description" : "List of Value objects used for defining rest call parameters",
+                  "items" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:Value"
+                  }
+                },
+                "nested" : {
+                  "type" : "object",
+                  "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:NestedEndPointList",
+                  "description" : "When set the data from nested endpoints will be bound to current endpoint name"
+                },
+                "graphQuery" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:workday:vps:pmd:tag:GraphQuery",
+                  "description" : "The query sent to GraphQL service",
+                  "properties" : {
+                    "value" : {
+                      "type" : "string",
+                      "description" : "GraphQL query value"
+                    },
+                    "variables" : {
+                      "type" : "object",
+                      "description" : "GraphQL query variables",
+                      "additionalProperties" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "graphQuery" : {
+          "type" : "object",
+          "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:GraphQuery",
+          "description" : "The query sent to GraphQL service"
+        },
+        "responseDataKey" : {
+          "type" : "string",
+          "description" : "Override the key in the api response to access the data. The default is 'data'. Use '.' and '[i]' for nested structures."
+        },
+        "responseTotalKey" : {
+          "type" : "string",
+          "description" : "Override the key in the api response to access the total count. The default is 'total'. Use '.' and '[i]' for nested structures."
+        },
+        "requestChunkSize" : {
+          "type" : "string",
+          "description" : "Specify the request chunk size. Chunk size defaults to 100 if none is specified. Can not be specified if URL already contains the query parameter."
+        },
+        "requestChunkParameterName" : {
+          "type" : "string",
+          "description" : "Override the name of the query parameter for setting chunk size. The default is \"limit\""
+        },
+        "requestOffsetParameterName" : {
+          "type" : "string",
+          "description" : "Override the name of the offset query parameter for setting the offset. The default is \"offset\""
+        }
+      }
+    },
+    "languages" : {
+      "type" : "array",
+      "description" : "Languages that the site supports translations for. When VPS resolves the language from the user session or URL, it verifies that the language is included in this list before setting it for the the page and translating.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:pmd:tag:site:Language",
+        "required": [ "code" ],
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description": "The ISO language code."
+          },
+          "description" : {
+            "type" : "string",
+            "description": "The language name."
+          }
+        }
+      }
+    },
+    "siteAuth" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:rest:auth:SiteAuth",
+      "description" : "Authentication to be used in the site. See 'siteAuth'",
+      "properties" : {
+        "authTypes" : {
+          "type" : "array",
+          "description" : "AuthTypes are the different authentication types used by the site. AuthTypes supported by WCPUI include:\nNoAuth, SSO, OAUTH2, USERAUTH, IDTOKEN, SYSTEM_IDTOKEN, JWT, AWSV4, WCPISU, OAUTH_CLIENT_CREDENTIAL, and OAUTH_PASSWORD_GRANT",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:rest:auth:AuthType",
+            "required" : [ "id", "scheme" ],
+            "properties" : {
+              "id" : {
+                "type" : "string"
+              },
+              "scheme" :  {
+                "type" : "string",
+                "enum" : [ "OAUTH2", "IDTOKEN", "LINKEDIN", "NoAuth", "RECRUITING", "USERAUTH", "SSO", "SYSTEM_IDTOKEN", "JWT", "AWSV4", "WCPISU", "OAUTH_CLIENT_CREDENTIAL" ]
+              }
+            }
+          }
+        },
+        "defaultId" : {
+          "type" : "string",
+          "description": "Deprecated. All endpoints use SSO as the default authentication type. Although you can't override the default SSO authentication at the app level, you can specify the authType for each endpoint in the PMD."
+        }
+      }
+    },
+    "siteId" : {
+      "type" : "string",
+      "required" : true,
+      "description" : "The human readable id of the site. This value is unique across the application."
+    },
+    "titles" : {
+      "type" : "array",
+      "description" : "Title to be displayed at the top of pages across the site and in the browser tab.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:pmd:tag:site:SiteTitle",
+        "required": [ "value", "languageCode" ],
+        "properties" : {
+          "value" : {
+            "type" : "string",
+            "description" : "The app title."
+          },
+          "languageCode" : {
+            "type" : "string",
+            "description" : "The ISO language code."
+          }
+        }
+      }
+    },
+    "tenantedLabelOverridesEndpoint" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:pmd:tag:TenantLabelsEndPoint",
+      "description" : "The tenanted label overrides EndPoint for tenanted labels retrieval and creation. This field will be populated when the site is created by Designer.",
+      "required": [ "name", "authType", "id" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "A String used for referencing this endpoint in the page builder.\nAccess data in the response from this endpoint with the syntax 'name.labelOfDataToBePulled'."
+        },
+        "url" : {
+          "type" : "string",
+          "description" : "A binding for the URL address of this endpoint: where the data will come from or be sent to."
+        },
+        "isCollection" : {
+          "type" : "boolean",
+          "description" : "When set to true, requests look at the size of the incoming data and retrieves the entirety of it through multiple requests.\nFor use with endpoints potentially retrieving large sets of data (>100 entries)."
+        },
+        "cacheable" : {
+          "type" : "boolean",
+          "description" : "When set to true, data retrieved from this endpoint will be cached for future requests.\nNOTE: Only set to true if data from this endpoint won't be updated frequently. Data from this endpoint may get stale since there is currently no way to cache invalidate."
+        },
+        "external" : {
+          "type" : "boolean",
+          "description" : "When set to true, authorization schemes and accept-language are not set in the header of the request to the endpoint. Used for requests outside of Workday."
+        },
+        "deferred" : {
+          "type" : "boolean",
+          "description" : "When set to true, this endpoint will not be called at the time of rendering the page.\nPrimarily used with the 'Fetch Data' widget for retrieving data based on selections made by the user on the page."
+        },
+        "exclude" : {
+          "type" : "string",
+          "description" : "When set to true, no attempts to call this endpoint will be made.\nSet to true when the URL for this endpoint could be invalid (Example: 'url': '${someData}' and 'someData' may be empty)."
+        },
+        "authType" : {
+          "type" : "string",
+          "description" : "The 'AuthType' you are using to authenticate requests to this endpoint.\nFor example, if SSO or USERAUTH, you are authenticating the request as the logged in user.\nMost other 'AuthTypes' are system level authentication.\nDifferent 'AuthType's can be used on different endpoints on the same page."
+        },
+        "useUserAuthWhenAvailable" : {
+          "type" : "boolean",
+          "description" : "When true, requests to this endpoint will use the userSession's 'AuthType' (if it is available) rather than the default (if a use 'AuthType' is available)."
+        },
+        "preprocessed" : {
+          "type" : "boolean",
+          "description" : "Do not set to 'true' unless you discuss your use case with a VPS developer.\nWhen true, data retrieved will not be treated as JSON."
+        },
+        "baseUrlType" : {
+          "type" : "string",
+          "description" : "WARNING: MAY BE DEPRECATED IN THE FUTURE.\nA String that designates the application this endpoint is being used for, and thereby the structure of the complete URL for this endpoint."
+        },
+        "bestEffort" : {
+          "type" : "boolean",
+          "description" : "When true, no error will be thrown when one normally would be. Instead, a JSON message will be received with an error message as a field."
+        },
+        "ignoreFailures" : {
+          "type" : "array",
+          "description" : "Takes a list of failures types to ignore. For all error codes associated with the failure type no error will be thrown when one normally would. Instead, a JSON message will be received with an error message as a field.  Supported values (with associated status code in [] which is not part of the request) are  ALL, AUTH_RELATED_ERRORS [401, 403, 407], BAD_REQUEST [400], UNAUTHORIZED [401], FORBIDDEN [403], NOT_FOUND [404], NOT_ACCEPTABLE [406], REQUEST_TIMEOUT [408], UNSUPPORTED_MEDIA_TYPE [415], INTERNAL_SERVER_ERROR [500], NOT_IMPLEMENTED [501], BAD_GATEWAY [502], SERVICE_UNAVAILABLE [503] and GATEWAY_TIMEOUT [504]",
+          "items" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:IgnoreFailureType"
+          }
+        },
+        "search" : {
+          "type" : "boolean",
+          "description" : "Should be set to 'true' on an endpoint used for 'Faceted Search'.\nWhen 'true', the endpoint will attach query parameters to the URL necessary for 'Faceted Search' to function."
+        },
+        "service" : {
+          "type" : "string",
+          "description" : "An ID that maps this endpoint to a REST service."
+        },
+        "path" : {
+          "type" : "string",
+          "description" : "The path to a resource under a Workday service. This is used to create the fully qualified url for Workday services in conjunction with the service identifier property."
+        },
+        "headers" : {
+          "type" : "array",
+          "description" : "HTTP headers that are added to requests to this endpoint.'",
+          "items" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPointHeader"
+          }
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "A Workday ID that maps to an endpoint object in XpressO"
+        },
+        "httpMethod" : {
+          "type" : "string",
+          "description" : "A HTTP method for the Outbound Endpoint. It can have enumeration values as {GET, POST, PUT, DELETE}",
+          "enum" : [ "GET", "POST", "PUT", "PATCH", "DELETE" ]
+        },
+        "values" : {
+          "type" : "array",
+          "description" : "List of Value objects used for defining rest call parameters",
+          "items" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:Value"
+          }
+        },
+        "nested" : {
+          "type" : "object",
+          "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:NestedEndPointList",
+          "description" : "When set the data from nested endpoints will be bound to current endpoint name"
+        },
+        "graphQuery" : {
+          "type" : "object",
+          "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:GraphQuery",
+          "description" : "The query sent to GraphQL service"
+        },
+        "responseDataKey" : {
+          "type" : "string",
+          "description" : "Override the key in the api response to access the data. The default is 'data'. Use '.' and '[i]' for nested structures."
+        },
+        "responseTotalKey" : {
+          "type" : "string",
+          "description" : "Override the key in the api response to access the total count. The default is 'total'. Use '.' and '[i]' for nested structures."
+        },
+        "requestChunkSize" : {
+          "type" : "string",
+          "description" : "Specify the request chunk size. Chunk size defaults to 100 if none is specified. Can not be specified if URL already contains the query parameter."
+        },
+        "requestChunkParameterName" : {
+          "type" : "string",
+          "description" : "Override the name of the query parameter for setting chunk size. The default is \"limit\""
+        },
+        "requestOffsetParameterName" : {
+          "type" : "string",
+          "description" : "Override the name of the offset query parameter for setting the offset. The default is \"offset\""
+        }
+      }
+    },
+    "bannerImageURL" : {
+      "type" : "string",
+      "description" : "Address of the image to be used as the background to the header."
+    },
+    "embedded" : {
+      "type" : "boolean",
+      "description" : "When true, sets properties in the HTML wrapper (such as header size) for proper rendering of pages from other sites (i.e. LinkedIn) such that this site's branding remains visible on the outer page."
+    },
+    "headerBackgroundColor" : {
+      "type" : "string",
+      "description" : "The color of the banner across the top of the pages in the site. Use a hexadecimal color value."
+    },
+    "logoImageURL" : {
+      "type" : "string",
+      "description" : "Address of the image to be used in the corner of the page in the header. Can be accessed in PMD vis ${site.logoImageUrl}"
+    },
+    "titleColor" : {
+      "type" : "string",
+      "description" : "Color of the title tex in the header. Use Hexadecimal colors."
+    },
+    "defaultLanguage" : {
+      "type" : "object",
+      "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:site:Language",
+      "description" : "Default language to be used for the site if no language is resolved from the user session or URL."
+    },
+    "defaultCountry" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:pmd:tag:site:Country",
+      "description" : "Can be referenced in PMD with ${site.defaultCountryId}",
+      "properties" : {
+        "descriptor" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        }
+      }
+    },
+    "auth" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:pmd:tag:AuthDetails",
+      "description" : "Object with information about the default authentication type to be used for the site.",
+      "properties" : {
+        "type" : {
+          "type" : "string"
+        },
+        "authorizeEndpoint" : {
+          "type" : "string"
+        },
+        "tokenEndpoint" : {
+          "type" : "string"
+        }
+      }
+    },
+    "errorPageConfigurations" : {
+      "type" : "array",
+      "description" : "List of objects that consist of an error code and a page reference. These error page configurations are used to display custom error pages when the page errors out with the error code specified.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:smd:ErrorPageConfiguration",
+        "required": [ "statusCode" ],
+        "properties" : {
+          "statusCode" : {
+            "type" : "string"
+          },
+          "page" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:smd:PageModel",
+            "required" : [ "id" ],
+            "properties" : {
+              "id" : {
+                "type" : "string",
+                "description" : "A unique identifier for this page."
+              }
+            }
+          }
+        }
+      }
+    },
+    "siteConfigurations" : {
+      "type" : "object",
+      "description" : "Site-specific custom key, value pairs that the app developer can create for their specific site and use in the PMD. Reference the map with something like ${site.configuration[key]}. Used primarily by Recruiting.",
+      "additionalProperties" : {
+        "type" : "string"
+      }
+    },
+    "cdnEnabled" : {
+      "type" : "boolean",
+      "description" : "Set to true by default for external sites. Content Delivery Network will be utilized when true."
+    },
+    "applicationId" : {
+      "type" : "string",
+      "required" : true,
+      "description" : "The id of the application that this site belongs to."
+    },
+    "applicationName" : {
+      "type" : "string",
+      "description" : "The name of the application that this site belongs to."
+    }
+  },
+  "required" : [ "siteId" ]
+}

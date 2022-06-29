@@ -1,0 +1,34 @@
+{
+  "id": 1,
+  "name": "CreateCharity",
+  "label": "Create Charity",
+  "description": "Create a Charity to accept Charitable Donations for.",
+  "targetBusinessObject": "Charity",
+  "allowsCancel": false,
+  "approvalStep": {
+    "actions": [
+      "APPROVE",
+      "DENY"
+    ],
+    "pageRoute": "/charityEvent/{eventId}"
+  },
+  "details": {
+    "pageRoute": "/charityEvent/{eventId}"
+  },
+  "actionSteps": [
+    {
+      "id": 1,
+      "name": "ReviewCharity",
+      "label": "Review Charity",
+      "description": "Task to review charities",
+      "pageRoute": "/charityRevise/{eventStepId}"
+    },
+    {
+      "id": 2,
+      "name": "ReviseCharity",
+      "label": "Revise Charity",
+      "description": "Task to revise charities",
+      "pageRoute": "/charityRevise/{eventStepId}"
+    }
+  ]
+}

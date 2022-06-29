@@ -1,0 +1,137 @@
+{
+  "appProperties": [],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "createEvent",
+      "routingPattern": "createEvent",
+      "page": {
+        "id": "createEvent"
+      }
+    },
+    {
+      "id": "manageEvents",
+      "routingPattern": "manageEvents",
+      "page": {
+        "id": "manageEvents"
+      }
+    },
+    {
+      "id": "updateEvent",
+      "routingPattern": "updateEvent",
+      "page": {
+        "id": "updateEvent"
+      }
+    },
+    {
+      "id": "updateEventImage",
+      "routingPattern": "updateEventImage",
+      "page": {
+        "id": "updateEventImage"
+      }
+    },
+    {
+      "id": "displayOrch",
+      "routingPattern": "displayOrch",
+      "page": {
+        "id": "displayOrch"
+      }
+    },
+    {
+      "id": "success",
+      "routingPattern": "success",
+      "page": {
+        "id": "success"
+      }
+    },
+    {
+      "id": "fail",
+      "routingPattern": "fail",
+      "page": {
+        "id": "fail"
+      }
+    },
+    {
+      "id": "displayThreeWorkers",
+      "routingPattern": "displayThreeWorkers",
+      "page": {
+        "id": "displayThreeWorkers"
+      }
+    }
+  ],
+  "flowDefinitions": [
+    {
+      "id": "myFlowId",
+      "name": "myFlow",
+      "flowSteps": [
+        {
+          "id": "flowStep1",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "flowStep2",
+              "condition": "<% false %>"
+            },
+            {
+              "order": "b",
+              "value": "flowStep3",
+              "condition": "<% true %>"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "displayOrch"
+        },
+        {
+          "id": "flowStep2",
+          "taskId": "fail"
+        },
+        {
+          "id": "flowStep3",
+          "taskId": "success"
+        }
+      ]
+    }
+  ],
+  "applicationId": "GS_extent_dre_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
+    },
+    {
+      "key": "workday-bp",
+      "value": "https://api.workday.com/businessProcess/v1/"
+    },
+    {
+      "key": "workday-common",
+      "value": "https://api.workday.com/common/v1/"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "https://api.workday.com/staffing/v1/"
+    },
+    {
+      "key": "workday-orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/<% site.applicationId %>/orchestrations/"
+    },
+    {
+      "key": "workday-wql",
+      "value": "https://api.workday.com/wql/v1/"
+    },
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
+    },
+    {
+      "key": "wrkEntries",
+      "value": "https://api.workday.com/common/v1/workers?limit=3"
+    }
+  ]
+}

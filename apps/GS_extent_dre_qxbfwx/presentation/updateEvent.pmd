@@ -1,0 +1,154 @@
+{
+  "id": "updateEvent",
+  "securityDomains": [
+    "ManageCreateAnEvent"
+  ],
+  "endPoints": [
+    {
+      "name": "event",
+      "baseUrlType": "app",
+      "url": "<% /*remember that queryParams.eventId is taking in the parameterBinding from the taskReference tag on the page
+that sent the user here. This happens to be called 'eventId' in manageEvents.pmd but it could be called whatever the developer chooses*/
+              'events/' + queryParams.eventId %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "updateEvent",
+        "baseUrlType": "app",
+        "url": "<% 'events/' + event.id %>",
+        "authType": "sso",
+        "httpMethod": "PUT",
+        "allowPutForUnchangedData": true,
+        "onSend": "<% //the above allowPutForUnchangedData attribute will cause the PUT to fire upon page submission even if no data appears to have changed
+                   //Outbound endpoint that updates the BO. We need to provide all existing values on the Event so they do not fall off since this is a PUT
+                   //it is always preferable to add to your payload using onSend as opposed to a values[] array within the outboundEndpoint. Use the following syntax.
+                   //self.data is the payload as it exists coming into this onSend event
+                   self.data.extendOnly = extendOnlyRadioGroup.value[0] == 'yes' ? true : false; //convert extendOnly radio group response from String to Boolean
+                   self.data.description = description.value;
+                   self.data.put('createdBy',{'id': event.createdBy.id}); //add createdBy object
+                   console.info(json:asJSON(self.data)); return self.data; %>"
+      }
+    ],
+    "responseErrorDetail": {
+      "errorSummary": "<% error %>",
+      "errors": "<% errors.map(item => { item.error }); %>"
+    }
+  },
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Update Event"
+    },
+    "headerSize": "STANDARD",
+    "body": {
+      "type": "section",
+      "horizontal": true,
+      "sorted": false,
+      "children": [
+        {
+          "type": "section",
+          "horizontal": true,
+          "children": [
+            {
+              "type": "fieldSet",
+              "id": "fieldSetContainer",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "name",
+                  "label": "Event Name",
+                  "required": "<% true %>",
+                  "value": "<% event.name %>",
+                  "valueOutBinding": "updateEvent.name"
+                },
+                {
+                  "type": "richText",
+                  "id": "description",
+                  "label": "Description",
+                  "required": "<% true %>",
+                  "value": "<% event.description %>"
+                },
+                {
+                  "type": "text",
+                  "id": "location",
+                  "label": "Event Location",
+                  "required": "<% true %>",
+                  "value": "<% event.location %>",
+                  "valueOutBinding": "updateEvent.location"
+                },
+                {
+                  "type": "date",
+                  "id": "date",
+                  "required": "<% true %>",
+                  "dateFormat": "yyyy-MM-dd",
+                  "label": "Date of Event",
+                  "value": "<% event.date %>",
+                  "valueOutBinding": "updateEvent.date"
+                },
+                {
+                  "type": "text",
+                  "id": "sponsor",
+                  "required": "<% true %>",
+                  "label": "Event Sponsor",
+                  "value": "<% event.sponsor %>",
+                  "valueOutBinding": "updateEvent.sponsor"
+                },
+                {
+                  "type": "currency",
+                  "currencyCode": "USD",
+                  "id": "cost",
+                  "required": "<% true %>",
+                  "minimumValue": "<% 0.01 %>",
+                  "fractionDigits": 2,
+                  "label": "Fee (USD)",
+                  "value": "<% //the value to display on page load, in this case the existing value from the inbound endpoint
+                            event.cost.value %>",
+                  "valuesOut": [
+                    {
+                      "value": "USD",
+                      "valueOutBinding": "updateEvent.cost.currency"
+                    },
+                    {
+                      "value": "<% //the value the user enters, whereas the valueOutBinding below is what will hit the outbound endpoint
+                                self.value %>",
+                      "valueOutBinding": "updateEvent.cost.value"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "contactInfo",
+                  "label": "Contact Info/Email",
+                  "required": "<% true %>",
+                  "value": "<% event.contactInfo %>",
+                  "valueOutBinding": "updateEvent.contactInfo"
+                },
+                {
+                  "type": "radioGroup",
+                  "id": "extendOnlyRadioGroup",
+                  "label": "Is this a Workday Extend only event?",
+                  "hideDisplayOption": "true",
+                  "required": "true",
+                  "selectedValues": "<% ! empty event.extendOnly ? (event.extendOnly ? ['yes'] : ['no'] ) : ['no'] %>",
+                  "instanceList": [
+                    {
+                      "id": "yes",
+                      "descriptor": "Yes"
+                    },
+                    {
+                      "id": "no",
+                      "descriptor": "No"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

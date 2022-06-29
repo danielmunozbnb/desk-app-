@@ -1,0 +1,56 @@
+{
+  "appProperties": [ ],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "requestCreditCard",
+      "routingPattern": "/requestCreditCard",
+      "page": {
+        "id": "requestCreditCard"
+      }
+    },
+    {
+      "id": "viewCreditCardEvent",
+      "routingPattern": "/cardEvent/{eventId}",
+      "page": {
+        "id": "viewCreditCardEvent"
+      }
+    },
+    {
+      "id": "errorPage",
+      "routingPattern": "/errorPage",
+      "page": {
+        "id": "errorPage"
+      }
+    }
+  ],
+  "applicationId": "Dm_advancedOrch1_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/"
+    },
+    {
+      "key": "workday-orchestrate",
+      "value": "https://api.workday.com/orchestrate/v1/apps/"
+    },
+    {
+      "key": "workday-expenses",
+      "value": "https://api.workday.com/expense/v1/"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "https://api.workday.com/staffing/v1/"
+    },
+    {
+      "key": "workday-bp",
+      "value": "https://api.workday.com/businessProcess/v1/"
+    }
+  ]
+}

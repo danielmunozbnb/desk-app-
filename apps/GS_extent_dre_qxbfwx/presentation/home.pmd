@@ -1,0 +1,91 @@
+{
+  "id": "home",
+  "securityDomains": [
+        "ManageCreateAnEvent"
+  ],
+  "endPoints": [
+  ],
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Workday Extend Event Registration"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "image",
+          "imageUri": "https://upload.wikimedia.org/wikipedia/commons/8/80/Workday_logo.svg",
+          "sizingHint": "THUMBNAIL",
+          "defaultPhoto": false,
+          "userPhoto": false
+        },
+        {
+          "type": "richText",
+          "label": "",
+          "id": "richTextId3",
+          "value": "<p style=\"text-align:left\"><span style=\"font-size:20px; color:blue;\">Welcome to the Workday Extend Create an Event Application <br/>Create an Event for your team.</span></p>"
+        },
+        {
+          "type": "richText",
+          "label": "",
+          "id": "richTextId4",
+          "value": "<p style=\"text-align:left\"><span style=\"font-size:16px; color:black;\">View Workday Extend Events or use the <b>Create an Event</b> button <br/>to add a Workday Extend Team Event.</span></p>"
+        },
+        {
+          "type": "button",
+          "id": "RequestAddEvent",
+          "label": "Create an Event",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "createEvent"
+          },
+          "action": "PRIMARY"
+        },
+        {
+          "type": "button",
+          "id": "ManageEvents",
+          "label": "Manage Events",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "manageEvents"
+          },
+          "action": "AUXILIARY"
+        },
+        {
+          "type": "button",
+          "id": "btnDispOrch",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Execute the Orchestration",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "displayOrch"
+          }
+        },
+        {
+          "type": "button",
+          "id": "btnDispThreeWrk",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Display 3 Workers",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "displayThreeWorkers"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "Powered By<br/><b>Workday Extend 🎟️</b>"
+        }
+      ]
+    }
+  }
+}

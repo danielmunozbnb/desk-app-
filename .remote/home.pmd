@@ -1,0 +1,143 @@
+{
+  "id": "home",
+  "endPoints": [
+    {
+      "baseUrlType": "BUSINESS-OBJECT",
+      "name": "allEvents",
+      "authType": "sso",
+      "url": "/employeeEvents",
+      "isCollection": true
+    }
+  ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Workday Extend"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "image",
+          "id": "hello",
+          "label": "Hello World!",
+          "imageUri": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Workday_Headquarters.jpg/1200px-Workday_Headquarters.jpg"
+        },
+        {
+          "type": "button",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Display All Expenses",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "displayAllExpenses"
+          }
+        },
+        {
+          "type": "button",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Display An Expense",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "displayAnExpense"
+          }
+        },
+        {
+          "type": "button",
+          "label": "Create a New Event",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "createEvent"
+          },
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET"
+        },
+        {
+          "type": "button",
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET",
+          "label": "Add a New Expense",
+          "sortOrder": "a",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "newMobileExpense"
+          }
+        },
+        {
+          "type": "grid",
+          "rows": "<% allEvents.data %>",
+          "rowVariableName": "eventRow",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "colID",
+              "label": "Workday ID",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% eventRow.id %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "colName",
+              "label": "Event Name",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% eventRow.eventName %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "colLocation",
+              "label": "Event Location",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% eventRow.eventLocation.descriptor %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "colDate",
+              "label": "Event Date",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% eventRow.eventDate %>"
+              }
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "id": "RequestAddEvent",
+          "label": "Create an Event",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "createEvent"
+          },
+          "action": "PRIMARY"
+        },
+        {
+          "type": "button",
+          "label": "Page Security Test",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "securedPage"
+          },
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET"
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

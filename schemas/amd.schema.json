@@ -1,0 +1,549 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:workday:vps:smd:ApplicationModel",
+  "properties" : {
+    "appProperties" : {
+      "type" : "array",
+      "description" : "App-specific custom key-value pairs that the app developer can create for their specific site and use in the PMD. Key-value pairs within the map can be referenced in this manner: ${site.appProperties[key]}.",
+      "items": {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "required" : true,
+            "description" : "The name by which the property may be reference."
+          },
+          "value" : {
+            "type" : "string",
+            "required" : true,
+            "description" : "The value to return for the property."
+          }
+        }
+      }
+    },
+    "flowDefinitions" : {
+      "type" : "array",
+      "description" : "List of flows that are used by the site, see 'flow' for the information each flow contains.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:smd:FlowModel",
+        "required": [ "id", "flowSteps"],
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "The unique id of a flow definition. It can be used in a route to navigate to a flow."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "The unique name of a flow definition. This is used to link a task orchestration tag to a flow."
+          },
+          "flowSteps" : {
+            "type" : "array",
+            "description" : "The steps that make up the flow.",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel",
+              "required": [ "id", "taskId" ],
+              "properties" : {
+                "id" : {
+                  "type" : "string",
+                  "description" : "The id of the flow step. This id is used by the flow itself to denote the initial step or within flow step definitions to denote which step should follow after a user clicks next."
+                },
+                "transitions" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel:FlowStepLink",
+                    "required": ["order", "value", "condition"],
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string",
+                        "description": "The name of the transition."
+                      },
+                      "descriptor" : {
+                        "type" : "string",
+                        "description": "The transition description."
+                      },
+                      "order" : {
+                        "type" : "string",
+                        "description": "An alphanumeric string that specifies the transition order. We alphabetically sort the order values in transitions[] to determine the sequence of evaluating conditions.\nInclude this property even if you only have 1 item in your transitions[]."
+                      },
+                      "value" : {
+                        "type" : "object",
+                        "$ref" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel",
+                        "description" : "The reference ID of the next flow step when the condition returns true."
+                      },
+                      "condition" : {
+                        "type" : "string",
+                        "description" : "An expression that evaluates to true or false.\nIf the expression is true, the app navigates to the flow step value.\n\nIf the expression is false, we evaluate the next ordered condition in the array.\n\nYou can specify \"true\" if the transition always needs to execute the flow step."
+                      }
+                    }
+                  }
+                },
+                "pageId" : {
+                  "type" : "string"
+                },
+                "configurableModel" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:workday:vps:pmd:tag:configurables:ConfigurableModel",
+                  "description" : "Defines the configurations on this flowStep in terms of which properties will allow logic to be used. See 'configurables' for more information.",
+                  "properties" : {
+                    "attributes" : {
+                      "type" : "array",
+                      "description" : "List of the names of attributes on the corresponding tag that customers can set the value for.",
+                      "items" : {
+                        "type" : "string"
+                      }
+                    },
+                    "allowLogic" : {
+                      "type" : "boolean",
+                      "description" : "When set to true, customers will be able to use binding values (when appropriate) on attributes they have control over."
+                    },
+                    "allowMove" : {
+                      "type" : "boolean",
+                      "description" : "When set to true for the body tag of a page, customers will be able to move widgets within the context of the page."
+                    },
+                    "disableAdd" : {
+                      "type" : "boolean",
+                      "description" : "When set to true for the body tag of a page, the ability to add widgets will be disabled for the customer within the context of the page."
+                    }
+                  }
+                },
+                "startsFlow" : {
+                  "type" : "boolean",
+                  "description": "Indicates whether this task is the initial step. If not specified, the first step in the flowSteps array starts the flow.\nIf you use this flow with a taskOrch, set startsFlow to true on the initial flow step. Set startsFlow to true on one and only 1 flow step."
+                },
+                "endsFlow" : {
+                  "type" : "boolean",
+                  "description": "Indicates whether this task is the last step. If not specified, the last step in the flowSteps array ends the flow."
+                },
+                "excludeFromFlow" : {
+                  "type" : "boolean",
+                  "description": "Indicates whether to exclude the step from a task orchestration flow."
+                },
+                "cancelOutOfFlow" : {
+                  "type" : "boolean",
+                  "description" : "If set, will override it's parent 'cancelOutOfFlow' attribute behavior for this particular step."
+                },
+                "taskId" : {
+                  "type" : "string",
+                  "description" : "The reference ID of the task to invoke with this step."
+                },
+                "skipStep" : {
+                  "type" : "string",
+                  "description" : "A binding that determines whether or not to skip this flow step."
+                },
+                "taskBindingName" : {
+                  "type" : "string",
+                  "description" : "The task name associated with this flow step. If you use the flow with a taskOrch tag, taskBindingName displays as the step title."
+                },
+                "name" : {
+                  "type" : "string",
+                  "description" : "The name of the flow step. The name property is informational only, and not used."
+                },
+                "descriptor" : {
+                  "type" : "string",
+                  "description" : "The flow step description."
+                }
+              }
+            }
+          },
+          "initialStepId" : {
+            "type" : "string",
+            "description" : "This field is used to determine the first step of the flow. This id should correspond to an id of one of the flow steps in this flow. If this property is omitted, then the initial step will be resolved to the first flow step defined for this flow."
+          },
+          "endPoints" : {
+            "type" : "array",
+            "description" : "A list of endpoints to be used to retrieve data.",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "required" : true,
+                  "description" : "A String used for referencing this endpoint in the page builder.\nAccess data in the response from this endpoint with the syntax 'name.labelOfDataToBePulled'."
+                },
+                "url" : {
+                  "type" : "string",
+                  "description" : "A binding for the URL address of this endpoint: where the data will come from or be sent to."
+                },
+                "isCollection" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, requests look at the size of the incoming data and retrieves the entirety of it through multiple requests.\nFor use with endpoints potentially retrieving large sets of data (>100 entries)."
+                },
+                "cacheable" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, data retrieved from this endpoint will be cached for future requests.\nNOTE: Only set to true if data from this endpoint won't be updated frequently. Data from this endpoint may get stale since there is currently no way to cache invalidate."
+                },
+                "external" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, authorization schemes and accept-language are not set in the header of the request to the endpoint. Used for requests outside of Workday."
+                },
+                "deferred" : {
+                  "type" : "boolean",
+                  "description" : "When set to true, this endpoint will not be called at the time of rendering the page.\nPrimarily used with the 'Fetch Data' widget for retrieving data based on selections made by the user on the page."
+                },
+                "exclude" : {
+                  "type" : "string",
+                  "description" : "When set to true, no attempts to call this endpoint will be made.\nSet to true when the URL for this endpoint could be invalid (Example: 'url': '${someData}' and 'someData' may be empty)."
+                },
+                "authType" : {
+                  "type" : "string",
+                  "description" : "The 'AuthType' you are using to authenticate requests to this endpoint.\nFor example, if SSO or USERAUTH, you are authenticating the request as the logged in user.\nMost other 'AuthTypes' are system level authentication.\nDifferent 'AuthType's can be used on different endpoints on the same page."
+                },
+                "useUserAuthWhenAvailable" : {
+                  "type" : "boolean",
+                  "description" : "When true, requests to this endpoint will use the userSession's 'AuthType' (if it is available) rather than the default (if a use 'AuthType' is available)."
+                },
+                "preprocessed" : {
+                  "type" : "boolean",
+                  "description" : "Do not set to 'true' unless you discuss your use case with a VPS developer.\nWhen true, data retrieved will not be treated as JSON."
+                },
+                "baseUrlType" : {
+                  "type" : "string",
+                  "description" : "WARNING: MAY BE DEPRECATED IN THE FUTURE.\nA String that designates the application this endpoint is being used for, and thereby the structure of the complete URL for this endpoint."
+                },
+                "bestEffort" : {
+                  "type" : "boolean",
+                  "description" : "When true, no error will be thrown when one normally would be. Instead, a JSON message will be received with an error message as a field."
+                },
+                "ignoreFailures" : {
+                  "type" : "array",
+                  "description" : "Takes a list of failures types to ignore. For all error codes associated with the failure type no error will be thrown when one normally would. Instead, a JSON message will be received with an error message as a field.  Supported values (with associated status code in [] which is not part of the request) are  ALL, AUTH_RELATED_ERRORS [401, 403, 407], BAD_REQUEST [400], UNAUTHORIZED [401], FORBIDDEN [403], NOT_FOUND [404], NOT_ACCEPTABLE [406], REQUEST_TIMEOUT [408], UNSUPPORTED_MEDIA_TYPE [415], INTERNAL_SERVER_ERROR [500], NOT_IMPLEMENTED [501], BAD_GATEWAY [502], SERVICE_UNAVAILABLE [503] and GATEWAY_TIMEOUT [504]",
+                  "items" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:workday:vps:pmd:tag:IgnoreFailureType",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "code" : {
+                        "type" : "integer",
+                        "description" : "error code number"
+                      },
+                      "codeName" : {
+                        "type" : "string",
+                        "description" : "describes error code failure"
+                      }
+                    }
+                  }
+                },
+                "search" : {
+                  "type" : "boolean",
+                  "description" : "Should be set to 'true' on an endpoint used for 'Faceted Search'.\nWhen 'true', the endpoint will attach query parameters to the URL necessary for 'Faceted Search' to function."
+                },
+                "service" : {
+                  "type" : "string",
+                  "description" : "An ID that maps this endpoint to a REST service."
+                },
+                "path" : {
+                  "type" : "string",
+                  "description" : "The path to a resource under a Workday service. This is used to create the fully qualified url for Workday services in conjunction with the service identifier property."
+                },
+                "headers" : {
+                  "type" : "array",
+                  "description" : "HTTP headers that are added to requests to this endpoint.'",
+                  "items" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPointHeader",
+                    "properties" : {
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "value" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "A Workday ID that maps to an endpoint object in XpressO"
+                },
+                "httpMethod" : {
+                  "type" : "string",
+                  "description" : "A HTTP method for the Outbound Endpoint. It can have enumeration values as {GET, POST, PUT, DELETE}",
+                  "enum" : [ "GET", "POST", "PUT", "PATCH", "DELETE" ]
+                },
+                "values" : {
+                  "type" : "array",
+                  "description" : "List of Value objects used for defining rest call parameters",
+                  "items" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:workday:vps:pmd:tag:Value",
+                    "properties" : {
+                      "outboundPath" : {
+                        "type" : "string",
+                        "description" : "Attribute for variable name. Based on the scope of the variable, it can be set as flow variable or session variable for subsequent use."
+                      },
+                      "value" : {
+                        "type" : "string",
+                        "description" : "Attribute for variable value whose name is specified in outboundPath attribute. It is binding object, so you can specify binding here."
+                      },
+                      "exclude" : {
+                        "type" : "string",
+                        "description" : "Attribute for exclude condition. If this attribute evaluates true, the variable will be set, otherwise it will be ignored."
+                      }
+                    }
+                  }
+                },
+                "allowEmptyValue" : {
+                  "type" : "string",
+                  "description" : "This flag is to determine if an endpoint allows empty value as JSON outuput."
+                },
+                "nested" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:workday:vps:pmd:tag:NestedEndPointList",
+                  "description" : "When set the data from nested endpoints will be bound to current endpoint name",
+                  "properties" : {
+                    "on" : {
+                      "type" : "string",
+                      "description" : "The list of endpoint information data"
+                    },
+                    "as" : {
+                      "type" : "string",
+                      "description" : "The reference to the current iterated object provided by the on attribute's input list"
+                    },
+                    "template" : {
+                      "type" : "object",
+                      "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+                      "description" : "The endpoint template"
+                    }
+                  }
+                },
+                "graphQuery" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:workday:vps:pmd:tag:GraphQuery",
+                  "description" : "The query sent to GraphQL service",
+                  "properties" : {
+                    "value" : {
+                      "type" : "string",
+                      "description" : "GraphQL query value"
+                    },
+                    "variables" : {
+                      "type" : "object",
+                      "description" : "GraphQL query variables",
+                      "additionalProperties" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "outboundEndPoints" : {
+            "type" : "array",
+            "description" : "A list of outbound endpoints to propagate data throughout the scope of the flow. Note that only flow scoped variables are supported.",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:workday:vps:pmd:tag:VariableOutputEndPoint",
+              "properties" : {
+                "variableScope" : {
+                  "type" : "string",
+                  "description" : "Attribute used to define the variable scope. Its value comes from enumeration set {session, flow}. Session value means the scoped variable can be referenced in pmd within user session, while flow value means the scoped variable can only be referenced in pmd within the flow definition.",
+                  "enum" : [ "session", "flow", "page" ]
+                },
+                "values" : {
+                  "type" : "array",
+                  "description" : "This is the place you can define a list of parameter objects used for this outgoing Endpoint",
+                  "items" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:Value"
+                  }
+                },
+                "name" : {
+                  "type" : "string",
+                  "description" : "Name is used as the reference for this outgoing Endpoint during binding."
+                },
+                "httpMethod" : {
+                  "type" : "string",
+                  "description" : "Clear variables instead of setting them when the value is 'DELETE'. This attribute provides a way to clear unneeded variables."
+                },
+                "secondaryFor" : {
+                  "type" : "string"
+                },
+                "boundAs" : {
+                  "type" : "string",
+                  "description" : "This attribute allows to bind one pmd tag to more than one Outbound Endpoint. See child tag outboundDataURI 'secondaryFor' attribute for detail. "
+                }
+              }
+            }
+          },
+          "flowParameters" : {
+            "type" : "array",
+            "description" : "A parameter that could be moved out to its own metadata in the future; the flowParameters allow the flow creator to specify the the filters underlying the flow for configuration.",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:workday:vps:smd:FlowParameterModel",
+              "properties" : {
+                "id" : {
+                  "type" : "string"
+                },
+                "name" : {
+                  "type" : "string"
+                },
+                "bindingType" : {
+                  "type" : "string"
+                },
+                "binding" : {
+                  "type" : "string"
+                },
+                "endPoint" : {
+                  "type" : "object",
+                  "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint"
+                },
+                "values" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                },
+                "instanceValues" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:workday:vps:pmd:tag:Instance",
+                    "properties" : {
+                      "id" : {
+                        "type" : "string",
+                        "description" : "A binding that uniquely identifies the instance - instance's identifier"
+                      },
+                      "descriptor" : {
+                        "type" : "string",
+                        "description" : "A binding that that describes the instances. Used as instance's display value"
+                      },
+                      "wid" : {
+                        "type" : "string",
+                        "description" : "A binding that uniquely identifies the workday identifier for related actions retrieval. Valid only on View pages"
+                      },
+                      "action" : {
+                        "type" : "string",
+                        "description" : "Action describes how the client should treat the instance when displayed as a link/button. Examples are Home, Attachment, PRIMARY. Actions strings are case sensitive."
+                      },
+                      "target" : {
+                        "type" : "string",
+                        "description" : "Url for the instance - To be replaced with taskTag soon"
+                      },
+                      "iconId" : {
+                        "type" : "string",
+                        "description" : "Id for icons that are built in to UIC for display with instance. This has to be a meaningful icon available for client. For example, pdf icon can be 'mime_pdf'."
+                      },
+                      "view" : {
+                        "type" : "string",
+                        "description" : "Determines whether or not the user has access to view the instance's details.  If true, the instance's text becomes a link.  If false, it remains plain text."
+                      },
+                      "relatedTask" : {
+                        "type" : "string",
+                        "description" : "Binding to determine if related task icon is to be displayed. Note VPS does not support related tasks. This attribute is meant for sites that support SSO where related task requests can be answered by UI Server"
+                      },
+                      "preview" : {
+                        "type" : "string",
+                        "description" : "Binding to determine if the user has access to view a preview of the instance's details without needing to navigate to the instance. Note VPS does not support preview, this attribute is meant for sites that support SSO where a preview request can be answered by UI Server"
+                      },
+                      "mimeType" : {
+                        "type" : "string",
+                        "description" : "mimetype that is built in for UIC to view the instance inline or for a particular application to open it. For example, pdf mimetype can be 'application/pdf'."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "exitUri" : {
+            "type" : "string",
+            "description" : "If set, flow will redirect to this URI after submit"
+          },
+          "descriptor" : {
+            "type" : "string",
+            "description" : "Description of the flow."
+          },
+          "cancelOutOfFlow" : {
+            "type" : "boolean",
+            "description" : "If true, cancel button triggers will take a user out of the flow instead of going to the previous step."
+          },
+          "exitTask" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:TaskReference",
+            "description" : "If set, flow will redirect to this task after submit"
+          }
+        }
+      }
+    },
+    "tasks" : {
+      "type" : "array",
+      "description" : "The tasks list defines the URLs that will be available to users of a site and declares which pages should be invoked when the URL patterns defined in those tasks are matched.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:smd:TaskModel",
+        "required" : ["id", "routingPattern" ],
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "The unique id of a task that maps to a page. Flow definitions reference this task id."
+          },
+          "routingPattern" : {
+            "type" : "string",
+            "description" : "A Task's routing pattern defines a URL that should function on a site. When a user accesses a site, the site's Tasks are scanned & their routing patterns evaluated to see if any of them match the user's current URL.  When a match is found, that Task's page or flow is rendered.\nRouting patterns may contain tokens that become named values available in PMD via the queryParams object.\nExample:\nRouting Pattern:  /jobs/{jobId}\nPMD:                    ${queryParams.jobId}\nUsing this method, URL path elements become parameters of the page that the Task invokes."
+          },
+          "page" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:smd:PageModel",
+            "description" : "Page that this task references, see 'page'",
+            "required": [ "id" ],
+            "properties" : {
+              "id" : {
+                "type" : "string",
+                "description" : "A unique identifier for this page."
+              },
+              "descriptor" : {
+                "type" : "string",
+                "description" : "A description for this page."
+              }
+            }
+          },
+          "flowValue" : {
+            "type" : "string",
+            "description" : "The ID of the flow that this task references."
+          },
+          "flowId" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "applicationId" : {
+      "type" : "string",
+      "required" : true
+    },
+    "dataProviders" : {
+      "type" : "array",
+      "description" : "List of base URLs used by endpoints in the PMDs of the site.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:pmd:tag:DataProvider",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description": "The unique id of a data provider. PMDs reference this key with their endpoints."
+          },
+          "value" : {
+            "type" : "string",
+            "description": "The base URL for the data provider API endpoints invoked by the PMDs."
+          }
+        }
+      }
+    },
+    "universalFooterPodId" : {
+      "type" : "string",
+      "description" : "The id of the pod containing the universal footer. This footer will be placed on every page in the site. If a footer is defined directly on a page, it will take precedence over the universal footer."
+    }
+  },
+  "required" : [ "applicationId", "tasks" ]
+
+}

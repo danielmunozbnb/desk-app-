@@ -1,0 +1,73 @@
+{
+  "id": "displayOrch",
+  "endPoints": [
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "orchestration",
+        "baseUrlType": "orchestration",
+        "url": "<% site.applicationId + '/orchestrations/simpleorch/launch' %>",
+        "httpMethod": "GET",
+        "authType": "sso",
+        "onSend": "<% self.data %>"
+      },
+      {
+        "name": "successPageData",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "orchestrationResponse",
+            "value": "<% orchestration %>"
+          }
+        ]
+      }
+    ],
+    "responseErrorDetail": {
+      "errorSummary": "<% error %>",
+      "errors": "<% list:mapAttribute(errors, 'error') %>",
+      "defaultErrorMessage": "Something went wrong"
+    }
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Display Orchestration Data"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "readOnlyText",
+          "id": "hello",
+          "label": "Instructions",
+          "value": "Click the OK button below to launch the Orchestration."
+        },
+        {
+          "type": "button",
+          "id": "btnGoHome",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Return to Home Page",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "root"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

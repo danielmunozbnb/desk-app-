@@ -1,0 +1,172 @@
+{
+  "id": "createCharity",
+  "endPoints": [
+    {
+      "name": "worker",
+      "baseUrlType": "workday-staffing",
+      "url": "workers/me",
+      "authType": "sso"
+    },
+    {
+      "name": "workerSearch",
+      "baseUrlType": "workday-staffing",
+      "url": "<% 'workers?search=' + instanceListQuery %>",
+      "exclude": "<% empty(instanceListQuery) %>",
+      "authType": "sso",
+      "deferred": "true"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "charityImage",
+        "baseUrlType": "app",
+        "url": "charityImages",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "exclude": "<% empty(imageFileUploader.children) %>",
+        "multiPartFileLast": true
+      },
+      {
+        "name": "charity",
+        "baseUrlType": "app",
+        "url": "charities",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "createdBy.id",
+            "value": "<% worker.id %>"
+          },
+          {
+            "outboundPath": "image.id",
+            "value": "<% (!empty(charityImage.id)) ? charityImage.id : null %>"
+          }
+        ]
+      },
+      {
+        "name": "createCharityEvent",
+        "baseUrlType": "app",
+        "url": "createCharityEvents",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "businessProcessTarget.id",
+            "value": "<% charity.id %>"
+          }
+        ]
+      }
+    ],
+    "responseErrorDetail": {
+      "errorSummary": "<% error %>",
+      "errors": "<% errors.map(item => { item.error }); %>"
+    }
+  },
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Create Charity"
+    },
+    "headerSize": "STANDARD",
+    "body": {
+      "type": "section",
+      "horizontal": true,
+      "sorted": false,
+      "children": [
+        {
+          "type": "section",
+          "horizontal": false,
+          "sorted": false,
+          "children": [
+            {
+              "type": "text",
+              "id": "name",
+              "label": "Name",
+              "valueOutBinding": "charity.name",
+              "required": "<% true %>",
+              "_guide": {
+                "type": "guide",
+                "id": "guideName",
+                "title": "Charity Name",
+                "text": "Enter the name of the Charity."
+              }
+            },
+            {
+              "type": "richText",
+              "id": "description",
+              "label": "Description",
+              "valueOutBinding": "charity.description",
+              "validations": [
+                {
+                  "regex": "^.{0,1000}",
+                  "errorMessage": "Maximum character count (including markup) reached: 1000"
+                }
+              ]
+            },
+            {
+              "type": "checkBox",
+              "id": "matchDonations",
+              "label": "Match Donations",
+              "valueOutBinding": "charity.matchDonations",
+              "value": "<% true %>",
+              "_guide": {
+                "type": "guide",
+                "id": "guideMatchDonations",
+                "title": "Matching Donations",
+                "text": "If this box is checked, the Company will match all Charitable Donations for this Charity. The Charity will require Charity Administrator approval.",
+                "linkText": "More Information",
+                "linkUrl": "https://workday.com"
+              }
+            },
+            {
+              "type": "instanceList",
+              "searchEndPoint": "<% endpoints.workerSearch %>",
+              "multiSelect": "false",
+              "id": "instanceListWorkerSearch",
+              "label": "Relationship Manager",
+              "searchResultValues": "<% workerSearch.data %>",
+              "required": "<% true %>",
+              "values": "<% [worker] %>",
+              "selectedValues": "<% [worker] %>",
+              "valueOutBinding": "charity.relationshipManager.id",
+              "_comment": "Set default value at page load to the current worker. They can search for a different worker by typing in the instanceList and hitting Enter."
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "horizontal": false,
+          "sorted": false,
+          "children": [
+            {
+              "type": "hidden",
+              "value": "<% worker.id %>",
+              "valueOutBinding": "charityImage:data:uploadedBy.id"
+            },
+            {
+              "type": "hidden",
+              "value": "<% date:getTodaysDate(null) %>",
+              "valueOutBinding": "charityImage:data:uploadedDate"
+            },
+            {
+              "type": "hidden",
+              "value": "cid:image",
+              "valueOutBinding": "charityImage:data:file"
+            },
+            {
+              "type": "fileUploader",
+              "label": "Image",
+              "id": "imageFileUploader",
+              "singular": "<% true %>",
+              "compact": "<% true %>",
+              "required": "<% true %>",
+              "fileTypes": "gif,jpg,jpeg,png",
+              "valueOutBinding": "charityImage:image:"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

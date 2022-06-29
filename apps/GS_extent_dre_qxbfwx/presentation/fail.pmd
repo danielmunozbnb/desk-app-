@@ -1,0 +1,43 @@
+{
+  "id": "fail",
+  "endPoints": [ ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Orch Error"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Could not complete Orch",
+          "value": "<% flowVariables.orchestrationResponse.value %>"
+        },
+        {
+          "type": "button",
+          "id": "btnGoHome",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Return to Home Page",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "root"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

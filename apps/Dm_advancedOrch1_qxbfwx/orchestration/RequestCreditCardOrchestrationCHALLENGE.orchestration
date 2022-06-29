@@ -1,0 +1,903 @@
+{
+  "flowVersion": "1.5.0",
+  "name": "RequestCreditCardOrchestrationCHALLENGE",
+  "type": ".Mixed.MixedFlow",
+  "start": { },
+  "end": { },
+  "notes": [
+    {
+      "key": "label",
+      "value": "Challenge app for the Orchestration tutorial."
+    },
+    {
+      "key": "description",
+      "value": ""
+    },
+    {
+      "key": "label",
+      "value": "This is a reference Orchestration that demonstrates many of the main features of Workday Orchestrate."
+    }
+  ],
+  "startNotes": [ ],
+  "endNotes": [ ],
+  "nodes": [
+    {
+      "type": ".maya.TreatAsJson",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Init Params"
+        },
+        {
+          "key": "description",
+          "value": "These are the initial parameters coming from the Ref App in the tenant.  We are now turning these into well-formatted JSON for use with JSON functions downstream."
+        }
+      ],
+      "name": "InitParams_1",
+      "data": {
+        "type": [
+          "Expr",
+          "Data"
+        ],
+        "expr": "data(\"start\", \"requestBody\")"
+      }
+    },
+    {
+      "type": ".maya.CreateValues",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Create Init Values"
+        },
+        {
+          "key": "description",
+          "value": "This will take our input values from the app from user input and turn them into values we can use downstream in our entire orchestration.  This is a quick way to reference variables throughout the orchestration."
+        }
+      ],
+      "name": "CreateInitValuesFromApp_2",
+      "values": [
+        {
+          "param": {
+            "description": "",
+            "name": "workerWID",
+            "type": "String"
+          },
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"${data(\"InitParams_1\", \"json\").stringAtJsonPath(\"$.workerWID\")}\"\"\""
+          },
+          "type": "String"
+        },
+        {
+          "param": {
+            "description": "",
+            "name": "businessReason",
+            "type": "String"
+          },
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"${data(\"InitParams_1\", \"json\").stringAtJsonPath(\"$.businessReason\")}\"\"\""
+          },
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "type": ".maya.CreateJson",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Initial ABO JSON"
+        },
+        {
+          "key": "description",
+          "value": "Since the request has come from the app, we will create an initial instance of the ABO so that we have a record of it being started.  Throughout the orchestration, we will use the ABO to track the state/progress of the request. "
+        }
+      ],
+      "name": "InitialABOJSON_3",
+      "structure": "6a90a0c1-fefb-4574-9e28-fdb69b3839de",
+      "values": [
+        {
+          "path": "$.cardAssignee.id",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"workerWID\")"
+          }
+        },
+        {
+          "path": "$.status",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"In Progress\"\"\""
+          }
+        },
+        {
+          "path": "$.businessReason",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"businessReason\")"
+          }
+        }
+      ]
+    },
+    {
+      "type": ".maya.Log",
+      "notes": [
+        {
+          "key": "description",
+          "value": "Let's write the payload going to the ABO into a log so that we can see it in the Analytics tab on the Dev Site.  "
+        },
+        {
+          "key": "label",
+          "value": "Log initial  ABO payload"
+        }
+      ],
+      "name": "LogInitABO_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"${data(\"InitialABOJSON_3\", \"data\").toString()}\""
+      }
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Create Initial ABO"
+        },
+        {
+          "key": "description",
+          "value": "This is our API request to create the ABO instance.  Notice that we are using dynamic variables for the host and App ID."
+        }
+      ],
+      "name": "CreateInitABO_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"InitialABOJSON_3\", \"data\").toString()"
+      },
+      "contentType": "application/json",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"/apps/${context.appReferenceId()}/v1/creditCardRequests\""
+      },
+      "queryParams": [ ],
+      "method": "POST",
+      "headers": [ ],
+      "responseType": "Json"
+    },
+    {
+      "type": ".maya.Log",
+      "notes": [
+        {
+          "key": "description",
+          "value": "After the ABO has been submitted, lets log the response of the API call.  This allows us to troubleshoot in case something wasn't submitted correctly."
+        },
+        {
+          "key": "label",
+          "value": "Log ABO creation response"
+        }
+      ],
+      "name": "LogAfterInitABO_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"${data(\"CreateInitABO_2\", \"response\").toString()}\""
+      }
+    },
+    {
+      "type": ".maya.CreateValues",
+      "notes": [
+        {
+          "key": "label",
+          "value": "ABO ID"
+        },
+        {
+          "key": "description",
+          "value": "In order to submit the BP, we'll need to grab the response from the ABO call, which is the WID of the instance.  Let's put this into an easy-to-access value for downstream use."
+        }
+      ],
+      "name": "ABOID_2",
+      "values": [
+        {
+          "param": {
+            "description": "",
+            "name": "ABOID",
+            "type": "String"
+          },
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"${data(\"CreateInitABO_2\", \"response\").stringAtJsonPath(\"$.id\")}\""
+          },
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "type": ".flux.TriggerAbp",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Trigger Approval BP"
+        },
+        {
+          "key": "description",
+          "value": "We are now sending the Business Process to the manager for approval.  All that's needed to kick off an ABP is to enter in the event target business object (at the bottom of App Manager) for your BP.  At this point, the orchestration will completely pause until the BP has been approved by the manager."
+        }
+      ],
+      "name": "TriggerApprovalBP_2",
+      "targetId": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"ABOID_2\", \"ABOID\")"
+      },
+      "abpName": "PutEventIDHere"
+    },
+    {
+      "type": ".maya.CreateJson",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Approve ABO JSON"
+        },
+        {
+          "key": "description",
+          "value": "Now that the BP is completed, let's update the ABO again with the status of Approved.  Again, this helps manage state of the process.  "
+        }
+      ],
+      "name": "ApproveABOJSON_3",
+      "structure": "2c1c5b56-59ae-4a40-9820-c5d18200231a",
+      "values": [
+        {
+          "path": "$.cardAssignee.id",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"workerWID\")"
+          }
+        },
+        {
+          "path": "$.status",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Approved\"\"\""
+          }
+        },
+        {
+          "path": "$.businessReason",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"businessReason\")"
+          }
+        }
+      ]
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Update Approve ABO"
+        },
+        {
+          "key": "description",
+          "value": "We will be using a PUT operation to update the ABO."
+        }
+      ],
+      "name": "UpdateApproveABO_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"ApproveABOJSON_3\", \"data\").toString()"
+      },
+      "contentType": "application/json",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"/apps/${context.appReferenceId()}/v1/creditCardRequests/${data(\"ABOID_2\", \"ABOID\")}\""
+      },
+      "queryParams": [ ],
+      "method": "PUT",
+      "headers": [ ],
+      "responseType": "Json"
+    },
+    {
+      "type": ".maya.Http",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Get Credit Card Number"
+        },
+        {
+          "key": "description",
+          "value": "This step will mimic calling an external credit card vendor, such as Stripe to provision the credit card itself.  For this ref app, it's simply a random number generator."
+        }
+      ],
+      "name": "GetCCNumber",
+      "url": {
+        "type": [
+          "Expr",
+          "Url"
+        ],
+        "expr": "s\"\"\"http://www.randomnumberapi.com/api/v1.0/random\"\"\""
+      },
+      "queryParams": [
+        {
+          "name": "min",
+          "value": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"1000\"\"\""
+          }
+        },
+        {
+          "name": "max",
+          "value": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"9999\"\"\""
+          }
+        },
+        {
+          "name": "count",
+          "value": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"1\"\"\""
+          }
+        }
+      ],
+      "method": "GET",
+      "headers": [ ],
+      "connectTimeoutMs": 10000,
+      "responseTimeoutMs": 20000,
+      "maxRetries": 0,
+      "retryDelayMs": 1000,
+      "responseType": "Json"
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Get Worker Info"
+        },
+        {
+          "key": "description",
+          "value": "Now that our ABO is updated with the latest status, let's get our worker information so that we can successfully create the information in Stripe.  We will be using WQL in this call.  Notice that we are utilizing URL Parameters."
+        }
+      ],
+      "name": "GetWorkerInfo_1",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"\"\"/wql/v1/data\"\"\""
+      },
+      "queryParams": [
+        {
+          "name": "query",
+          "value": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"SELECT employeeID, fullName FROM allWorkers WHERE worker IN(${data(\"CreateInitValuesFromApp_2\", \"workerWID\")})\""
+          }
+        }
+      ],
+      "method": "GET",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"application/json\"\"\""
+          }
+        }
+      ],
+      "responseType": "Json"
+    },
+    {
+      "type": ".maya.CreateJson",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Update ABO with Card"
+        },
+        {
+          "key": "description",
+          "value": "Once we successfully created obtained our card information for the worker, let's update our ABO with this information.  The info we are storing is just for reference, as we will be writing to the Workday Credit Card object downstream. "
+        }
+      ],
+      "name": "CompletedABOFormatted_5",
+      "structure": "1ccbe537-91b7-48b9-b6f3-0dd9b34a538b",
+      "values": [
+        {
+          "path": "$.cardAssignee.id",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"workerWID\")"
+          }
+        },
+        {
+          "path": "$.status",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Completed\"\"\""
+          }
+        },
+        {
+          "path": "$.businessReason",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "data(\"CreateInitValuesFromApp_2\", \"businessReason\")"
+          }
+        },
+        {
+          "path": "$.last4Digits",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"${data(\"GetCCNumber\", \"response\").numberAtJsonPath(\"$[0]\").toString()}\"\"\""
+          }
+        }
+      ]
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Complete ABO"
+        },
+        {
+          "key": "description",
+          "value": "This is the final ABO call we will make.  This shows that the entire process is completed."
+        }
+      ],
+      "name": "CompleteABO_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"CompletedABOFormatted_5\", \"data\").toString()"
+      },
+      "contentType": "application/json",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"/apps/${context.appReferenceId()}/v1/creditCardRequests/${data(\"ABOID_2\", \"ABOID\")}\""
+      },
+      "queryParams": [ ],
+      "method": "PUT",
+      "headers": [ ],
+      "responseType": "Json"
+    },
+    {
+      "type": ".maya.CreateTextData",
+      "notes": [
+        {
+          "key": "label",
+          "value": "XML for CC Create"
+        },
+        {
+          "key": "description",
+          "value": "This will be our XML payload to call our SOAP request.  We will be gathering up information from many previous steps. NOTE: Some of the values are hard-coded for example purposes.  "
+        }
+      ],
+      "name": "XMLCreateCC_1",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"\"\"<wd:Credit_Card_Header__HV__Request\n            xmlns:wd=\"urn:com.workday/bsvc\"\n            wd:version=\"v33.2\">\n            <wd:Card_Holder_Listing_File_Data>\n                <wd:Card_Holder_Listing_File_Number>1</wd:Card_Holder_Listing_File_Number>\n                <wd:Card_Holder_Listing_File_Name>demo</wd:Card_Holder_Listing_File_Name>\n                <wd:Card_Holder_Listing_File_Date>2020-07-17</wd:Card_Holder_Listing_File_Date>\n                <wd:Credit_Card_Data>\n                    <wd:Expense_Credit_Card_ID>EXPENSE_CREDIT_CARD-4-${data(\"CompletedABOFormatted_5\", \"data\").stringAtJsonPath(\"$.last4Digits\")}</wd:Expense_Credit_Card_ID>\n                    <wd:Corporate_Credit_Card_Account_Reference>\n                        <wd:ID wd:type=\"Corporate_Credit_Card_Account_ID\"> 7955XXXXXXXX7955 </wd:ID>\n                    </wd:Corporate_Credit_Card_Account_Reference>\n\n\n                    <wd:Credit_Card_Description>Business Credit Card by Workday Extend - ${data(\"CompletedABOFormatted_5\", \"data\").stringAtJsonPath(\"$.last4Digits\")}</wd:Credit_Card_Description>\n                    <wd:Last_4_Digits_of_Credit_Card_Number>${data(\"CompletedABOFormatted_5\", \"data\").stringAtJsonPath(\"$.last4Digits\")}</wd:Last_4_Digits_of_Credit_Card_Number>                    \n                    <wd:Credit_Card_Expiration_Date>2025-12-31</wd:Credit_Card_Expiration_Date>\n\n\n                    <wd:Billing_Currency_Reference>\n                        <wd:ID wd:type=\"Currency_ID\">USD</wd:ID>\n                    </wd:Billing_Currency_Reference>\n                    <wd:Cash_Access_Allowed>false</wd:Cash_Access_Allowed>\n               <wd:Cancel_Date>2025-12-31</wd:Cancel_Date>\n                    <wd:Cardmember_Embossed_Name>${data(\"GetWorkerInfo_1\", \"response\").stringAtJsonPath(\"$.data[0].fullName\")}</wd:Cardmember_Embossed_Name>\n                    <wd:Document_Status_Reference>\n                        <wd:ID wd:type=\"Document_Status_ID\">ACTIVE</wd:ID>\n                    </wd:Document_Status_Reference>\n                </wd:Credit_Card_Data>\n            </wd:Card_Holder_Listing_File_Data>\n        </wd:Credit_Card_Header__HV__Request>\"\"\""
+      },
+      "contentType": "application/xml"
+    },
+    {
+      "type": ".maya.WrapSoap",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Wrap Create CC SOAP"
+        },
+        {
+          "key": "description",
+          "value": "Let's go ahead and wrap our SOAP message in an envelope.  For Workday SOAP calls, we will be using v1.1."
+        }
+      ],
+      "name": "WrapCreateCCSOAP_1",
+      "xml": {
+        "type": [
+          "Expr",
+          [
+            "Xml",
+            null
+          ]
+        ],
+        "expr": "data(\"XMLCreateCC_1\", \"message\")"
+      },
+      "soapVersion": "V1_1"
+    },
+    {
+      "type": ".maya.Log",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Log Create Card"
+        },
+        {
+          "key": "description",
+          "value": "Let's log our Create Card payload so we can verify/see it in our Analytics."
+        }
+      ],
+      "name": "LogCreateCardXML_1",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"${data(\"WrapCreateCCSOAP_1\", \"xml\")}\""
+      }
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Create CC SOAP"
+        },
+        {
+          "key": "description",
+          "value": "Since we are able to invoke SOAP calls from the API gateway, we'll need to use a POST (even if you are doing a Get call).  This can use the same contextual security as the other REST APIs in Workday."
+        }
+      ],
+      "name": "SendSOAPCreateCC_2",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"WrapCreateCCSOAP_1\", \"xml\").toString()"
+      },
+      "contentType": "application/xml",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"\"\"/createCreditCardAPIGoesHere\"\"\""
+      },
+      "queryParams": [ ],
+      "method": "POST",
+      "headers": [ ],
+      "responseType": "Xml"
+    },
+    {
+      "type": ".maya.Log",
+      "notes": [
+        {
+          "key": "label",
+          "value": "Log After Create CC"
+        },
+        {
+          "key": "description",
+          "value": "After we call our SOAP, let's log the response."
+        }
+      ],
+      "name": "LogAfterCreateCC",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"${data(\"SendSOAPCreateCC_2\", \"response\")}\""
+      }
+    },
+    {
+      "type": ".maya.CreateJson",
+      "notes": [
+        {
+          "key": "description",
+          "value": "Finally, let's create a test payload to send to the worker, letting them know that the Credit Card has been successfully created."
+        },
+        {
+          "key": "label",
+          "value": "Inbox Notification Payload"
+        }
+      ],
+      "name": "CreateMCCJSON_1",
+      "structure": "b8e99326-e668-4c32-908c-af1653ce8599",
+      "values": [
+        {
+          "type": "String",
+          "path": "$.notificationType.id",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"NOTIFICATION_CATEGORY=LEARNING_ENGAGEMENT_PLANS\"\"\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.emailDetail.name",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Hello,\"\"\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.emailDetail.body",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Your Credit Card is now available. View the Company Property tab on your Worker Profile to see your Credit Card information.\"\"\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.emailDetail.subject",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Your Credit Card Request has been completed!\"\"\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.emailDetail.replyTo",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"donotreply@workday.net\"\"\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.recipients.contacts[0].id",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"Employee_ID=${data(\"GetWorkerInfo_1\", \"response\").stringAtJsonPath(\"$.data[0].employeeID\")}\""
+          }
+        },
+        {
+          "type": "String",
+          "path": "$.pushDetail.message",
+          "expr": {
+            "type": [
+              "Expr",
+              "String"
+            ],
+            "expr": "s\"\"\"Your Credit Card is now available. View the Company Property tab on your Worker Profile to see your Credit Card information.\"\"\""
+          }
+        }
+      ]
+    },
+    {
+      "type": ".maya.SendWorkdayApiRequest",
+      "notes": [
+        {
+          "key": "description",
+          "value": "Let's leverage the Connect API to send the notification.  "
+        },
+        {
+          "key": "label",
+          "value": "Send Inbox Notification"
+        }
+      ],
+      "name": "SendMCCNotification_3",
+      "message": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "data(\"CreateMCCJSON_1\", \"data\").toString()"
+      },
+      "contentType": "application/json",
+      "path": {
+        "type": [
+          "Expr",
+          "String"
+        ],
+        "expr": "s\"\"\"/connect/v1/sendMessage\"\"\""
+      },
+      "queryParams": [ ],
+      "method": "POST",
+      "headers": [ ],
+      "responseType": "Json"
+    }
+  ],
+  "resources": [
+    {
+      "name": "b8e99326-e668-4c32-908c-af1653ce8599",
+      "content": "{\"notificationType\":{\"id\":\"@PLACEHOLDER@\"},\"emailDetail\":{\"name\":\"@PLACEHOLDER@\",\"body\":\"@PLACEHOLDER@\",\"subject\":\"@PLACEHOLDER@\",\"replyTo\":\"@PLACEHOLDER@\"},\"recipients\":{\"contacts\":[{\"id\":\"@PLACEHOLDER@\"}]},\"pushDetail\":{\"message\":\"@PLACEHOLDER@\"}}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "application/json"
+        },
+        {
+          "key": "resource-type",
+          "value": "UNKNOWN"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "b8e99326-e668-4c32-908c-af1653ce8599"
+        }
+      ]
+    },
+    {
+      "name": "httpAuth_0_1_2_0",
+      "content": "{\"password\":{\"type\":[\"Expr\",\"String\"],\"expr\":\"s\\\"\\\"\\\"\\\"\\\"\\\"\"},\"username\":{\"type\":[\"Expr\",\"String\"],\"expr\":\"s\\\"\\\"\\\"sk_test_wGmV0mqPCQZmlJPLx4m3WKzy000AZHpR4z\\\"\\\"\\\"\"}}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "null"
+        },
+        {
+          "key": "resource-type",
+          "value": "UNKNOWN"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "httpAuth_0_1_2_0"
+        }
+      ]
+    },
+    {
+      "name": "httpAuth_1_1_2_0",
+      "content": "{\"password\":{\"type\":[\"Expr\",\"String\"],\"expr\":\"s\\\"\\\"\\\"\\\"\\\"\\\"\"},\"username\":{\"type\":[\"Expr\",\"String\"],\"expr\":\"s\\\"\\\"\\\"sk_test_wGmV0mqPCQZmlJPLx4m3WKzy000AZHpR4z\\\"\\\"\\\"\"}}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "null"
+        },
+        {
+          "key": "resource-type",
+          "value": "UNKNOWN"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "httpAuth_1_1_2_0"
+        }
+      ]
+    },
+    {
+      "name": "6a90a0c1-fefb-4574-9e28-fdb69b3839de",
+      "content": "{\"cardAssignee\":{\"id\":\"@PLACEHOLDER@\"},\"status\":\"@PLACEHOLDER@\",\"businessReason\":\"@PLACEHOLDER@\"}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "application/json"
+        },
+        {
+          "key": "resource-type",
+          "value": "SCHEMA"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "6a90a0c1-fefb-4574-9e28-fdb69b3839de"
+        }
+      ]
+    },
+    {
+      "name": "2c1c5b56-59ae-4a40-9820-c5d18200231a",
+      "content": "{\"cardAssignee\":{\"id\":\"@PLACEHOLDER@\"},\"status\":\"@PLACEHOLDER@\",\"businessReason\":\"@PLACEHOLDER@\"}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "application/json"
+        },
+        {
+          "key": "resource-type",
+          "value": "SCHEMA"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "2c1c5b56-59ae-4a40-9820-c5d18200231a"
+        }
+      ]
+    },
+    {
+      "name": "1ccbe537-91b7-48b9-b6f3-0dd9b34a538b",
+      "content": "{\"cardAssignee\":{\"id\":\"@PLACEHOLDER@\"},\"status\":\"@PLACEHOLDER@\",\"businessReason\":\"@PLACEHOLDER@\",\"expirationMonth\":12,\"expirationYear\":2025,\"last4Digits\":\"@PLACEHOLDER@\"}",
+      "notes": [
+        {
+          "key": "content-type",
+          "value": "application/json"
+        },
+        {
+          "key": "resource-type",
+          "value": "SCHEMA"
+        },
+        {
+          "key": "resource-display-name",
+          "value": "1ccbe537-91b7-48b9-b6f3-0dd9b34a538b"
+        }
+      ]
+    }
+  ]
+}

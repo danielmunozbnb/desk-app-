@@ -1,0 +1,159 @@
+{
+  "id": "createEvent",
+  "securityDomains": [
+    "ManageCreateAnEvent"
+  ],
+  "endPoints": [
+    {
+      "name": "me",
+      "baseUrlType": "workday-staffing",
+      "url": "workers/me",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "event",
+        "baseUrlType": "app",
+        "url": "events",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "onSend": "<% //Outbound endpoint that submits the BO
+                   //self.data is the payload as it exists coming into this onSend event
+                   self.data.put('createdBy',{'id':me.id}); //add createdBy object
+                   self.data.extendOnly = extendOnlyRadioGroup.value[0] == 'yes' ? true : false; //convert extendOnly radio group response from String to Boolean
+                   self.data.createdBy.id = me.id; //add a createdBy value to our payload
+                   console.info(json:asJSON(self.data)); return self.data; //log payload to the analytics console
+                   %>",
+        "values": [
+          {
+            "outboundPath": "createdBy.id",
+            "value": "<% me.id %>"
+          },
+          {
+            "outboundPath": "image.id",
+            "value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
+          }
+        ]
+
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Workday Extend Create and Event",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name of Event",
+          "required": "<% true %>",
+          "valueOutBinding": "event.name"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Event Location",
+          "required": "<% true %>",
+          "valueOutBinding": "event.location"
+        },
+        {
+          "type": "richText",
+          "id": "description",
+          "label": "Description",
+          "required": "<% true %>",
+          "valueOutBinding": "event.description",
+          "validations": [
+            {
+              "regex": "^.{0,1000}",
+              "errorMessage": "Maximum character count (including markup) reached: 1000"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "sponsor",
+          "label": "Event Sponsor",
+          "valueOutBinding": "event.sponsor",
+          "required": true,
+          "guide": {
+            "type": "guide",
+            "id": "guideName",
+            "title": "Sponsor Name",
+            "text": " Enter the Event Sponsors name:"
+          }
+        },
+        {
+          "type": "date",
+          "id": "date",
+          "label": "Date of Event",
+          "valueOutBinding": "event.date",
+          "required": true
+        },
+        {
+          "type": "text",
+          "id": "contactInfo",
+          "label": "Contact Info/Email",
+          "required": "<% true %>",
+          "valueOutBinding": "event.contactInfo"
+        },
+        {
+          "type": "currency",
+          "currencyCode": "USD",
+          "id": "cost",
+          "label": "Fee (USD)",
+          "minimumValue": "<% 0.01 %>",
+          "fractionDigits": 2,
+          "required": "<% true %>",
+          "valuesOut": [
+            {
+              "value": "USD",
+              "valueOutBinding": "event.cost.currency"
+            },
+            {
+              "value": "<% cost.value %>",
+              "valueOutBinding": "event.cost.value"
+            }
+          ]
+        },
+        {
+          "type": "radioGroup",
+          "id": "extendOnlyRadioGroup",
+          "label": "Is this a Workday Extend only event?",
+          "hideDisplayOption": "true",
+          "required": "true",
+          "selectedValues": "<% ! empty extendOnlyRadioGroup.value ? (extendOnlyRadioGroup.value ? ['yes'] : ['no'] ) : ['no']  %>",
+          "instanceList": [
+            {
+              "id": "yes",
+              "descriptor": "Yes"
+            },
+            {
+              "id": "no",
+              "descriptor": "No"
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Electricity"
+        }
+      ]
+    }
+  }
+}

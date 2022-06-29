@@ -1,0 +1,97 @@
+{
+  "id": 1,
+  "name": "DM1AllEvents",
+  "label": "DM REPORT OF EVENTS",
+  "businessObject": "Event",
+  "defaultSecurityDomains": [
+    "ManageCreateAnEvent"
+  ],
+  "sortConfigs": [
+    {
+      "id": 1,
+      "order": "a",
+      "field": "name",
+      "direction": "ASCENDING"
+    }
+  ],
+  "columns": [
+    {
+      "id": 1,
+      "name": "Event",
+      "order": "a",
+      "isSelfReferencing": true
+    },
+    {
+      "id": 2,
+      "field": "name",
+      "name": "Event Name",
+      "order": "b"
+    },
+    {
+      "id": 3,
+      "field": "location",
+      "name": "Event Location",
+      "order": "c"
+    },
+    {
+      "id": 4,
+      "field": "description",
+      "name": "Event Description",
+      "order": "d"
+    },
+    {
+      "id": 5,
+      "field": "sponsor",
+      "name": "Sponsor",
+      "order": "e"
+    },
+    {
+      "id": 6,
+      "field": "date",
+      "name": "Date of Event",
+      "order": "f"
+    },
+    {
+      "id": 7,
+      "field": "contactInfo",
+      "name": "Contact Info",
+      "order": "g"
+    },
+    {
+      "id": 8,
+      "field": "cost",
+      "name": "Event Fee",
+      "order": "h"
+    },
+    {
+      "id": 9,
+      "field": "createdBy",
+      "name": "Created By",
+      "order": "i"
+    },
+    {
+      "id": 10,
+      "field": "extendOnly",
+      "name": "Workday Extend Only event",
+      "order": "j"
+    },
+    {
+      "id": 11,
+      "field": "image",
+      "name": "Image",
+      "order": "k"
+    },
+    {
+      "id": 12,
+      "field": "longDescription",
+      "name": "Long Description",
+      "order": "l"
+    },
+    {
+      "id": 13,
+      "field": "requiresApproval",
+      "name": "Requires Approval",
+      "order": "m"
+    }
+  ]
+}

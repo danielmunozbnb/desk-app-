@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "name": "DMCreateAnEvent",
+  "label": "DM Create An Event",
+  "routePath": "/createEvent",
+  "securityDomains": [
+    "ManageCreateAnEvent"
+  ]
+}

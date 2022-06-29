@@ -1,0 +1,43 @@
+{
+  "id": "success",
+  "endPoints": [ ],
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Orch Success!"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "workerdata",
+          "label": "Worker Data",
+          "value": "<% flowVariables.orchestrationResponse %>"
+        },
+        {
+          "type": "button",
+          "id": "btnGoHome",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Return to Home Page",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "root"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

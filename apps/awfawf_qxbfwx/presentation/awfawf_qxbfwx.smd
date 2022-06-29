@@ -1,0 +1,22 @@
+{
+  "id": "awfawf_qxbfwx",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  },
+  "siteId": "awfawf_qxbfwx",
+  "headerBackgroundColor": "#005cb9",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "awfawf_qxbfwx"
+}

@@ -1,0 +1,37 @@
+{
+  "appProperties": [ ],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "securedPage",
+      "routingPattern": "securedPage",
+      "page": {
+        "id": "securedPage"
+      }
+    },
+    {
+      "id": "createEvent",
+      "routingPattern": "createEvent",
+      "page": {
+        "id": "createEvent"
+      }
+    }
+  ],
+  "applicationId": "MC_ej2_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "BUSINESS-OBJECT",
+      "value": "https://api.workday.com/apps/MC_ej2_qxbfwx/v1"
+    },
+    {
+      "key": "WQL",
+      "value": "https://api.workday.com/wql/v1"
+    }
+  ]
+}

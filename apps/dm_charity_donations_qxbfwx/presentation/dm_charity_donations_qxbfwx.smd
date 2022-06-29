@@ -1,0 +1,21 @@
+{
+  "id": "dm_charity_donations_qxbfwx",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  },
+  "siteId": "dm_charity_donations_qxbfwx",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "dm_charity_donations_qxbfwx"
+}

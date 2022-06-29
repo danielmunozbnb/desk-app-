@@ -1,0 +1,50 @@
+{
+  "id": "displayThreeWorkers",
+  "endPoints": [
+    {
+      "name": "workerData",
+      "baseUrlType": "wrkEntries",
+      "url": "",
+      "authType": "sso"
+    }
+  ],
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Simple View 3 Workers Page"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "label": "Data from REST API",
+          "value": "<% workerData %>"
+        },
+        {
+          "type": "button",
+          "id": "btnGoHome",
+          "action": "LINK",
+          "commandHttpMethod": "GET",
+          "label": "Return to Home Page",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "root"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

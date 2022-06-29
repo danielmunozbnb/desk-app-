@@ -1,0 +1,66 @@
+{
+  "id": "requestCreditCard",
+  "endPoints": [
+    {
+      "name": "worker",
+      "baseUrlType": "workday-staffing",
+      "url": "workers/me",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "launchCreditCardRequestOrchestration",
+        "baseUrlType": "workday-orchestrate",
+        "url": "<% site.applicationId + '/orchestrations/RequestCreditCardOrchestrationCOMPLETED/launch' %>",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "onSend": "<%
+          self.data.workerWID = worker.id;
+          self.data;
+        %>"
+      }
+    ],
+    "responseErrorDetail": {
+      "errorSummary": "<% error + '. Once you have successfully fixed the error(s), deploy this app to proceed.' %>",
+      "errors": "<% list:mapAttribute(errors, 'error') %>"
+    }
+  },
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Request Credit Card"
+    },
+    "headerSize": "STANDARD",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "sorted": false,
+      "children": [
+        {
+          "type": "readOnlyText",
+          "label": "Worker",
+          "value": "<% worker.descriptor %>"
+        },
+        {
+          "type": "number",
+          "label": "Requested Credit Limit",
+          "id": "creditLimit",
+          "required": "<% true %>",
+          "minimumValue": 1,
+          "maximumValue": 100000,
+          "format": "#,###",
+          "valueOutBinding": "launchCreditCardRequestOrchestration.creditLimit"
+        },
+        {
+          "type": "textArea",
+          "label": "Business Reason",
+          "id": "businessReason",
+          "required": "<% true %>",
+          "valueOutBinding": "launchCreditCardRequestOrchestration.businessReason"
+        }
+      ]
+    }
+  }
+}

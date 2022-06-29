@@ -1,0 +1,111 @@
+{
+  "id": 1,
+  "name": "Event",
+  "label": "Event",
+  "defaultSecurityDomains": [
+    "ManageCreateAnEvent"
+  ],
+  "defaultCollection": {
+    "name": "events",
+    "label": "All Events"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "name",
+      "label": "Event Name",
+      "type": "TEXT",
+      "useForDisplay": true,
+      "isReferenceId": true
+    },
+    {
+      "id": 2,
+      "name": "location",
+      "label": "Location Name",
+      "type": "TEXT"
+    },
+    {
+      "id": 3,
+      "name": "description",
+      "label": "Description Name",
+      "type": "TEXT"
+    },
+    {
+      "id": 4,
+      "name": "sponsor",
+      "label": "Sponsor Name",
+      "type": "TEXT"
+    },
+    {
+      "id": 5,
+      "name": "date",
+      "label": "Date of Event",
+      "type": "DATE",
+      "precision": "DAY"
+    },
+    {
+      "id": 6,
+      "name": "contactInfo",
+      "label": "Contact Info",
+      "type": "TEXT"
+    },
+    {
+      "id": 8,
+      "name": "cost",
+      "label": "Cost",
+      "type": "CURRENCY"
+    },
+    {
+      "id": 9,
+      "name": "createdBy",
+      "label": "Created By",
+      "type": "SINGLE_INSTANCE",
+      "target": "WORKER",
+      "secureByTarget": true
+    },
+    {
+      "id": 10,
+      "name": "extendOnly",
+      "label": "Workday Extend Only Event",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": 11,
+      "name": "image",
+      "label": "Image",
+      "type": "SINGLE_INSTANCE",
+      "target": "EventImage"
+    }
+  ],
+  "derivedFields": [
+    {
+      "id": 12,
+      "name": "longDescription",
+      "type": "TEXT",
+      "label": "Long Description",
+      "expression": "'Event: ' + name + ' - ' + description"
+    },
+    {
+      "id": 13,
+      "name": "requiresApproval",
+      "type": "BOOLEAN",
+      "label": "Requires Approval",
+      "expression": "cost > 1000"
+    },
+    {
+      "id": 14,
+      "name": "isWorkdayEvent",
+      "type": "BOOLEAN",
+      "label": "Is Workday Event",
+      "expression": "sponsor == 'Workday'"
+    },
+    {
+      "id": 15,
+      "name": "proratedAmount",
+      "type": "DECIMAL",
+      "label": "Prorated Amount",
+      "decimals": 2,
+      "expression": "cost * 0.7"
+    }
+  ]
+}

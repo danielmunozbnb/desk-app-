@@ -1,0 +1,55 @@
+{
+  "id": "viewCharityEvent",
+  "endPoints": [ ],
+  "presentation": {
+    "headerSize": "STANDARD",
+    "title": {
+      "type": "title",
+      "label": "Charity Details"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "image",
+              "sizingHint": "INLINE",
+              "render": "<% (!(empty(charity.image))) %>"
+            },
+            {
+              "type": "text",
+              "label": "Name",
+              "value": "<% charity.name %>"
+            },
+            {
+              "type": "richText",
+              "label": "Description",
+              "value": "<% charity.description %>"
+            },
+            {
+              "type": "checkBox",
+              "label": "Match Donations",
+              "trueLabel": "Yes",
+              "falseLabel": "No",
+              "value": "<% charity.matchDonations %>"
+            },
+            {
+              "type": "instanceList",
+              "label": "Relationship Manager",
+              "instanceList": [
+                {
+                  "id": "<% charity.relationshipManager.id %>",
+                  "descriptor": "<% charity.relationshipManager.descriptor %>",
+                  "wid": "<% charity.relationshipManager.id %>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
