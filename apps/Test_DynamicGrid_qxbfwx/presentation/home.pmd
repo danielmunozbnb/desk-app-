@@ -1,5 +1,53 @@
 {
   "id": "home",
+  "endPoints": [
+    {
+      "name": "workers",
+      "baseUrlType": "workday-staffing",
+      "url": "workers",
+      "authType": "sso",
+      "deferred": true
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "workerUpdate",
+        "baseUrlType": "app",
+        "url": "/workers/{ID}/businessTitleChanges",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "_onSend": "<%  %>",
+        "values": [
+          {
+            "outboundPath": "createdBy.id",
+            "value": "<% me.id %>"
+          },
+          {
+            "outboundPath": "image.id",
+            "value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
+          }
+        ]
+      }
+    ]
+  },
+  "script": "<%
+             // Invoke endpoint and pass id as a URL paramater
+            // this function populates grid when a worker is selected
+             // change attributes to fit grid
+             var populate = function(id) {
+                 if( !(empty id)) {
+                     var workerData = getWorkerbyId.invoke({'id': id[0]});
+                         descriptor.value = workerData.descriptor;
+                         dateOfBirth.value = workerData.dateOfBirth;
+                         workerDetail.visible = true;
+                 } else {
+                     workerDetail.visible = false;
+                 }
+             };
+             %>",
+
+
   "presentation": {
     "pageType": "edit",
     "title": {
