@@ -20,12 +20,29 @@
               "id": "fieldSetContainer",
               "children": [
                 {
-                  "type" : "dropdown",
-                  "label" : "Filter by workers",
-                  "id": "country",
-                  "idKey" : "ISO_3166_1_Alpha_3_Code",
-                  "displayKey" : "name",
-                  "values" : "<% countries.items %>"
+                   "type": "dropdown",
+                   "selectedValues": "<% ['worker'] %>",
+                   "label": "fil",
+                   "id": "dropdownList",
+                   "instanceList": [
+                     {
+                       "id": "Special Leave",
+                       "descriptor": "Special Leave"
+                     },
+                     {
+                       "id": "Special Leave - Domestic",
+                       "descriptor": "Special Leave - Domestic"
+                     }
+                   ],
+                   "required": "true"
+                 },
+                {
+                  "type": "instanceList",
+                  "id": "instanceListWorkerSearch",
+                  "label": "Worker",
+                  "values": "<% workers.data %>",
+                  "multiSelect": false,
+                  "onChange": "<% populate(self.value); %>"
                 },
                 {
                   "type": "section",
