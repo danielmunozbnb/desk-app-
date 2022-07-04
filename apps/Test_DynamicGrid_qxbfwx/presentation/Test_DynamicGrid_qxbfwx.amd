@@ -26,6 +26,10 @@
     {
       "key": "workday-staffing",
       "value": "https://api.workday.com/staffing/v1/"
+    },
+    {
+      "key": "wql",
+      "value": "https://api.workday.com/wql/v1/"
     }
   ]
 }

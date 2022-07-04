@@ -5,6 +5,12 @@
       "name": "workers",
       "baseUrlType": "workday-staffing",
       "url": "workers",
+      "authType": "sso"
+    },
+    {
+      "name": "workersInfo",
+      "baseUrlType": "wql",
+      "url": "<%'data?query=SELECT%20worker%2C%20firstName%2C%20lastName%2CbusinessTitle%0AFROM%20allWorkers%0AWHERE%20worker%3D%22'+ id + '%22'%>",
       "authType": "sso",
       "deferred": true
     }
@@ -14,39 +20,19 @@
       {
         "name": "workerUpdate",
         "baseUrlType": "app",
-        "url": "/workers/{ID}/businessTitleChanges",
+        "url": "/workers/<% 'me' %>/businessTitleChanges",
         "httpMethod": "POST",
         "authType": "sso",
         "_onSend": "<%  %>",
-        "values": [
+        "_values": [
           {
-            "outboundPath": "createdBy.id",
-            "value": "<% me.id %>"
-          },
-          {
-            "outboundPath": "image.id",
-            "value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
+            "_outboundPath": "image.id",
+            "_value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
           }
         ]
       }
     ]
   },
-  "script": "<%
-             // Invoke endpoint and pass id as a URL paramater
-            // this function populates grid when a worker is selected
-             // change attributes to fit grid
-             var populate = function(id) {
-                 if( !(empty id)) {
-                     var workerData = getWorkerbyId.invoke({'id': id[0]});
-                         descriptor.value = workerData.descriptor;
-                         dateOfBirth.value = workerData.dateOfBirth;
-                         workerDetail.visible = true;
-                 } else {
-                     workerDetail.visible = false;
-                 }
-             };
-             %>",
-
 
   "presentation": {
     "pageType": "edit",
@@ -68,45 +54,16 @@
               "id": "fieldSetContainer",
               "children": [
                 {
-                   "type": "dropdown",
-                   "selectedValues": "<% ['worker'] %>",
-                   "label": "fil",
-                   "id": "dropdownList",
-                   "instanceList": [
-                     {
-                       "id": "Special Leave",
-                       "descriptor": "Special Leave"
-                     },
-                     {
-                       "id": "Special Leave - Domestic",
-                       "descriptor": "Special Leave - Domestic"
-                     }
-                   ],
-                   "required": "true"
-                 },
-                {
-                  "type": "instanceList",
-                  "id": "instanceListWorkerSearch",
-                  "label": "Worker",
-                  "values": "<% workers.data %>",
-                  "multiSelect": false,
-                  "onChange": "<% populate(self.value); %>"
-                },
-                {
-                  "type": "section",
-                  "horizontal": true,
-                  "children": [
-                    {
-                      "type": "button",
-                      "id": "filter",
-                      "label": "FILTER",
-                      "taskReference": {
-                        "type": "taskReference",
-                        "taskId": "root"
-                      },
-                      "action": "AUXILIARY"
-                    }
-                  ]
+                  "type": "text",
+                  "id": "searchName",
+                  "label": "Please enter a name to search",
+                  "onChange": "<%
+                               // Call the workerData endpoint with the user-entered name as a parameter.
+                               var test = workersInfo.invoke({'id': self.value});
+                               // Make the grid visible and set its row data.
+
+                               dataGrid.setRows(test.data);
+                               %>"
                 },
                 {
                   "type": "grid",
@@ -114,9 +71,10 @@
                   "gridType": "LIST",
                   "rows": "<% [] %>",
                   "rowVariableName": "row",
-                  "doNotAdd": "true",
-                  "doNotRemoveRow": "true",
+                  "_doNotAdd": "true",
+                  "_doNotRemoveRow": "true",
                   "enabled": true,
+                  "selectionEnabled": true,
                   "columns": [
                     {
                       "type": "column",
@@ -124,7 +82,7 @@
                       "label": "Employee ID",
                       "cellTemplate": {
                         "type": "text",
-                        "value": "<% row.column1 %>"
+                        "value": "<% row.worker.id %>"
                       }
                     },
                     {
@@ -133,7 +91,7 @@
                       "label": "First Name",
                       "cellTemplate": {
                         "type": "text",
-                        "value": "<% row.column2 %>"
+                        "value": "<% row.firstName %>"
                       }
                     },
                     {
@@ -142,7 +100,7 @@
                       "label": "Last Name",
                       "cellTemplate": {
                         "type": "text",
-                        "value": "<% row.column3 %>"
+                        "value": "<% row.lastName %>"
                       }
                     },
                     {
@@ -151,7 +109,7 @@
                       "label": "Business Title",
                       "cellTemplate": {
                         "type": "text",
-                        "value": "<% row.column4 %>"
+                        "value": "<% row.businessTitle %>"
                       }
                     }
                   ]
