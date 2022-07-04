@@ -10,7 +10,7 @@
     {
       "name": "workersInfo",
       "baseUrlType": "wql",
-      "url": "<%'data?query=SELECT%20worker%2C%20firstName%2C%20lastName%2CbusinessTitle%0AFROM%20allWorkers%0AWHERE%20worker%3D%22'+ id + '%22'%>",
+      "url": "<%'https://api.workday.com/wql/v1/data?query=SELECT%20worker%2C%20firstName%2C%20lastName%2C%20businessTitle%0AFROM%20allWorkers%0AWHERE%20firstName%20CONTAINS%20%22'+ search +'%22%20OR%20lastName%20CONTAINS%20%22'+ search +'%22'%>",
       "authType": "sso",
       "deferred": true
     }
@@ -20,18 +20,23 @@
       {
         "name": "workerUpdate",
         "baseUrlType": "app",
-        "url": "/workers/<% 'me' %>/businessTitleChanges",
+        "url": "<% '/workers/' + id + '/businessTitleChanges' %>",
         "httpMethod": "POST",
+        "deferred": true,
         "authType": "sso",
-        "_onSend": "<%  %>",
+        "onSend": "<% self.data.proposedBusinessTitle=currentRow.childrenMap.colBusinessTitle.value%>",
         "_values": [
           {
-            "_outboundPath": "image.id",
-            "_value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
+            "outboundPath": "businessTitle",
+            "value": "<% dataGrid.currentRow.colBusinessTitle %>"
           }
         ]
+
+
+
       }
-    ]
+      ]
+
   },
 
   "presentation": {
@@ -59,7 +64,7 @@
                   "label": "Please enter a name to search",
                   "onChange": "<%
                                // Call the workerData endpoint with the user-entered name as a parameter.
-                               var test = workersInfo.invoke({'id': self.value});
+                               var test = workersInfo.invoke({'search': self.value});
                                // Make the grid visible and set its row data.
 
                                dataGrid.setRows(test.data);
@@ -75,6 +80,8 @@
                   "_doNotRemoveRow": "true",
                   "enabled": true,
                   "selectionEnabled": true,
+                  "currentRowVariable": "currentRow",
+                  "isArrayOutBinding":false,
                   "columns": [
                     {
                       "type": "column",
@@ -111,8 +118,29 @@
                         "type": "text",
                         "value": "<% row.businessTitle %>"
                       }
+
                     }
                   ]
+                },
+                {
+                  "type": "pageActionButton",
+                  "id": "myPageActionButton",
+                  "visible": true,
+                  "label": "Click Me!",
+                  "onClick": "<%
+
+                              var submit = workerUpdate.invoke();
+
+                              myText.value = 'Yes'
+
+                              %>"
+                },
+                {
+                  "type": "text",
+                  "id": "myText",
+                  "enabled": "false",
+                  "label": "Have you submited changes yet?",
+                  "value": "<% 'No' %> "
                 }
 
               ]
