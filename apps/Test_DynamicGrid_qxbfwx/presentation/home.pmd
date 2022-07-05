@@ -19,32 +19,24 @@
     "outboundEndPoints": [
       {
         "name": "workerUpdate",
-        "baseUrlType": "app",
-        "url": "<% '/workers/e5676da5af0601cf49355520bf46d513/businessTitleChanges' %>",
+        "baseUrlType": "workday-common",
+        "url": "<% 'workers/e5676da5af0601cf49355520bf46d513/businessTitleChanges' %>",
         "httpMethod": "POST",
         "deferred": true,
         "authType": "sso",
         "onSend": "<%
 
+                   var workersList = dataGrid.getSelectedRows().map(x => {
+                     var obj = {:}; //instantiates an empty map
 
+                     var businessTitle = x.childrenMap.colBusinessTitle.value;
 
+                     obj.add('proposedBusinessTitle', businessTitle);
+                     return obj;
+                   });
 
-                   var currRowSelected = false;
-
-
-
-                       for (var row : dataGrid.selectedRows) {
-                           if (row.childrenMap.colBusinessTitle.value == rowIndex4.value) {
-                               currRowSelected = true;
-                                   break;
-                           }
-                       }
-
-
-
-
+                   return workersList.get(0);
                    %>",
-
         "_values": [
           {
             "outboundPath": "businessTitle",
