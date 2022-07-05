@@ -1,5 +1,5 @@
 {
-  "id": "sony_massentry",
+  "id": "sony_massentry_qxbfwx",
   "languages": [
     {
       "code": "en-US",
@@ -18,11 +18,11 @@
       }
     ]
   },
-  "siteId": "sony_massentry",
+  "siteId": "sony_massentry_qxbfwx",
   "auth": {
     "type": "SSO"
   },
   "cdnEnabled": true,
   "siteProperties": [ ],
-  "applicationId": "sony_massentry"
+  "applicationId": "sony_massentry_qxbfwx"
 }

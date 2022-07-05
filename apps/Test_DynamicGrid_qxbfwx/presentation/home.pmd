@@ -20,11 +20,31 @@
       {
         "name": "workerUpdate",
         "baseUrlType": "app",
-        "url": "<% '/workers/' + id + '/businessTitleChanges' %>",
+        "url": "<% '/workers/e5676da5af0601cf49355520bf46d513/businessTitleChanges' %>",
         "httpMethod": "POST",
         "deferred": true,
         "authType": "sso",
-        "onSend": "<% self.data.proposedBusinessTitle=currentRow.childrenMap.colBusinessTitle.value%>",
+        "onSend": "<%
+
+
+
+
+                   var currRowSelected = false;
+
+
+
+                       for (var row : dataGrid.selectedRows) {
+                           if (row.childrenMap.colBusinessTitle.value == rowIndex4.value) {
+                               currRowSelected = true;
+                                   break;
+                           }
+                       }
+
+
+
+
+                   %>",
+
         "_values": [
           {
             "outboundPath": "businessTitle",
@@ -35,7 +55,7 @@
 
 
       }
-      ]
+    ]
 
   },
 
@@ -81,7 +101,7 @@
                   "enabled": true,
                   "selectionEnabled": true,
                   "currentRowVariable": "currentRow",
-                  "isArrayOutBinding":false,
+                  "isArrayOutBinding": false,
                   "columns": [
                     {
                       "type": "column",
@@ -126,7 +146,7 @@
                   "type": "pageActionButton",
                   "id": "myPageActionButton",
                   "visible": true,
-                  "label": "Click Me!",
+                  "label": "Submit changes",
                   "onClick": "<%
 
                               var submit = workerUpdate.invoke();
