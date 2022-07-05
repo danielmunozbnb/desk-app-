@@ -1,0 +1,213 @@
+{
+  "id": "homeEmployee",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getMySkills",
+      "baseUrlType": "WORKDAY",
+      "url": "/customObject/v2/workers/<% personalInfo.id %>/customObjects/skills",
+      "authType": "sso",
+      "isCollection": "true"
+    },
+    {
+      "name": "userLanguage",
+      "authType": "sso",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/userInfo"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getCatalog",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Catalog_Report_v2?workdayID=<% id %>&skills=<% getSkills(getMySkills) %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "getCategoryLabels",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Category_Labels_Report?workdayID=<% id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "ratingModels",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Rating_Model?workdayID=<% id %>&format=json",
+      "authType": "sso"
+    }
+  ],
+  "script": "<%
+  var getSkills = function(userSkills){
+   var res = '|';
+   var cont = 0;
+   for(var row : userSkills.data){
+      var skill = string:concat(row.skillId, '|');
+      res = string:concat(res, skill);
+      cont = cont + 1;
+    }
+   return (cont <= 700 ? string:urlEncode(res) : '');
+   };
+
+  var getTopCustOrgPriority = function(getCustOrgData){
+
+    var topPriority = 0;
+    var topCustOrg = '';
+
+    for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+        var auxCustOrg = custOrg.custom_org_top_wid1;
+        var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+        if(auxPriority > topPriority){
+            topPriority = auxPriority;
+            topCustOrg = auxCustOrg;
+        }
+    }
+    return topCustOrg;
+  };
+
+  var filterMySkills = function(skills, code){
+    var res = [];
+    for(var skill : skills.data){
+
+        if(string:contains(skill.skillId, code)){
+           res.add(skill);
+        }
+    }
+
+    return res;
+  };
+%>",
+  "onLoad": "<%
+  var topOrg= getTopCustOrgPriority(getCustOrg);
+  if(!empty(getCustOrg.Report_Entry[0]['custom_org_top_wid'])){
+      pageVariables.custOrgInfo = custOrgInfo.invoke({'id':topOrg});
+      pageVariables.getCatalog = getCatalog.invoke({'id':topOrg});
+      pageVariables.getCategoryLabels = getCategoryLabels.invoke({'id':topOrg});
+      pageVariables.ratingModels = ratingModels.invoke({'id':topOrg});
+      pageVariables.getMySkills = filterMySkills(getMySkills, pageVariables.custOrgInfo.catalogCode);
+      pageVariables.numberOfSkills = pageVariables.getMySkills.size();
+      pageVariables.limit = pageVariables.custOrgInfo.displayThreshold;
+     }
+    %>",
+  "presentation": {
+    "applicationExceptions": [
+      {
+        "type": "applicationException",
+        "message": "You are not part of any Custom Organization",
+        "severity": "ERROR",
+        "render": "<% empty(getCustOrg.Report_Entry[0]['custom_org_top_wid']) %>"
+      }
+    ],
+    "headerSize": "STANDARD",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.mySkills %>"
+    },
+    "tabs": [
+      {
+        "type": "pod",
+        "podId": "completedSkillsPod1"
+      },
+      {
+        "type": "pod",
+        "podId": "completedSkillsPod2"
+      },
+      {
+        "type": "pod",
+        "podId": "awaitingApprovalPod"
+      },
+      {
+        "type": "pod",
+        "podId": "sentBackToEmployeePod1"
+      },
+      {
+        "type": "pod",
+        "podId": "sentBackToEmployeePod2"
+      }
+    ],
+    "body": {
+      "type": "section",
+      "sorted": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "text",
+          "label": "<% presentationLabels.ActingAs%>",
+          "value": "<% personalInfo.descriptor %>"
+        },
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "button",
+              "label": "<% presentationLabels.addNewSkills%>",
+              "taskReference": {
+                "type": "taskReference",
+                "taskId": "<% pageVariables.custOrgInfo.disclaimerText ? 'disclaimerPage' : 'addNewSkills' %>",
+                "parameterBindings": {
+                  "mass": "<% false %>"
+                }
+              },
+              "action": "PRIMARY",
+              "commandHttpMethod": "GET"
+            },
+            {
+              "type": "button",
+              "label": "<% presentationLabels.addNewSkillsMassEntryMode %>",
+              "taskReference": {
+                "type": "taskReference",
+                "taskId": "<% pageVariables.custOrgInfo.disclaimerText ? 'disclaimerPage' : 'addNewSkillsMassEntryMode'%>",
+                "parameterBindings": {
+                  "mass": "<% true %>"
+                }
+              },
+              "action": "PRIMARY",
+              "commandHttpMethod": "GET"
+            },
+            {
+              "type": "button",
+              "render": "<% list:exclude(list:filter(pageVariables.getMySkills, 'status', 'Completed'), 'assessedOn', string:toString(date:getTodaysDateFormatted(date:getDateTimeZone(personalInfo.timezone), 'yyyy-MM-dd'))).size() > 0 %>",
+              "label": "<% presentationLabels.reconfirmPastSkills %>",
+              "taskReference": {
+                "type": "taskReference",
+                "taskId": "resendSkills"
+              },
+              "action": "AUXILIARY",
+              "commandHttpMethod": "GET"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,325 @@
+{
+  "id": "resendSkills",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "userLanguage",
+      "authType": "sso",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/userInfo"
+    },
+    {
+      "name": "getMySkills",
+      "baseUrlType": "WORKDAY",
+      "url": "/customObject/v2/workers/<% personalInfo.id %>/customObjects/skills",
+      "authType": "sso",
+      "isCollection": "true"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getManager",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "authType": "sso",
+      "url": "/raas/7000017312/WCP_SS_Worker_Manager?Worker%21WID=<% personalInfo.id %>&Subfilter_Top_Custom_Org=<% id %>&format=json"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "actionSkill",
+        "baseUrlType": "WORKDAY",
+        "url": "/customObject/v2/customObjects/skills/<% workerSkillId.value %>",
+        "authType": "sso",
+        "httpMethod": "PUT",
+        "headers": [
+          {
+            "name": "content-type",
+            "value": "application/json"
+          }
+        ],
+        "onSend": "<%
+                   self.data;
+                   %>"
+      },
+      {
+        "name": "flowResendSkills",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "count",
+            "value": "<% count.value %>"
+          },
+          {
+            "outboundPath": "total",
+            "value": "<% total.value %>"
+          },
+          {
+            "outboundPath": "continue",
+            "value": "<% count.value < total.value %>"
+          }
+        ]
+      }
+    ]
+  },
+  "script": "<%
+             var getTopCustOrgPriority = function(getCustOrgData){
+
+                 var topPriority = 0;
+                 var topCustOrg = '';
+
+                 for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+                     var auxCustOrg = custOrg.custom_org_top_wid1;
+                         var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+                         if(auxPriority > topPriority){
+                             topPriority = auxPriority;
+                                 topCustOrg = auxCustOrg;
+                         }
+                 }
+                 return topCustOrg;
+             };
+
+             var filterMySkills = function(skills, code){
+                 var res = [];
+                 for(var skill : skills.data){
+
+                     if(string:contains(skill.skillId, code)){
+                         res.add(skill);
+                     }
+                 }
+
+                 return res;
+             };
+
+             %>",
+  "onLoad": "<%
+             pageVariables.custOrgInfo = custOrgInfo.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+             pageVariables.getMySkills = filterMySkills(getMySkills, pageVariables.custOrgInfo.catalogCode);
+             pageVariables.getManager = getManager.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+             %>",
+  "presentation": {
+    "headerSize": "STANDARD",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.reconfirmPastSkills %>"
+    },
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "preferredLabelPosition": "aside",
+    "standardEditButtonsHidden": "<% ! empty(flowVariables.count) %>",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "enabled": "false",
+          "label": "<% presentationLabels.ActingAs%>",
+          "value": "<% personalInfo.descriptor %>"
+        },
+        {
+          "type": "hidden",
+          "id": "listSize",
+          "value": "<% list:exclude(list:filter(pageVariables.getMySkills, 'status', 'Completed'), 'assessedOn', string:toString(date:getTodaysDateFormatted(date:getDateTimeZone(personalInfo.timezone), 'yyyy-MM-dd'))).size() < 100 ?  list:exclude(list:filter(pageVariables.getMySkills, 'status', 'Completed'), 'assessedOn', string:toString(date:getTodaysDateFormatted(date:getDateTimeZone(personalInfo.timezone), 'yyyy-MM-dd'))).size() : 100 %>"
+        },
+        {
+          "type": "hidden",
+          "id": "total",
+          "value": "<% empty(flowVariables.total) ? list:exclude(list:filter(pageVariables.getMySkills, 'status', 'Completed'), 'assessedOn', string:toString(date:getTodaysDateFormatted(date:getDateTimeZone(personalInfo.timezone), 'yyyy-MM-dd'))).size() : flowVariables.total %>"
+        },
+        {
+          "type": "hidden",
+          "id": "count",
+          "value": "<% empty(flowVariables.count) ? listSize.value : (flowVariables.count + listSize.value) %>"
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": "false",
+              "value": "<h2><% presentationLabels.resendMessage %></h2>"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "text",
+              "enabled": "false",
+              "label": "<% presentationLabels.numberOfSkills %>",
+              "value": "<% total.value %> "
+            },
+            {
+              "type": "date",
+              "enabled": "false",
+              "label": "<% presentationLabels.assessedDate %>",
+              "value": "<% date:getTodaysDate(date:getDateTimeZone(personalInfo.timezone)) %>",
+              "datePrecision": "DAY"
+            },
+            {
+              "type": "text",
+              "enabled": "false",
+              "label": "<% presentationLabels.status %>",
+              "value": "<% string:split(userLanguage.data[0].language, '_')[0]=='ja' ? (pageVariables.custOrgInfo.requiresApproval ? '承認待ち' : '完了') : (pageVariables.custOrgInfo.requiresApproval ? 'Awaiting approval' : 'Completed') %>"
+            },
+            {
+              "type": "loop",
+              "on": "<% pageVariables.getManager['Report_Entry'][0].Separated %>",
+              "as": "manager",
+              "children": [
+                {
+                  "type": "text",
+                  "enabled": "false",
+                  "label": "<% presentationLabels.approver %>",
+                  "visible": "<% pageVariables.custOrgInfo.requiresApproval && !pageVariables.custOrgInfo.approvalByCustomOrg %>",
+                  "value": "<% manager['Managers_Name'] %>"
+                }
+              ]
+            },
+            {
+              "type": "loop",
+              "on": "<% pageVariables.getManager['Report_Entry'][0].CustOrg_Manager_Roles %>",
+              "as": "manager",
+              "children": [
+                {
+                  "type": "text",
+                  "enabled": "false",
+                  "label": "<% presentationLabels.approver %>",
+                  "visible": "<% pageVariables.custOrgInfo.requiresApproval && pageVariables.custOrgInfo.approvalByCustomOrg %>",
+                  "value": "<% manager['CustOrg_Man_Name'] %>"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "visible": "false",
+              "id": "resendSkills",
+              "columns": [
+                {
+                  "type": "column",
+                  "columnId": "v0",
+                  "cellTemplate": {
+                    "type": "section",
+                    "children": [
+                      {
+                        "type": "text",
+                        "enabled": "false",
+                        "value": "<% date:getTodaysDate(date:getDateTimeZone(personalInfo.timezone)) %>",
+                        "valueOutBinding": "actionSkill.assessedOn"
+                      },
+                      {
+                        "type": "hidden",
+                        "id": "status",
+                        "value": "<% pageVariables.custOrgInfo.requiresApproval ? 'Awaiting approval' : 'Completed' %>",
+                        "valueOutBinding": "actionSkill.status"
+                      },
+                      {
+                        "type": "hidden",
+                        "id": "approvedOn",
+                        "value": "<% pageVariables.custOrgInfo.requiresApproval ? apidata.approvedOn : date:getTodaysDate(date:getDateTimeZone(personalInfo.timezone)) %>",
+                        "valueOutBinding": "actionSkill.approvedOn"
+                      },
+                      {
+                        "type": "hidden",
+                        "id": "workerSkillId",
+                        "value": "<% apidata.id %>"
+                      },
+                      {
+                        "type": "hidden",
+                        "value": "<% personalInfo.id %>",
+                        "valueOutBinding": "actionSkill.worker.id"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "gridType": "LIST",
+              "rows": "<% list:exclude(list:filter(pageVariables.getMySkills, 'status', 'Completed'), 'assessedOn', string:toString(date:getTodaysDateFormatted(date:getDateTimeZone(personalInfo.timezone), 'yyyy-MM-dd'))).subList(0,listSize.value) %>",
+              "rowVariableName": "apidata",
+              "indexVariableName": "index",
+              "isArrayOutBinding": "false",
+              "doNotPutInTab": true,
+              "currentRowVariable": "currentRow"
+            }
+          ]
+        },
+        {
+          "type": "number",
+          "visible": "false",
+          "id": "op1",
+          "value": "<% (count.value - listSize.value) %>"
+        },
+        {
+          "type": "number",
+          "visible": "false",
+          "id": "op2",
+          "value": "<% (total.value) %>"
+        },
+        {
+          "type": "number",
+          "visible": "false",
+          "id": "perc",
+          "value": "<% op1.value/op2.value %>"
+        },
+        {
+          "type": "progressIndicator",
+          "render": "<% ! empty(flowVariables.count) %>",
+          "value": "<% perc.value %>",
+          "totalDigits": 2,
+          "isPercentage": "true",
+          "label": "<% presentationLabels.progress %>"
+        },
+        {
+          "type": "section",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": "false",
+              "render": "<% ! empty(flowVariables.count) %>",
+              "value": "<% presentationLabels.nextAware %>"
+            }
+          ]
+        },
+        {
+          "type": "editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "<% empty(flowVariables.count) ? presentationLabels.submitEdit : 'Next' %>",
+              "id": "submit",
+              "buttonType": "SECONDARY"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

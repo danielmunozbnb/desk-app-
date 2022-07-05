@@ -1,0 +1,511 @@
+{
+  "appProperties": [ ],
+  "flowDefinitions": [
+    {
+      "id": "flowStart",
+      "flowSteps": [
+        {
+          "id": "selectEmployee",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "actAsEmployee",
+              "condition": "<% !flowVariables.homeManager %>"
+            },
+            {
+              "order": "b",
+              "value": "actAsManager",
+              "condition": "<% flowVariables.homeManager %>"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "root"
+        },
+        {
+          "id": "actAsEmployee",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        },
+        {
+          "id": "actAsManager",
+          "endsFlow": true,
+          "taskId": "homeManager"
+        }
+      ]
+    },
+    {
+      "id": "flowApproveSkills",
+      "flowSteps": [
+        {
+          "id": "approveSkills",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpApproveSkills",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "approveMyTeamSkills"
+        },
+        {
+          "id": "popUpApproveSkills",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "approveEnd1",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpApproveSkills"
+        },
+        {
+          "id": "approveEnd1",
+          "endsFlow": true,
+          "taskId": "homeManager"
+        }
+      ]
+    },
+    {
+      "id": "flowApproveWorkerSkills",
+      "flowSteps": [
+        {
+          "id": "approveWorkerSkills",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpApproveUserSkills",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "approveUserSkills"
+        },
+        {
+          "id": "popUpApproveUserSkills",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "approveEnd2",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpApproveUserSkills"
+        },
+        {
+          "id": "approveEnd2",
+          "endsFlow": true,
+          "taskId": "homeManager"
+        }
+      ]
+    },
+    {
+      "id": "flowEditSkill",
+      "flowSteps": [
+        {
+          "id": "editSkill",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpConfirmation",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "editSkill"
+        },
+        {
+          "id": "popUpConfirmation",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endEdit",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpConfirmation"
+        },
+        {
+          "id": "endEdit",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "flowDeleteSkill",
+      "flowSteps": [
+        {
+          "id": "deleteSkill",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endDelete",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "deleteSkill"
+        },
+        {
+          "id": "endDelete",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "flowDisclaimerText",
+      "flowSteps": [
+        {
+          "id": "disclaimerPageDisc",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "addNewSkillsDisc1",
+              "condition": "${flowVariables.agreeFlow && (not flowVariables.massApproval)}"
+            },
+            {
+              "order": "b",
+              "value": "addNewSkillsDisc2",
+              "condition": "${flowVariables.agreeFlow && flowVariables.massApproval}"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "disclaimerPage"
+        },
+        {
+          "id": "addNewSkillsDisc1",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endDisc1",
+              "condition": "true"
+            }
+          ],
+          "taskId": "addNewSkills"
+        },
+        {
+          "id": "endDisc1",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        },
+        {
+          "id": "addNewSkillsDisc2",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpAddConfirmationMassive2",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "addNewSkillsMassEntryMode"
+        },
+        {
+          "id": "popUpAddConfirmationMassive2",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endDisc2",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpAddConfirmation"
+        },
+        {
+          "id": "endDisc2",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "flowSearchPopUp",
+      "flowSteps": [
+        {
+          "id": "search",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "requestSkillMassive1",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "searchPopUp"
+        },
+        {
+          "id": "requestSkillMassive1",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpAddConfirmationMassive3",
+              "condition": "true"
+            }
+          ],
+          "taskId": "addNewSkillsMassEntryMode"
+        },
+        {
+          "id": "popUpAddConfirmationMassive3",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endMassive1",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpAddConfirmation"
+        },
+        {
+          "id": "endMassive1",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "flowRequestSkill",
+      "flowSteps": [
+        {
+          "id": "requestSkill",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpAddConfirmationRequest",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "requestSkill"
+        },
+        {
+          "id": "popUpAddConfirmationRequest",
+          "transitions": [
+            {
+              "order": "b",
+              "value": "addNewSkills",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpAddConfirmation"
+        },
+        {
+          "id": "addNewSkills",
+          "transitions": [
+            {
+              "order": "b",
+              "value": "addNewEnd1",
+              "condition": "true"
+            }
+          ],
+          "taskId": "addNewSkills"
+        },
+        {
+          "id": "addNewEnd1",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "flowAddMassiveWorkletFlow",
+      "flowSteps": [
+        {
+          "id": "addSkillsMassiveWorklet",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "popUpAddConfirmationMassive1",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "addNewSkillsMassEntryMode"
+        },
+        {
+          "id": "popUpAddConfirmationMassive1",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endMassive2",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpAddConfirmation"
+        },
+        {
+          "id": "endMassive2",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    },
+    {
+      "id": "resendSkillsFlow",
+      "flowSteps": [
+        {
+          "id": "resendSkills",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "resendSkills",
+              "condition": "${flowVariables.continue}"
+            },
+            {
+              "order": "b",
+              "value": "popUpConfirmationResend",
+              "condition": "${not flowVariables.continue}"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "resendSkills"
+        },
+        {
+          "id": "popUpConfirmationResend",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "endResend",
+              "condition": "true"
+            }
+          ],
+          "taskId": "popUpConfirmation"
+        },
+        {
+          "id": "endResend",
+          "endsFlow": true,
+          "taskId": "homeEmployee"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "homeEmployee",
+      "routingPattern": "homeEmployee",
+      "page": {
+        "id": "homeEmployee"
+      }
+    },
+    {
+      "id": "homeManager",
+      "routingPattern": "homeManager",
+      "page": {
+        "id": "homeManager"
+      }
+    },
+    {
+      "id": "approveUserSkills",
+      "routingPattern": "approveUserSkills",
+      "page": {
+        "id": "approveUserSkills"
+      }
+    },
+    {
+      "id": "approveMyTeamSkills",
+      "routingPattern": "approveMyTeamSkills",
+      "page": {
+        "id": "approveMyTeamSkills"
+      }
+    },
+    {
+      "id": "popUpApproveSkills",
+      "routingPattern": "popUpApproveSkills",
+      "page": {
+        "id": "popUpApproveSkills"
+      }
+    },
+    {
+      "id": "popUpApproveUserSkills",
+      "routingPattern": "popUpApproveUserSkills",
+      "page": {
+        "id": "popUpApproveUserSkills"
+      }
+    },
+    {
+      "id": "editSkill",
+      "routingPattern": "editSkill",
+      "page": {
+        "id": "editSkill"
+      }
+    },
+    {
+      "id": "popUpConfirmation",
+      "routingPattern": "popUpConfirmation",
+      "page": {
+        "id": "popUpConfirmation"
+      }
+    },
+    {
+      "id": "popUpAddConfirmation",
+      "routingPattern": "popUpAddConfirmation",
+      "page": {
+        "id": "popUpAddConfirmation"
+      }
+    },
+    {
+      "id": "addNewSkills",
+      "routingPattern": "addNewSkills",
+      "page": {
+        "id": "addNewSkills"
+      }
+    },
+    {
+      "id": "deleteSkill",
+      "routingPattern": "deleteSkill",
+      "page": {
+        "id": "deleteSkill"
+      }
+    },
+    {
+      "id": "requestSkill",
+      "routingPattern": "requestSkill",
+      "page": {
+        "id": "requestSkill"
+      }
+    },
+    {
+      "id": "disclaimerPage",
+      "routingPattern": "disclaimerPage",
+      "page": {
+        "id": "disclaimerPage"
+      }
+    },
+    {
+      "id": "addNewSkillsMassEntryMode",
+      "routingPattern": "addNewSkillsMassEntryMode",
+      "page": {
+        "id": "addNewSkillsMassEntryMode"
+      }
+    },
+    {
+      "id": "searchPopUp",
+      "routingPattern": "searchPopUp",
+      "page": {
+        "id": "searchPopUp"
+      }
+    },
+    {
+      "id": "resendSkills",
+      "routingPattern": "resendSkills",
+      "page": {
+        "id": "resendSkills"
+      }
+    }
+  ],
+  "applicationId": "sony_massentry",
+  "dataProviders": [
+    {
+      "key": "WORKDAY",
+      "value": "https://api.workday.com"
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "id": "homeManager",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "userLanguage",
+      "baseUrlType": "WORKDAY",
+      "authType": "sso",
+      "url": "/common/v1/userInfo"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "teamSkills",
+      "baseUrlType": "WORKDAY",
+      "deferred": "true",
+      "url": "/raas/7000017312/WCP_SS_My_Team_Pending_Skills?Custom_Org_WID%21WID=<% approval %>&format=json",
+      "exclude": "<% empty getCustOrg.Report_Entry[0]['custom_org_top_wid'] %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getManager",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "authType": "sso",
+      "url": "/raas/7000017312/WCP_SS_Worker_Manager?Include_Subordinate_Organizations=1&Worker%21WID=<% personalInfo.id %>&Subfilter_Top_Custom_Org=<% id %>&format=json"
+    }
+  ],
+  "script": "<%
+  var getTopCustOrgPriority = function(getCustOrgData){
+
+    var topPriority = 0;
+    var topCustOrg = '';
+
+    for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+        var auxCustOrg = custOrg.custom_org_top_wid1;
+        var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+        if(auxPriority > topPriority){
+            topPriority = auxPriority;
+            topCustOrg = auxCustOrg;
+        }
+    }
+    return topCustOrg;
+  };
+  var getSubtotalCustOrg = function(skills, code){
+
+    var cont = 0;
+
+    for(var skill : skills){
+
+        if(string:contains(skill.referenceID, code)){
+           cont = cont + 1;
+        }
+
+    }
+    return cont;
+  };
+  var formatOrg = function(list){
+      var res= '';
+      var cont = 0;
+      for(var org : list){
+          if(cont == 0){
+              res = org['Organization'];
+          }else{
+              res = string:concat(string:concat(res, '%21'), org['Organization']);
+          }
+              cont = cont+1;
+      }
+      return res;
+  };
+%>",
+  "onLoad": "<%
+  if(!empty(getCustOrg.Report_Entry[0]['custom_org_top_wid'])){
+      pageVariables.custOrgInfo = custOrgInfo.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+      if(custOrgInfo.invoke({'id':getTopCustOrgPriority(getCustOrg)}).approvalByCustomOrg){
+          pageVariables.teamSkills = teamSkills.invoke({'approval': formatOrg(list:filter(getManager.invoke({'id':getTopCustOrgPriority(getCustOrg)}).Report_Entry[0]['zcf_CF_Org_Managed_or_Supported_group'], 'zcf_Top_Org_LRV_WID1', getTopCustOrgPriority(getCustOrg)))});
+      }else{
+          pageVariables.teamSkills = teamSkills.invoke({'approval': list:filter(getManager.invoke({'id':getTopCustOrgPriority(getCustOrg)}).Report_Entry[0]['CustOrg_Manager_Roles'], 'zcf_Top_Org_LRV_WID', getTopCustOrgPriority(getCustOrg))[0]['COrg_Wid'] + '&Sup_Org_Manager%21WID=' + personalInfo.id });
+      }
+      }
+    %>",
+  "presentation": {
+    "applicationExceptions": [
+      {
+        "type": "applicationException",
+        "message": "You are not part of any Custom Organization",
+        "severity": "ERROR",
+        "render": "<% empty getCustOrg.Report_Entry[0]['custom_org_top_wid'] %>"
+      }
+    ],
+    "headerSize": "STANDARD",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.yourTeamSkillRequests %>"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "text",
+          "label": "<% presentationLabels.ActingAs%>",
+          "value": "<% personalInfo.descriptor %>"
+        },
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "button",
+                  "label": "<% presentationLabels.manageAllSkills %>",
+                  "taskReference": {
+                    "type": "taskReference",
+                    "taskId": "approveMyTeamSkills"
+                  },
+                  "action": "PRIMARY",
+                  "commandHttpMethod": "GET"
+                },
+                {
+                  "id": "usersPendingSkills",
+                  "type": "grid",
+                  "rows": "<% pageVariables.teamSkills.Report_Entry %>",
+                  "gridType": "LIST",
+                  "rowVariableName": "apidata",
+                  "doNotAdd": "true",
+                  "doNotRemoveRow": "true",
+                  "doNotRemove": "true",
+                  "columns": [
+                    {
+                      "cellTemplate": {
+                        "type": "text",
+                        "enabled": "false",
+                        "value": "<% apidata.Worker %>"
+                      },
+                      "columnId": "v0",
+                      "label": "<% presentationLabels.employeeName %>",
+                      "type": "column"
+                    },
+                    {
+                      "cellTemplate": {
+                        "type": "number",
+                        "enabled": "false",
+                        "value": "<% getSubtotalCustOrg(apidata.Skills_group, pageVariables.custOrgInfo.catalogCode) %>"
+                      },
+                      "columnId": "v1",
+                      "label": "<% presentationLabels.numberOfSkills %>",
+                      "type": "column"
+                    },
+                    {
+                      "cellTemplate": {
+                        "type": "button",
+                        "label": "<% presentationLabels.manageSkills %>",
+                        "action": "PRIMARY",
+                        "taskReference": {
+                          "parameterBindings": {
+                            "userId": "<% apidata.Employee_ID %>"
+                          },
+                          "taskId": "approveUserSkills"
+                        }
+                      },
+                      "columnId": "v2",
+                      "type": "column"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "                      "
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "richText",
+                  "enabled": "false",
+                  "value": "<h2 style=\"text-align: center;\">Skills App V3.0</h2>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

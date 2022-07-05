@@ -1,0 +1,876 @@
+{
+  "id": "requestSkill",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "userLanguage",
+      "baseUrlType": "WORKDAY",
+      "authType": "sso",
+      "url": "/common/v1/userInfo"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getCatalog",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Catalog_Report_v2?visible=1&workdayID=<% id %>&referenceId=<% queryParams.idSkill %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "getCategoryLabels",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Category_Labels_Report?workdayID=<% id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "ratingModels",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Rating_Model?workdayID=<% id %>&ratingModelId=<% list:filter(pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'],'refId',queryParams.idSkill)[0]['ratingModelID'] %>&format=json",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "editSkillPOST",
+        "url": "/customObject/v2/customObjects/skills",
+        "authType": "sso",
+        "exclude": "<% empty assessedRating.value[0] %>",
+        "baseUrlType": "WORKDAY",
+        "httpMethod": "POST",
+        "values": [
+          {
+            "outboundPath": "worker.id",
+            "value": "<% personalInfo.id %>"
+          },
+          {
+            "outboundPath": "rating",
+            "value": "<% number:convertStringToInt(assessedRating.value[0]) %>"
+          },
+          {
+            "outboundPath": "status",
+            "value": "<% pageVariables.custOrgInfo.requiresApproval ? 'Awaiting approval' : 'Completed' %>"
+          },
+          {
+            "outboundPath": "assessedOn",
+            "value": "<% date:getTodaysDate(date:getDateTimeZone(personalInfo.timezone)) %>"
+          },
+          {
+            "outboundPath": "skillId",
+            "value": "<% string:split(queryParams.idSkill, ':')[0] %>"
+          },
+          {
+            "outboundPath": "approvedOn",
+            "value": "<% pageVariables.custOrgInfo.requiresApproval ? null : date:getTodaysDate(date:getDateTimeZone(personalInfo.timezone)) %>"
+          },
+          {
+            "outboundPath": "comment",
+            "value": "<% !empty(newComment.value) ? newComment.value : null %>"
+          }
+        ]
+      },
+      {
+        "name": "flowRequestSkill",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "idSkill",
+            "value": "<% queryParams.idSkill %>"
+          },
+          {
+            "outboundPath": "massApproval",
+            "value": "<% false %>"
+          }
+        ]
+      }
+    ]
+  },
+  "script": "<%
+  var getTopCustOrgPriority = function(getCustOrgData){
+
+    var topPriority = 0;
+    var topCustOrg = '';
+
+    for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+        var auxCustOrg = custOrg.custom_org_top_wid1;
+        var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+        if(auxPriority > topPriority){
+            topPriority = auxPriority;
+            topCustOrg = auxCustOrg;
+        }
+    }
+    return topCustOrg;
+  };
+%>",
+  "onLoad": "<%
+      pageVariables.custOrgInfo = custOrgInfo.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+      pageVariables.getCatalog = getCatalog.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+      pageVariables.getCategoryLabels = getCategoryLabels.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+      pageVariables.ratingModels = ratingModels.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+    %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.addSkill %>"
+    },
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "preferredLabelPosition": "aside",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 8 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 8 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 8 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category4 %>"
+              },
+              "columnId": "v3",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category4Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category4Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category5 %>"
+              },
+              "columnId": "v4",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category5Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category5Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category6 %>"
+              },
+              "columnId": "v5",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category6Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category6Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category7 %>"
+              },
+              "columnId": "v6",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category7Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category7Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category8 %>"
+              },
+              "columnId": "v7",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category8Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category8Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 7 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 7 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 7 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category4 %>"
+              },
+              "columnId": "v3",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category4Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category4Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category5 %>"
+              },
+              "columnId": "v4",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category5Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category5Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category6 %>"
+              },
+              "columnId": "v5",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category6Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category6Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category7 %>"
+              },
+              "columnId": "v6",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category7Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category7Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 6 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 6 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 6 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category4 %>"
+              },
+              "columnId": "v3",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category4Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category4Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category5 %>"
+              },
+              "columnId": "v4",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category5Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category5Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category6 %>"
+              },
+              "columnId": "v5",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category6Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category6Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 5 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 5 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 5 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category4 %>"
+              },
+              "columnId": "v3",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category4Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category4Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category5 %>"
+              },
+              "columnId": "v4",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category5Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category5Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 4 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 4 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 4 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category4 %>"
+              },
+              "columnId": "v3",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category4Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category4Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 3 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 3 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 3 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "enabled": "false",
+                "value": "<% apidata.category3 %>"
+              },
+              "columnId": "v2",
+              "sortableAndFilterable": "true",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category3Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category3Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 2 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 2 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 2 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category2 %>"
+              },
+              "columnId": "v1",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category2Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category2Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "id": "skill",
+          "type": "grid",
+          "enabled": false,
+          "visible": "<% pageVariables.custOrgInfo.numberOfCategories == 1 %>",
+          "render": "<% pageVariables.custOrgInfo.numberOfCategories == 1 %>",
+          "rows": "<% pageVariables.custOrgInfo.numberOfCategories == 1 ? pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'] : null %>",
+          "gridType": "LIST",
+          "rowVariableName": "apidata",
+          "doNotAdd": "true",
+          "doNotRemoveRow": "true",
+          "doNotRemove": "true",
+          "columns": [
+            {
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% apidata.category1 %>"
+              },
+              "columnId": "v0",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['category1Label'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['category1Label'] %>",
+              "type": "column"
+            },
+            {
+              "cellTemplate": {
+                "type": "text",
+                "helpText": "<% apidata['skillDescription'] %>",
+                "value": "<% apidata['skillName'] %>"
+              },
+              "columnId": "v9",
+              "label": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['skillLabel'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['skillLabel'] %>",
+              "type": "column"
+            }
+          ]
+        },
+        {
+          "type": "hidden",
+          "id": "regExp",
+          "value": "'[' + <% pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['ratingFrom'] %> + '-' + <% pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['ratingTo']==10 ? 9 : pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['ratingTo'] %> + ']|' + <% pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['ratingTo']==10 ? 10 : pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['ratingFrom'] %>"
+        },
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "section",
+              "horizontal": "true",
+              "children": [
+                {
+                  "type": "instanceList",
+                  "label": "<% presentationLabels.newAssessedRating %>",
+                  "id": "assessedRating",
+                  "required": "true",
+                  "instanceListLoopTag": {
+                    "type": "instanceLoop",
+                    "templateInstance": {
+                      "id": "<% ratingElem.rating %>",
+                      "descriptor": "<% ratingElem.rating %>. <% ratingElem.ratingDescriptionText %>"
+                    },
+                    "on": "<% list:sort(pageVariables.ratingModels['Report_Entry'][0]['Skills_Survey_Rating_Model_group'], 'rating',true) %>",
+                    "as": "ratingElem"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "textArea",
+          "id": "newComment",
+          "label": "<% presentationLabels.addComment %>",
+          "required": "<% pageVariables.getCatalog['Report_Entry'][0]['Skills_Survey_Catalog_group'][0]['mandatoryComment']==1 %>"
+        },
+        {
+          "type": "text",
+          "id": "ratingConfirmation",
+          "enabled": "false",
+          "validations": [
+            {
+              "expression": "<% empty assessedRating.value[0] %>",
+              "errorMessage": "<% presentationLabels.newRatingSameValue %>",
+              "onSubmitOnly": true
+            }
+          ]
+        },
+        {
+          "type": "editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "<% presentationLabels.submitRequest %>",
+              "id": "submit",
+              "buttonType": "SECONDARY"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "sony_massentry",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    },
+    {
+      "code": "ja-JP",
+      "description": "Japanese"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  },
+  "siteId": "sony_massentry",
+  "auth": {
+    "type": "SSO"
+  },
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "sony_massentry"
+}

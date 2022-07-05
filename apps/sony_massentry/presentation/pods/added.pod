@@ -1,0 +1,11 @@
+{
+  "podId": "added",
+  "seed": {
+    "template": {
+      "type": "richText",
+      "visible": "${list:contains(list:mapAttribute(getMySkills.data, 'skillId'), apidata['refId'])}",
+      "helpText": "${list:filter(list:filter(pageVariables.ratingModels['Report_Entry'][0]['Skills_Survey_Rating_Model_group'], 'ratingModelId', apidata['ratingModelID']),'rating', string:toString(list:filter(getMySkills.data, 'skillId', apidata['refId'])[0].rating))[0]['ratingDescriptionText']}",
+      "value": "<h3>${presentationLabels.added} (${presentationLabels.level}: ${list:filter(getMySkills.data, 'skillId', apidata['refId'])[0].rating})</h3>"
+    }
+  }
+}

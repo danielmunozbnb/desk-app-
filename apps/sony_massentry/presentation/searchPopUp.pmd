@@ -1,0 +1,98 @@
+{
+  "id": "searchPopUp",
+  "script": "<%
+ var deleteRepeated = function(lista) {
+   var list = [];
+   var res= [];
+   for (var row : lista['Report_Entry'][0]['Skills_Survey_Catalog_group']) {
+     if (!list.contains(row['category1']) && row['language'] == queryParams.language) {
+       list.add(row['category1']);
+       res.add(row);
+     }
+   }
+   return res;
+   };
+
+var formatFilter = function(){
+   var res = '';
+   for(var row : ddnTopCategory.value){
+      var addString = string:concat('@', row);
+      res = string:concat(res, addString);
+    }
+    aux.value=string:concat(res,'@');
+   };
+%>",
+  "endPoints": [
+    {
+      "name": "getCatalog",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Catalog_Report_v2?visible=1&workdayID=<% queryParams.workdayID %>&format=json",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "flowEditSkill",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "mass",
+            "value": "true"
+          },
+          {
+            "outboundPath": "topCategory",
+            "value": "<% aux.value == '@' ? '' : string:urlEncode(aux.value) %>"
+          },
+          {
+            "outboundPath": "searchText",
+            "value": "<% string:urlEncode(searchTextWidget.value) %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "STANDARD",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.searchPopUp %>"
+    },
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "preferredLabelPosition": "aside",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "instanceList",
+          "label": "<% presentationLabels.selectTopCategory %>",
+          "multiSelect": "true",
+          "onChange": "<% formatFilter(); %>",
+          "id": "ddnTopCategory",
+          "instanceListLoopTag": {
+            "type": "instanceLoop",
+            "on": "<% deleteRepeated(getCatalog); %>",
+            "as": "instance",
+            "limit": -1,
+            "templateInstance": {
+              "id": "<% instance['category1'] %>",
+              "descriptor": "<% instance['category1'] %>"
+            }
+          }
+        },
+        {
+          "type": "hidden",
+          "id": "aux"
+        },
+        {
+          "type": "text",
+          "label": "<% presentationLabels.searchText %>",
+          "id": "searchTextWidget"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "podId": "header",
+  "seed": {
+    "template": {
+      "type": "button",
+      "label": "<% presentationLabels.Backtohome%>",
+      "taskReference": {
+        "type": "taskReference",
+        "taskId": "root"
+      },
+      "action": "LINK"
+    }
+  }
+}

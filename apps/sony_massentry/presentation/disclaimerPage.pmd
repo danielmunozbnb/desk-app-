@@ -1,0 +1,139 @@
+{
+  "id": "disclaimerPage",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "userLanguage",
+      "authType": "sso",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/userInfo"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getCategoryLabels",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/raas/7000017312/WCP_SS_Category_Labels_Report?workdayID=<% id %>&format=json",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "numberInfo",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "agreeFlow",
+            "value": "<% agree.value %>"
+          },
+          {
+            "outboundPath": "massApproval",
+            "value": "<% queryParams.mass %>"
+          },
+          {
+            "outboundPath": "numberOfCategories",
+            "value": "<% queryParams.numberOfCategories %>"
+          },
+          {
+            "outboundPath": "requiresApproval",
+            "value": "<% queryParams.requiresApproval %>"
+          }
+        ]
+      }
+    ]
+  },
+  "script": "<%
+   var getTopCustOrgPriority = function(getCustOrgData){
+
+    var topPriority = 0;
+    var topCustOrg = '';
+
+    for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+        var auxCustOrg = custOrg.custom_org_top_wid1;
+        var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+        if(auxPriority > topPriority){
+            topPriority = auxPriority;
+            topCustOrg = auxCustOrg;
+        }
+    }
+    return topCustOrg;
+  };
+%>",
+  "onLoad": "<%
+  if(!empty(getCustOrg.Report_Entry[0]['custom_org_top_wid'])){
+      pageVariables.getCategoryLabels = getCategoryLabels.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+
+   }
+    %>",
+  "presentation": {
+    "applicationExceptions": [
+      {
+        "type": "applicationException",
+        "message": "You are not part of any Custom Organization",
+        "severity": "ERROR",
+        "render": "<% empty getCustOrg.Report_Entry[0]['custom_org_top_wid'] %>"
+      }
+    ],
+    "headerSize": "HIDDEN",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "pod",
+          "podId": "header"
+        },
+        {
+          "type": "text",
+          "label": "<% presentationLabels.ActingAs%>",
+          "value": "<% personalInfo.descriptor %>",
+          "enabled": false
+        },
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "<% !empty(list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])) ?
+                                                                                                                                                                 list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', string:split(userLanguage.data[0].language, '_')[0])[0]['disclaimerText'] :
+                                                                                                                                                                                                                                                                                                               list:filter(pageVariables.getCategoryLabels['Report_Entry'][0]['Skills_Survey_Category_Labels_group'], 'language', 'en')[0]['disclaimerText'] %>"
+        },
+        {
+          "type": "checkBox",
+          "id": "agree",
+          "required": "true"
+        },
+        {
+          "type": "editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "<% presentationLabels.submitDisclaimer %>",
+              "id": "submit",
+              "buttonType": "SECONDARY"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

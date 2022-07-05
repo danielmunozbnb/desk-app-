@@ -1,0 +1,169 @@
+{
+  "id": "popUpAddConfirmation",
+  "endPoints": [
+    {
+      "name": "personalInfo",
+      "baseUrlType": "WORKDAY",
+      "url": "/common/v1/workers/<% pmdSessionVariables.user %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getCustOrg",
+      "baseUrlType": "WORKDAY",
+      "url": "/raas/7000017312/WCP_SS_Worker_CustomOrg?Worker%21WID=<% personalInfo.id %>&format=json",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfoAux",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "url": "/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "custOrgInfo",
+      "deferred": true,
+      "url": "https://api.workday.com/customObject/v2/customObjects/ssconfiguration/<% id %>",
+      "authType": "sso"
+    },
+    {
+      "name": "getManager",
+      "baseUrlType": "WORKDAY",
+      "deferred": true,
+      "authType": "sso",
+      "url": "/raas/7000017312/WCP_SS_Worker_Manager?Worker%21WID=<% personalInfo.id %>&Subfilter_Top_Custom_Org=<% id %>&format=json"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "dummy",
+        "values": [ ]
+      }
+    ]
+  },
+  "script": "<%
+  var getTopCustOrgPriority = function(getCustOrgData){
+
+    var topPriority = 0;
+    var topCustOrg = '';
+
+    for(var custOrg : getCustOrgData['Report_Entry'][0]['WCP_TOP_CUSTOM_ORGS_group']){
+
+        var auxCustOrg = custOrg.custom_org_top_wid1;
+        var auxPriority = custOrgInfoAux.invoke({'id':auxCustOrg}).priority;
+
+        if(auxPriority > topPriority){
+            topPriority = auxPriority;
+            topCustOrg = auxCustOrg;
+        }
+    }
+    return topCustOrg;
+  };
+%>",
+  "onLoad": "<%
+      pageVariables.custOrgInfo = custOrgInfo.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+      pageVariables.getManager = getManager.invoke({'id':getTopCustOrgPriority(getCustOrg)});
+    %>",
+  "presentation": {
+    "headerSize": "HIDDEN",
+    "standardEditButtonsHidden": "true",
+    "micro": "true",
+    "preferredLabelPosition": "aside",
+    "pageType": "edit",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "richText",
+              "enabled": "false",
+              "visible": "<% pageVariables.custOrgInfo.requiresApproval %>",
+              "value": "<h2><b><% presentationLabels.nextStepIsApproval %></b></h2>"
+            },
+            {
+              "type": "richText",
+              "enabled": "false",
+              "visible": "<% !pageVariables.custOrgInfo.requiresApproval %>",
+              "value": "<h2><b><% presentationLabels.completed %></b></h2>"
+            },
+            {
+              "type": "richText",
+              "enabled": "false",
+              "visible": "<% pageVariables.custOrgInfo.requiresApproval %>",
+              "value": "<h3><% presentationLabels.approver %></h3>"
+            },
+            {
+              "type": "loop",
+              "on": "<% pageVariables.getManager['Report_Entry'][0].Separated %>",
+              "as": "manager",
+              "children": [
+                {
+                  "type": "text",
+                  "enabled": "false",
+                  "visible": "<% pageVariables.custOrgInfo.requiresApproval && !pageVariables.custOrgInfo.approvalByCustomOrg %>",
+                  "value": "<% manager['Managers_Name'] %>"
+                }
+              ]
+            },
+            {
+              "type": "loop",
+              "label": "<% presentationLabels.approver %>",
+              "on": "<% pageVariables.getManager['Report_Entry'][0].CustOrg_Manager_Roles %>",
+              "as": "manager",
+              "children": [
+                {
+                  "type": "section",
+                  "horizontal": false,
+                  "children": [
+                    {
+                      "type": "text",
+                      "enabled": "false",
+                      "visible": "<% pageVariables.custOrgInfo.requiresApproval && pageVariables.custOrgInfo.approvalByCustomOrg %>",
+                      "value": "<% manager['CustOrg_Man_Name'] %>"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "button",
+              "render": "<% flowVariables.massApproval %>",
+              "label": "<% presentationLabels.addNewSkillsMassEntryMode %>",
+              "taskReference": {
+                "type": "taskReference",
+                "taskId": "addNewSkillsMassEntryMode",
+                "parameterBindings": {
+                  "mass": "<% true %>"
+                }
+              },
+              "action": "PRIMARY",
+              "commandHttpMethod": "GET"
+            },
+            {
+              "type": "button",
+              "label": "<% flowVariables.massApproval ? presentationLabels.mySkills : presentationLabels.done %>",
+              "taskReference": {
+                "type": "taskReference",
+                "taskId": "<% flowVariables.massApproval ? 'homeEmployee' : 'addNewSkills' %>"
+              },
+              "action": "AUXILIARY",
+              "commandHttpMethod": "GET"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

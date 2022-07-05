@@ -1,0 +1,129 @@
+{
+  "id": "home",
+  "endPoints": [
+    {
+      "name": "allWorkers",
+      "baseUrlType": "WORKDAY",
+      "url": "/wql/v1/data?query=<% string:urlEncode('SELECT legalFullName, workdayID FROM workersForHCMReporting(dataSourceFilter=allActiveWorkers) WHERE cf_zcf_LRV_Custom_Org_AddData_Primary_Position IS NOT NULL ORDER BY legalFullName ASC') %>",
+      "authType": "sso"
+    },
+    {
+      "name": "manager1",
+      "baseUrlType": "WORKDAY",
+      "url": "/wql/v1/data?query=<% string:urlEncode('SELECT legalFullName, workdayID FROM workersForHCMReporting(dataSourceFilter=allActiveWorkers) WHERE isManager=true AND cf_zcf_LRV_Custom_Org_AddData_Primary_Position IS NOT NULL') %>",
+      "authType": "sso"
+    },
+    {
+      "name": "manager2",
+      "baseUrlType": "WORKDAY",
+      "url": "/wql/v1/data?query=<% string:urlEncode('SELECT legalFullName, workdayID FROM workersForHCMReporting(dataSourceFilter=allActiveWorkers) WHERE organizationRoles=090e6a493dc501c377e4bbee6527ceb4 AND cf_zcf_LRV_Custom_Org_AddData_Primary_Position IS NOT NULL') %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "sampleOutboundVariable",
+        "variableScope": "session",
+        "values": [
+          {
+            "outboundPath": "user",
+            "value": "<% actAs.value[0]=='1' ? managerSelected.value[0] : workerSelected.value[0]%>"
+          }
+        ]
+      },
+      {
+        "name": "numberInfo",
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "homeManager",
+            "value": "<% actAs.value[0]=='1' %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "STANDARD",
+    "preferredLabelPosition": "aside",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.HROperationsSkillsApp%>"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "dropdown",
+          "id": "actAs",
+          "label": "<% presentationLabels.ActAs%>",
+          "required": "true",
+          "maxSelectable": 1,
+          "instanceList": [
+            {
+              "id": "1",
+              "descriptor": "<% presentationLabels.Manager %>"
+            },
+            {
+              "id": "2",
+              "descriptor": "<% presentationLabels.Employee %>"
+            }
+          ],
+          "onChange": "<% manager.visible = (self.value[0]=='1');
+                         employee.visible = (self.value[0]=='2');
+                         if(self.value[0]=='1'){
+                           managerSelected.required = true;
+                           workerSelected.required = false;
+                         } else{
+                          workerSelected.required = true;
+                          managerSelected.required = false;
+                         }  %>"
+        },
+        {
+          "type": "section",
+          "id": "manager",
+          "visible": false,
+          "children": [
+            {
+              "type": "instanceList",
+              "id": "managerSelected",
+              "label": "<% presentationLabels.SelectManager%>",
+              "maxSelectable": 1,
+              "idKey": "workdayID",
+              "displayKey": "legalFullName",
+              "values": "<% manager1.data %>"
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "id": "employee",
+          "visible": false,
+          "children": [
+            {
+              "type": "instanceList",
+              "id": "workerSelected",
+              "label": "<% presentationLabels.SelectEmployee%>",
+              "maxSelectable": 1,
+              "idKey": "workdayID",
+              "displayKey": "legalFullName",
+              "values": "<% allWorkers.data %>"
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "footer"
+        }
+      ]
+    }
+  }
+}

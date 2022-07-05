@@ -1,0 +1,59 @@
+{
+  "id": "deleteSkill",
+  "endPoints": [ ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "deleteSkill",
+        "url": "/customObject/v2/customObjects/skills/${queryParams.idSkillUser}",
+        "authType": "sso",
+        "baseUrlType": "WORKDAY",
+        "httpMethod": "DELETE"
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "HIDDEN",
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "sorted": false,
+      "children": [
+        {
+          "type": "section",
+          "horizontal": "true",
+          "children": [
+            {
+              "type": "editButtonBar",
+              "editButtons": [
+                {
+                  "type": "editButton",
+                  "label": "${presentationLabels.delete}",
+                  "buttonType": "SECONDARY"
+                }
+              ]
+            },
+            {
+              "type": "richText",
+              "enabled": "false",
+              "value": "<h3>${presentationLabels.deleteMg}</h3>"
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "visible": "false",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By WCP"
+        }
+      ]
+    }
+  }
+}
