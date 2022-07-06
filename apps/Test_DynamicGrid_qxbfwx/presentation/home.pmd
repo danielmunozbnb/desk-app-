@@ -50,22 +50,29 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "searchName",
-                  "label": "Please enter a name to search",
-                  "onChange": "<%
-                               if (!empty(currentRow)) {
-                                   currentRow = null;
-                                   searchName.setWarning('Si cambias los filtros, se perderán los cambios');
-                               } else {
-                                   searchName.clearWarning();
-                               }
-
-                               // Call the workerData endpoint with the user-entered name as a parameter.
-                               var test = workersInfo.invoke({'search': self.value});
-                               // Make the grid visible and set its row data.
-
-                               dataGrid.setRows(test.data);
-                               %>"
+                  "id": "searchNameTxt",
+                  "label": "Please enter a name to search"
+                },
+                {
+                  "type": "pageActionButton",
+                  "id": "searchBtn",
+                  "visible": true,
+                  "label": "Search",
+                  "onClick":
+                    "<%
+                     if (searchNameTxt.value.size() < 3) {
+                         searchNameTxt.setWarning('El texto de filtro no puede ser menor a 3 caracteres de largo.');
+                     } else {
+                         if (empty(pageVariables.filterWarned) && !empty(dataGrid.getSelectedRows())){
+                             pageVariables.filterWarned = true;
+                             searchNameTxt.setWarning('Al modificar los filtros, se perderán los cambios no guardados de las filas seleccionadas.');
+                         } else {
+                             searchNameTxt.clearWarning();
+                             var test = workersInfo.invoke({'search': searchNameTxt.value});
+                             dataGrid.setRows(test.data);
+                         }
+                     }
+                     %>"
                 },
                 {
                   "type": "grid",
