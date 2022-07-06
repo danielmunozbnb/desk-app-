@@ -10,7 +10,7 @@
     {
       "name": "workersInfo",
       "baseUrlType": "wql",
-      "url": "<%'data?query=SELECT%20worker%2C%20firstName%2C%20lastName%2C%20businessTitle%0AFROM%20allWorkers%0AWHERE%20firstName%20CONTAINS%20%22'+ search +'%22%20OR%20lastName%20CONTAINS%20%22'+ search +'%22'%>",
+      "url": "<%'data?query=SELECT%20worker%2C%20firstName%2C%20lastName%2C%20businessTitle%0AFROM%20allActiveEmployees%0AWHERE%20firstName%20CONTAINS%20%22'+ search +'%22%20OR%20lastName%20CONTAINS%20%22'+ search +'%22'%>",
       "authType": "sso",
       "deferred": true
     }
@@ -53,6 +53,13 @@
                   "id": "searchName",
                   "label": "Please enter a name to search",
                   "onChange": "<%
+                               if (!empty(currentRow)) {
+                                   currentRow = null;
+                                   searchName.setWarning('Si cambias los filtros, se perderán los cambios');
+                               } else {
+                                   searchName.clearWarning();
+                               }
+
                                // Call the workerData endpoint with the user-entered name as a parameter.
                                var test = workersInfo.invoke({'search': self.value});
                                // Make the grid visible and set its row data.
