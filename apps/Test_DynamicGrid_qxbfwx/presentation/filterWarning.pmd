@@ -8,18 +8,12 @@
     "pageType": "view",
     "title": {
       "type": "title",
-      "label": "Filtering will discard changes, are you sure you want to continue?"
+      "label": "Filtering will discard changes, are you sure you want to continue???"
     },
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
-        {
-          "type": "button",
-          "id": "yesButton",
-          "label": "Zi",
-          "action": "PRIMARY"
-        }
       ]
     }
   }

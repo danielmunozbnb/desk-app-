@@ -26,6 +26,25 @@
         "onSend": "<%
                    currentRow.selected ? self.data : null;
                    %>"
+      },
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "search",
+            "value" : "<% searchNameTxt.value; %>"
+          },
+          {
+            "outboundPath": "searchClicked",
+            "value": "<% searchBtn.value %>"
+          },
+          {
+            "outboundPath": "selectedRows",
+            "value": "<% !empty(dataGrid.getSelectedRows()) %>"
+          }
+        ]
       }
     ]
   },
@@ -34,6 +53,9 @@
     "title": {
       "type": "title",
       "label": "Test Dynamic Grid"
+    },
+    "cancelOverride": {
+      "taskId": "root"
     },
     "body": {
       "type": "section",
@@ -54,31 +76,31 @@
                   "label": "Please enter a name to search"
                 },
                 {
-                  "type": "pageActionButton",
-                  "id": "searchBtn",
-                  "visible": true,
-                  "label": "Search",
-                  "onClick":
-                    "<%
-                     if (searchNameTxt.value.size() < 3) {
-                         searchNameTxt.setWarning('El texto de filtro no puede ser menor a 3 caracteres de largo.');
-                     } else {
-                         if (empty(pageVariables.filterWarned) && !empty(dataGrid.getSelectedRows())){
-                             pageVariables.filterWarned = true;
-                             searchNameTxt.setWarning('Al modificar los filtros, se perderán los cambios no guardados de las filas seleccionadas.');
-                         } else {
-                             searchNameTxt.clearWarning();
-                             var test = workersInfo.invoke({'search': searchNameTxt.value});
-                             dataGrid.setRows(test.data);
-                         }
-                     }
-                     %>"
+                  "type":"editButtonBar",
+                  "editButtons": [
+                    {
+                      "type": "editButton",
+                      "label": "Search",
+                      "id": "searchBtn",
+                      "render": true,
+                      "visible": true,
+                      "buttonType": "PRIMARY",
+                      "ignoreRequiredFields": "true"
+                    }
+                  ]
                 },
                 {
                   "type": "grid",
                   "id": "dataGrid",
                   "gridType": "LIST",
-                  "rows": "<% [] %>",
+                  "rows":
+                    "<%
+                     var searchTxt = flowVariables.search;
+                     var test = searchTxt ?
+                         workersInfo.invoke({'search': searchTxt}).data : [];
+                     console.info(test);
+                     test;
+                     %>",
                   "rowVariableName": "row",
                   "_doNotAdd": "true",
                   "_doNotRemoveRow": "true",

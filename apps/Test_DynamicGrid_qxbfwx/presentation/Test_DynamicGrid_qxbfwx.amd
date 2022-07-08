@@ -14,6 +14,44 @@
       "page": {
         "id": "filterWarning"
       }
+    },
+    {
+      "id": "titleChange",
+      "routingPattern": "titleChange",
+      "page": {
+        "id": "titleChange"
+      }
+    }
+  ],
+  "flowDefinitions": [
+    {
+      "id": "selfRef",
+      "name": "selfRef",
+      "flowSteps": [
+        {
+          "id": "root",
+          "taskId": "root",
+          "startsFlow": true,
+          "transitions": [
+            {
+              "id": "self",
+              "value": "self",
+              "order": "a",
+              "condition": "<% flowVariables.searchClicked && !flowVariables.selectedRows %>"
+            },
+            {
+              "id": "warning",
+              "value": "filterWarning",
+              "order": "b",
+              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows %>"
+            }
+          ]
+        },
+        {
+          "id": "self",
+          "taskId": "root"
+        }
+      ]
     }
   ],
   "applicationId": "Test_DynamicGrid_qxbfwx",
