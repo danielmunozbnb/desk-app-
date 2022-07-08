@@ -29,7 +29,9 @@
       }
     ]
   },
-
+  "onLoad": "<%
+             pageVariables.filterWarned=false;
+             %>",
   "presentation": {
     "pageType": "edit",
     "title": {
@@ -50,12 +52,37 @@
               "id": "fieldSetContainer",
               "children": [
                 {
-                  "type": "button",
-                  "action": "PRIMARY",
-                  "label": "Add a new filter",
-                  "taskReference": {
-                    "taskId": "filter"
-                  }
+                  "type": "text",
+                  "id": "searchNameTxt",
+                  "label": "Please enter a name to search"
+                },
+                {
+                  "type": "pageActionButton",
+                  "id": "searchBtn",
+                  "visible": true,
+                  "label": "Search",
+                  "onClick": "<%
+                              if (searchNameTxt.value.size() < 3) {
+                                  searchNameTxt.setWarning('El texto de filtro no puede ser menor a 3 caracteres de largo.');
+
+                              } else {
+                                  if (empty(dataGrid.getSelectedRows())){
+                                      searchNameTxt.clearWarning();
+                                          var test = workersInfo.invoke({'search': searchNameTxt.value});
+                                          dataGrid.setRows(test.data);
+
+                                  } else if(pageVariables.filterWarned==false && !empty(dataGrid.getSelectedRows())){
+                                      pageVariables.filterWarned = true;
+                                          searchNameTxt.setWarning('Al modificar los filtros, se perderán los cambios no guardados de las filas seleccionadas, busca otra vez para ignorar cambios.');
+
+                                  } else if(pageVariables.filterWarned==true && !empty(dataGrid.getSelectedRows())){
+                                      searchNameTxt.clearWarning();
+                                          pageVariables.filterWarned = false;
+                                          var test = workersInfo.invoke({'search': searchNameTxt.value});
+                                          dataGrid.setRows(test.data);
+                                  }
+                              }
+                              %>"
                 },
                 {
                   "type": "grid",
