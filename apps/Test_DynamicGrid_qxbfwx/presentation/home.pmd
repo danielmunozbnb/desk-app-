@@ -82,8 +82,6 @@
                       "type": "editButton",
                       "label": "Search",
                       "id": "searchBtn",
-                      "render": true,
-                      "visible": true,
                       "buttonType": "PRIMARY",
                       "ignoreRequiredFields": "true"
                     }

@@ -41,7 +41,7 @@
             },
             {
               "id": "warning",
-              "value": "filterWarning",
+              "value": "filterWarningStep",
               "order": "b",
               "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows %>"
             }
@@ -50,6 +50,18 @@
         {
           "id": "self",
           "taskId": "root"
+        },
+        {
+          "id": "filterWarningStep",
+          "taskId": "filterWarning",
+          "transitions": [
+            {
+              "id": "self",
+              "value": "self",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
         }
       ]
     }
