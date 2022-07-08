@@ -7,40 +7,8 @@
       "page": {
         "id": "home"
       }
-    },
-    {
-      "id": "micropage",
-      "routingPattern": "micropage",
-      "page": {
-        "id": "micropage"
-      }
     }
   ],
-  "flowDefinitions": [
-    {
-      "id": "homeToAction",
-      "flowSteps": [
-        {
-          "id": "root",
-          "taskId": "root",
-          "startsFlow": true,
-          "transitions": [
-            {
-              "id": "micropage",
-              "value": "micropage",
-              "condition": "<% flowVariables.flow_choice == 'true' %>",
-              "order": "a1"
-            }
-          ]
-        },
-        {
-          "id": "micropage",
-          "taskId": "micropage"
-        }
-
-      ]
-    }
-    ],
 
   "applicationId": "Test_DynamicGrid_qxbfwx",
   "dataProviders": [
