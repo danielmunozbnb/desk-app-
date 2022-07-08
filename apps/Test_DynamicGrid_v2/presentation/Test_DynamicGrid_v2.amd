@@ -1,11 +1,18 @@
 {
-  "appProperties": [ ],
+  "appProperties": [],
   "tasks": [
     {
       "id": "root",
       "routingPattern": "/",
       "page": {
         "id": "home"
+      }
+    },
+    {
+      "id": "filter",
+      "routingPattern": "filter",
+      "page": {
+        "id": "filter"
       }
     }
   ],
