@@ -52,6 +52,7 @@
           "taskId": "root"
         },
         {
+          "_TODO": "Que al darle a cancel, vuelva a la página sin actualizar el grid.",
           "id": "filterWarningStep",
           "taskId": "filterWarning",
           "transitions": [
@@ -59,7 +60,7 @@
               "id": "self",
               "value": "self",
               "order": "a",
-              "condition": "true"
+              "condition": "<% flowVariables.continueClicked %>"
             }
           ]
         }

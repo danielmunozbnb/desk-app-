@@ -37,6 +37,10 @@
             "value" : "<% searchNameTxt.value; %>"
           },
           {
+            "outboundPath" : "previousSearch",
+            "value" : "<% flowVariables.search %>"
+          },
+          {
             "outboundPath": "searchClicked",
             "value": "<% searchBtn.value %>"
           },
@@ -82,7 +86,7 @@
                       "type": "editButton",
                       "label": "Search",
                       "id": "searchBtn",
-                      "buttonType": "PRIMARY",
+                      "buttonType": "AUXILIARY",
                       "ignoreRequiredFields": "true"
                     }
                   ]

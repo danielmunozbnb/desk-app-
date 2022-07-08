@@ -2,6 +2,21 @@
   "id": "filterWarning",
   "endPoints": [
   ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "continueClicked",
+            "value" : "<% continueBtn.value; %>"
+          }
+        ]
+      }
+    ]
+  },
   "presentation": {
     "micro": true,
     "microFirstPageOnly": true,
