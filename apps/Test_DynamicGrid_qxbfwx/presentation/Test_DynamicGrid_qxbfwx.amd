@@ -21,6 +21,13 @@
       "page": {
         "id": "titleChange"
       }
+    },
+    {
+      "id": "a",
+      "routingPattern": "a",
+      "page": {
+        "id": "a"
+      }
     }
   ],
   "flowDefinitions": [
@@ -29,49 +36,34 @@
       "name": "selfRef",
       "flowSteps": [
         {
-          "id": "root",
-          "taskId": "root",
+          "id": "titleChangeStep",
+          "taskId": "titleChange",
           "startsFlow": true,
           "transitions": [
             {
-              "id": "self",
-              "value": "self",
-              "order": "a",
-              "condition": "<% flowVariables.searchClicked && !flowVariables.selectedRows%>"
-            },
-            {
-              "id": "self",
-              "value": "self",
-              "order": "b",
-              "condition": "<% flowVariables.submitClicked %>"
-            },
-            {
               "id": "warning",
               "value": "filterWarningStep",
-              "order": "c",
-              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows%>"
+              "order": "a",
+              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows && !empty(flowVariables.search) %>"
             },
             {
               "id": "self",
-              "value": "self",
-              "order": "d",
-              "condition": "<% flowVariables.gobackClicked %>"
+              "value": "titleChangeStep",
+              "order": "b",
+              "condition": "<% flowVariables.searchClicked %>"
             }
           ]
         },
         {
-          "id": "self",
-          "taskId": "root"
-        },
-        {
+          "_TODO": "Que al darle a cancel, vuelva a la página sin actualizar el grid.",
           "id": "filterWarningStep",
           "taskId": "filterWarning",
           "transitions": [
             {
-              "id": "self",
-              "value": "self",
+              "id": "titleChangeStep",
+              "value": "titleChangeStep",
               "order": "a",
-              "condition": "true"
+              "condition": "<% flowVariables.continueClicked || flowVariables.cancelClicked %>"
             }
           ]
         }

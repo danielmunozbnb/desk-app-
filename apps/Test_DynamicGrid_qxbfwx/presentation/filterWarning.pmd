@@ -7,15 +7,15 @@
       {
         "type" : "outboundVariable",
         "variableScope" : "flow",
-        "name" : "transition2OutboundVars",
+        "name" : "transitionOutboundVars",
         "values" : [
           {
-            "outboundPath": "gobackClicked",
-            "value": "<% gobackBtn.value %>"
+            "outboundPath" : "continueClicked",
+            "value" : "<% continueBtn.value %>"
           },
           {
-            "outboundPath": "ignoreClicked",
-            "value": "<% continueBtn.value %>"
+            "outboundPath" : "cancelClicked",
+            "value" : "<% cancelBtn.value %>"
           }
         ]
       }
@@ -24,39 +24,31 @@
   "presentation": {
     "micro": true,
     "microFirstPageOnly": true,
+    "standardEditButtonsHidden": true,
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "Warning"
+      "label": "Filtering will discard changes, are you sure you want to continue???"
     },
-    "standardEditButtonsHidden" : true,
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
         {
-          "type": "readOnlyText",
-          "id": "text",
-          "label": "",
-          "value": "Unsubmitted changes will not be saved"
-        },
-        {
           "type":"editButtonBar",
           "editButtons": [
             {
               "type": "editButton",
-              "label": "Ignore",
+              "label": "Continue",
               "id": "continueBtn",
-              "buttonType": "PRIMARY",
-              "ignoreRequiredFields": "true"
+              "buttonType": "PRIMARY"
             },
             {
               "type": "editButton",
-              "label": "Go back",
-              "id": "gobackBtn",
-              "buttonType": "AUXILIARY",
-              "ignoreRequiredFields": "true"
+              "label": "Cancel",
+              "id": "cancelBtn",
+              "buttonType": "AUXILIARY"
             }
           ]
         }
