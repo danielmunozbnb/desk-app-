@@ -23,26 +23,75 @@
         "url": "<% 'workers/' + currentRow.childrenMap.colEmployeeId.value + '/businessTitleChanges' %>",
         "httpMethod": "POST",
         "authType": "sso",
-        "onSend": "<%
-                   currentRow.selected ? self.data : null;
-                   %>"
+        "exclude": "<%!submitBtn.value%>",
+        "onSend": "<%currentRow.selected ? self.data : null;%>"
+      },
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "search",
+            "value" : "<% searchNameTxt.value; %>"
+          },
+          {
+            "outboundPath" : "submitClicked",
+            "value" : "<% submitBtn.value %>"
+          },
+          {
+            "outboundPath" : "past_search",
+            "exclude":"<%flowVariables.gobackClicked ?? false;%>",
+            "value" : "<% flowVariables.search %>"
+          },
+          {
+            "outboundPath": "gobackClicked",
+            "value": "<% false %>"
+          },
+          {
+            "outboundPath": "searchClicked",
+            "value": "<% searchBtn.value %>"
+          },
+          {
+            "outboundPath": "selectedRows",
+            "value": "<% !empty(dataGrid.getSelectedRows()) %>"
+          }
+        ]
       }
     ]
   },
-  "onLoad": "<%
-             pageVariables.filterWarned=false;
-             %>",
   "presentation": {
     "pageType": "edit",
     "title": {
       "type": "title",
       "label": "Test Dynamic Grid"
     },
+    "cancelOverride": {
+      "taskId": "root"
+    },
+    "standardEditButtonsHidden" : true,
     "body": {
       "type": "section",
       "horizontal": false,
       "sorted": false,
       "children": [
+        {
+          "type":"editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "Search",
+              "id": "searchBtn",
+              "buttonType": "AUXILIARY",
+              "ignoreRequiredFields": "true"
+            },
+            { "type": "editButton",
+              "label": "Save changes",
+              "id": "submitBtn",
+              "buttonType": "PRIMARY"
+            }
+          ]
+        },
         {
           "type": "section",
           "horizontal": true,
@@ -54,41 +103,27 @@
                 {
                   "type": "text",
                   "id": "searchNameTxt",
-                  "label": "Please enter a name to search"
-                },
-                {
-                  "type": "pageActionButton",
-                  "id": "searchBtn",
-                  "visible": true,
-                  "label": "Search",
-                  "onClick": "<%
-                              if (searchNameTxt.value.size() < 3) {
-                                  searchNameTxt.setWarning('El texto de filtro no puede ser menor a 3 caracteres de largo.');
-
-                              } else {
-                                  if (empty(dataGrid.getSelectedRows())){
-                                      searchNameTxt.clearWarning();
-                                          var test = workersInfo.invoke({'search': searchNameTxt.value});
-                                          dataGrid.setRows(test.data);
-
-                                  } else if(pageVariables.filterWarned==false && !empty(dataGrid.getSelectedRows())){
-                                      pageVariables.filterWarned = true;
-                                          searchNameTxt.setWarning('Al modificar los filtros, se perderán los cambios no guardados de las filas seleccionadas, busca otra vez para ignorar cambios.');
-
-                                  } else if(pageVariables.filterWarned==true && !empty(dataGrid.getSelectedRows())){
-                                      searchNameTxt.clearWarning();
-                                          pageVariables.filterWarned = false;
-                                          var test = workersInfo.invoke({'search': searchNameTxt.value});
-                                          dataGrid.setRows(test.data);
-                                  }
-                              }
-                              %>"
+                  "label": "Please enter a name to search...APP DANI"
                 },
                 {
                   "type": "grid",
                   "id": "dataGrid",
                   "gridType": "LIST",
-                  "rows": "<% [] %>",
+                  "rows":
+                  "<%
+                       if(flowVariables.gobackClicked==false){
+                           var searchTxt = flowVariables.search;
+                               var test = searchTxt ?
+                                   workersInfo.invoke({'search': searchTxt}).data : [];
+                               test;
+                       }else if(flowVariables.gobackClicked==true){ //existe y se ha pulsado
+
+                           var searchTxt = flowVariables.past_search;
+                               var test = searchTxt ?
+                                   workersInfo.invoke({'search': searchTxt}).data : [];
+                               test;
+                       }
+                   %>",
                   "rowVariableName": "row",
                   "_doNotAdd": "true",
                   "_doNotRemoveRow": "true",

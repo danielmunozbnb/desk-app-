@@ -1,0 +1,19 @@
+
+
+
+pageVariables.hasWarning = false;
+                               if (currentRow.childrenMap.size==0) {
+                                   pageVariables.hasWarning = true;
+                               }
+
+
+                               ,
+                                   "applicationExceptions": [
+                                     {
+                                       "type": "applicationException",
+                                       "id":"id_warning",
+                                       "severity": "WARNING",
+                                       "message": "<% 'Changes not saved.' %>",
+                                       "render": "<% pageVariables.hasWarning %>"
+                                     }
+                                   ],
