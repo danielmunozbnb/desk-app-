@@ -11,7 +11,11 @@
         "values" : [
           {
             "outboundPath" : "continueClicked",
-            "value" : "<% continueBtn.value; %>"
+            "value" : "<% continueBtn.value %>"
+          },
+          {
+            "outboundPath" : "cancelClicked",
+            "value" : "<% cancelBtn.value %>"
           }
         ]
       }
@@ -20,6 +24,7 @@
   "presentation": {
     "micro": true,
     "microFirstPageOnly": true,
+    "standardEditButtonsHidden": true,
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
     "title": {
@@ -37,8 +42,13 @@
               "type": "editButton",
               "label": "Continue",
               "id": "continueBtn",
-              "buttonType": "PRIMARY",
-              "ignoreRequiredFields": "true"
+              "buttonType": "PRIMARY"
+            },
+            {
+              "type": "editButton",
+              "label": "Cancel",
+              "id": "cancelBtn",
+              "buttonType": "AUXILIARY"
             }
           ]
         }

@@ -21,6 +21,13 @@
       "page": {
         "id": "titleChange"
       }
+    },
+    {
+      "id": "a",
+      "routingPattern": "a",
+      "page": {
+        "id": "a"
+      }
     }
   ],
   "flowDefinitions": [
@@ -29,27 +36,23 @@
       "name": "selfRef",
       "flowSteps": [
         {
-          "id": "root",
-          "taskId": "root",
+          "id": "titleChangeStep",
+          "taskId": "titleChange",
           "startsFlow": true,
           "transitions": [
             {
-              "id": "self",
-              "value": "self",
-              "order": "a",
-              "condition": "<% flowVariables.searchClicked && !flowVariables.selectedRows %>"
-            },
-            {
               "id": "warning",
               "value": "filterWarningStep",
+              "order": "a",
+              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows && !empty(flowVariables.search) %>"
+            },
+            {
+              "id": "self",
+              "value": "titleChangeStep",
               "order": "b",
-              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows %>"
+              "condition": "<% flowVariables.searchClicked %>"
             }
           ]
-        },
-        {
-          "id": "self",
-          "taskId": "root"
         },
         {
           "_TODO": "Que al darle a cancel, vuelva a la página sin actualizar el grid.",
@@ -57,10 +60,10 @@
           "taskId": "filterWarning",
           "transitions": [
             {
-              "id": "self",
-              "value": "self",
+              "id": "titleChangeStep",
+              "value": "titleChangeStep",
               "order": "a",
-              "condition": "<% flowVariables.continueClicked %>"
+              "condition": "<% flowVariables.continueClicked || flowVariables.cancelClicked %>"
             }
           ]
         }
