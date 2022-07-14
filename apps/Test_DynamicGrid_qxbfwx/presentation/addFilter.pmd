@@ -14,19 +14,9 @@
             "value" : "<% continueBtn.value %>"
           },
           {
-            "outboundPath" : "cancel_filter_Clicked",
-            "value" : "<% cancelBtn.value %>"
-          },
-          {
             "outboundPath" : "search",
             "value" : "<% searchNameTxt.value %>"
-          },
-          {
-            "outboundPath" : "previousSearch",
-            "exclude": "<% flowVariables.cancelClicked ?? false  %>",
-            "value" : "<% flowVariables.search %>"
           }
-
         ]
       }
     ]
@@ -59,15 +49,6 @@
               "id": "continueBtn",
               "buttonType": "PRIMARY",
               "ignoreRequiredFields": "true"
-            },
-            {
-              "type": "editButton",
-              "label": "Cancel",
-              "id": "cancelBtn",
-              "buttonType": "AUXILIARY",
-              "ignoreRequiredFields": "true",
-              "visible":false
-
             }
           ]
         }

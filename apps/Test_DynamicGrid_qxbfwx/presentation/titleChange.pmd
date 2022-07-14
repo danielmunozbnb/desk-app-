@@ -17,7 +17,6 @@
         "url": "<% 'workers/' + currentRow.childrenMap.colEmployeeId.value + '/businessTitleChanges' %>",
         "httpMethod": "POST",
         "authType": "sso",
-        "exclude": "<% !submitBtn.value %>",
         "onSend": "<% self.data %>"
       },
       {
@@ -25,40 +24,9 @@
         "variableScope" : "flow",
         "name" : "transitionOutboundVars",
         "values" : [
-
-          {
-            "outboundPath": "cancelClicked",
-            "value": "<% false %>"
-          },
-          {
-            "outboundPath": "continueClicked",
-            "value": "<% false %>"
-          },
-          {
-            "outboundPath": "searchClicked",
-            "value": "<% searchBtn.value %>"
-          },
           {
             "outboundPath": "submitClicked",
             "value": "<% submitBtn.value %>"
-          },
-          {
-            "outboundPath": "selectedRows",
-            "value": "<% !empty(dataGrid.getSelectedRows()) %>"
-          },
-          {
-            "outboundPath": "add_filter_Clicked",
-            "value": "<%  %>"
-          },
-          {
-            "outboundPath": "titles",
-            "value": "<%
-                      var titlesList = dataGrid.getRows().map(x => {
-                          var businessTitle = x.getChildrenMap().get('colBusinessTitle').value;
-                          return businessTitle;
-                      });
-                      titlesList;
-                      %>"
           }
         ]
       }
@@ -87,17 +55,7 @@
               "label": "Submit",
               "id": "submitBtn",
               "buttonType": "PRIMARY",
-              "ignoreRequiredFields": "true",
-              "visible":"<% flowVariables.search_filter_Clicked ?? false%>"
-            },
-            {
-              "type": "editButton",
-              "label": "Search",
-              "id": "searchBtn",
-              "buttonType": "AUXILIARY",
-              "ignoreRequiredFields": "true",
-              "visible":false
-
+              "ignoreRequiredFields": "true"
             }
           ]
         },
@@ -124,7 +82,7 @@
                   "id": "current_filter",
                   "label": "You are now filtering workers by:",
                   "value": "<%
-                            (flowVariables.cancelClicked ?? false) ? flowVariables.previousSearch : flowVariables.search;
+                            (flowVariables.search ?? 'No filters added');
                             %>"
                 },
 
@@ -135,29 +93,12 @@
                   "gridType": "LIST",
                   "rows":
                     "<%
-
-
-                    var searchTxt = (flowVariables.cancelClicked ?? false) ? flowVariables.previousSearch : flowVariables.search;
-                    var test = searchTxt ? workersInfo.invoke({'search': searchTxt}).data : [];
-                    pageVariables.previousData = list:mapAttribute(test, 'businessTitle');
-                    test;
-
+                    flowVariables.search ? workersInfo.invoke({'search': flowVariables.search}).data : [];
                      %>",
                   "rowVariableName": "row",
-                  "indexVariableName": "i",
-                  "_doNotAdd": "true",
-                  "_doNotRemoveRow": "true",
                   "enabled": true,
                   "selectionEnabled": true,
                   "currentRowVariable": "currentRow",
-                  "_isArrayOutBinding": false,
-                  "rowSelected": "<%
-                                  if (flowVariables.cancelClicked == true)
-                                    flowVariables.titles.get(i) != pageVariables.previousData.get(i);
-                                  else
-                                    false;
-                                  %>",
-                  "onRowSelect":"<% %>",
                   "columns": [
                     {
                       "type": "column",
@@ -194,7 +135,7 @@
                       "cellTemplate": {
                         "type": "text",
                         "id": "celdaBT",
-                        "value": "<% (flowVariables.cancelClicked ?? false) ? flowVariables.titles[i] : row.businessTitle %>",
+                        "value": "<% row.businessTitle %>",
                         "valueOutBinding": "workerUpdate.proposedBusinessTitle"
                       }
                     }

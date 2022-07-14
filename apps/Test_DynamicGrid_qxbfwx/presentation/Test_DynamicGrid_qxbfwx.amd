@@ -43,37 +43,7 @@
               "id": "self",
               "value": "titleChangeStep",
               "order": "a",
-              "condition": "<% flowVariables.searchClicked && !flowVariables.selectedRows%>"
-            },
-            {
-              "id": "self",
-              "value": "titleChangeStep",
-              "order": "b",
               "condition": "<% flowVariables.submitClicked %>"
-            },
-            {
-              "id": "warning",
-              "value": "filterWarningStep",
-              "order": "c",
-              "condition": "<% flowVariables.searchClicked && flowVariables.selectedRows %>"
-            },
-            {
-              "id": "addFilter",
-              "value": "addFilterStep",
-              "order": "d",
-              "condition": "<% flowVariables.add_filter_Clicked %>"
-            }
-          ]
-        },
-        {
-          "id": "filterWarningStep",
-          "taskId": "filterWarning",
-          "transitions": [
-            {
-              "id": "titleChangeStep",
-              "value": "titleChangeStep",
-              "order": "a",
-              "condition": "true"
             }
           ]
         },
