@@ -24,31 +24,39 @@
   "presentation": {
     "micro": true,
     "microFirstPageOnly": true,
-    "standardEditButtonsHidden": true,
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "Filtering will discard changes, are you sure you want to continue???"
+      "label": "Warning"
     },
+    "standardEditButtonsHidden" : true,
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
         {
+          "type": "readOnlyText",
+          "id": "text",
+          "label": "",
+          "value": "Unsubmitted changes will not be saved"
+        },
+        {
           "type":"editButtonBar",
           "editButtons": [
             {
               "type": "editButton",
-              "label": "Continue",
+              "label": "Ignore",
               "id": "continueBtn",
-              "buttonType": "PRIMARY"
+              "buttonType": "PRIMARY",
+              "ignoreRequiredFields": "true"
             },
             {
               "type": "editButton",
               "label": "Cancel",
               "id": "cancelBtn",
-              "buttonType": "AUXILIARY"
+              "buttonType": "AUXILIARY",
+              "ignoreRequiredFields": "true"
             }
           ]
         }

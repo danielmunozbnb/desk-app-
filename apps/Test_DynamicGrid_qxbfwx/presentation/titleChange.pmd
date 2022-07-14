@@ -47,6 +47,10 @@
             "value": "<% searchBtn.value %>"
           },
           {
+            "outboundPath": "submitClicked",
+            "value": "<% submitBtn.value %>"
+          },
+          {
             "outboundPath": "selectedRows",
             "value": "<% !empty(dataGrid.getSelectedRows()) %>"
           },
@@ -117,15 +121,13 @@
                   "gridType": "LIST",
                   "rows":
                     "<%
-                    console.info(flowVariables.previousData);
+
+
                     var searchTxt = (flowVariables.cancelClicked ?? false) ? flowVariables.previousSearch : flowVariables.search;
                     var test = searchTxt ? workersInfo.invoke({'search': searchTxt}).data : [];
                     pageVariables.previousData = list:mapAttribute(test, 'businessTitle');
-                    console.info(pageVariables.previousData);
                     test;
-                     //var source = (flowVariables.continueClicked ?? false) ? flowVariables.rows : test;
-                     //console.info(json:asJSON(source));
-                     //source;
+
                      %>",
                   "rowVariableName": "row",
                   "indexVariableName": "i",
@@ -141,6 +143,7 @@
                                   else
                                     false;
                                   %>",
+                  "onRowSelect": "<% pageVariables.showSubmitBtn %>",
                   "columns": [
                     {
                       "type": "column",
