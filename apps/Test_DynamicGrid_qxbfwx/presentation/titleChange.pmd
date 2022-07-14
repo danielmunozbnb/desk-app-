@@ -25,15 +25,7 @@
         "variableScope" : "flow",
         "name" : "transitionOutboundVars",
         "values" : [
-          {
-            "outboundPath" : "search",
-            "value" : "<% searchNameTxt.value ?: '' %>"
-          },
-          {
-            "outboundPath" : "previousSearch",
-            "exclude": "<% flowVariables.cancelClicked ?? false  %>",
-            "value" : "<% flowVariables.search %>"
-          },
+
           {
             "outboundPath": "cancelClicked",
             "value": "<% false %>"
@@ -91,7 +83,8 @@
               "label": "Submit",
               "id": "submitBtn",
               "buttonType": "PRIMARY",
-              "ignoreRequiredFields": "true"
+              "ignoreRequiredFields": "true",
+              "visible":false
             },
             {
               "type": "editButton",
@@ -111,10 +104,16 @@
               "id": "fieldSetContainer",
               "children": [
                 {
-                  "type": "text",
-                  "id": "searchNameTxt",
-                  "label": "Please enter a name to search"
+                  "type": "button",
+                  "id": "ManageEvents",
+                  "label": "Type worker",
+                  "taskReference": {
+                    "type": "taskReference",
+                    "taskId": "addFilter"
+                  },
+                  "action": "AUXILIARY"
                 },
+
                 {
                   "type": "grid",
                   "id": "dataGrid",
@@ -143,7 +142,6 @@
                                   else
                                     false;
                                   %>",
-                  "onRowSelect": "<% pageVariables.showSubmitBtn %>",
                   "columns": [
                     {
                       "type": "column",
@@ -198,6 +196,7 @@
         {
           "type": "richText",
           "enabled": "false",
+          "visible":"false",
           "value": "Powered By Daniel & Andrei"
         }
       ]

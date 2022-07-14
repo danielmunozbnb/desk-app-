@@ -21,6 +21,13 @@
       "page": {
         "id": "titleChange"
       }
+    },
+    {
+      "id": "addFilter",
+      "routingPattern": "addFilter",
+      "page": {
+        "id": "addFilter"
+      }
     }
   ],
   "flowDefinitions": [

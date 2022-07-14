@@ -1,0 +1,76 @@
+{
+  "id": "addFilter",
+  "endPoints": [
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "search_filter_Clicked",
+            "value" : "<% continueBtn.value %>"
+          },
+          {
+            "outboundPath" : "cancel_filter_Clicked",
+            "value" : "<% cancelBtn.value %>"
+          },
+          {
+            "outboundPath" : "search",
+            "value" : "<% searchNameTxt.value %>"
+          },
+          {
+            "outboundPath" : "previousSearch",
+            "exclude": "<% flowVariables.cancelClicked ?? false  %>",
+            "value" : "<% flowVariables.search %>"
+          }
+
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "micro": true,
+    "microFirstPageOnly": true,
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Warning"
+    },
+    "standardEditButtonsHidden" : true,
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "searchNameTxt",
+          "label": "Please enter a name to search"
+        },
+        {
+          "type":"editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "Search",
+              "id": "continueBtn",
+              "buttonType": "PRIMARY",
+              "ignoreRequiredFields": "true"
+            },
+            {
+              "type": "editButton",
+              "label": "Cancel",
+              "id": "cancelBtn",
+              "buttonType": "AUXILIARY",
+              "ignoreRequiredFields": "true"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
