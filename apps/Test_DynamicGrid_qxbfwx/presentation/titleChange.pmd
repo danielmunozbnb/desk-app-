@@ -47,6 +47,10 @@
             "value": "<% !empty(dataGrid.getSelectedRows()) %>"
           },
           {
+            "outboundPath": "add_filter_Clicked",
+            "value": "<%  %>"
+          },
+          {
             "outboundPath": "titles",
             "value": "<%
                       var titlesList = dataGrid.getRows().map(x => {
@@ -84,14 +88,16 @@
               "id": "submitBtn",
               "buttonType": "PRIMARY",
               "ignoreRequiredFields": "true",
-              "visible":false
+              "visible":"<% flowVariables.search_filter_Clicked ?? false%>"
             },
             {
               "type": "editButton",
               "label": "Search",
               "id": "searchBtn",
               "buttonType": "AUXILIARY",
-              "ignoreRequiredFields": "true"
+              "ignoreRequiredFields": "true",
+              "visible":false
+
             }
           ]
         },
@@ -105,14 +111,23 @@
               "children": [
                 {
                   "type": "button",
-                  "id": "ManageEvents",
-                  "label": "Type worker",
+                  "id": "addfilterBtn",
+                  "label": "Add new filter",
                   "taskReference": {
                     "type": "taskReference",
                     "taskId": "addFilter"
                   },
                   "action": "AUXILIARY"
                 },
+                {
+                  "type": "readOnlyText",
+                  "id": "current_filter",
+                  "label": "You are now filtering workers by:",
+                  "value": "<%
+                            (flowVariables.cancelClicked ?? false) ? flowVariables.previousSearch : flowVariables.search;
+                            %>"
+                },
+
 
                 {
                   "type": "grid",
