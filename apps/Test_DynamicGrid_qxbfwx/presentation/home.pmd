@@ -37,7 +37,7 @@
           "label": "START",
           "action": "PRIMARY",
           "taskReference": {
-            "taskId": "titleChange"
+            "taskId": "addFilter"
           }
         }
       ]

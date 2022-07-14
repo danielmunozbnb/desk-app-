@@ -157,6 +157,7 @@
                                   else
                                     false;
                                   %>",
+                  "onRowSelect":"<% %>",
                   "columns": [
                     {
                       "type": "column",

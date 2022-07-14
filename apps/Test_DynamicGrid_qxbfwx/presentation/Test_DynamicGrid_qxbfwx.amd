@@ -38,7 +38,6 @@
         {
           "id": "titleChangeStep",
           "taskId": "titleChange",
-          "startsFlow": true,
           "transitions": [
             {
               "id": "self",
@@ -81,6 +80,7 @@
         {
           "id": "addFilterStep",
           "taskId": "addFilter",
+          "startsFlow": true,
           "transitions": [
             {
               "id": "titleChangeStep",

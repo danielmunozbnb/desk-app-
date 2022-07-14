@@ -38,7 +38,7 @@
     "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "Warning"
+      "label": "Add new filter"
     },
     "standardEditButtonsHidden" : true,
     "body": {
