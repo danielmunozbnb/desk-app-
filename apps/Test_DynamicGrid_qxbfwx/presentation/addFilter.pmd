@@ -26,11 +26,11 @@
     "microFirstPageOnly": true,
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
+    "standardEditButtonsHidden" : true,
     "title": {
       "type": "title",
       "label": "Add new filter"
     },
-    "standardEditButtonsHidden" : true,
     "body": {
       "type": "section",
       "horizontal": false,

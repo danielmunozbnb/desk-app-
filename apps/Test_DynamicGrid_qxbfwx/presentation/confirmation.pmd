@@ -1,0 +1,93 @@
+{
+  "id": "confirmation",
+  "endPoints": [
+    {
+      "name": "cnQuote",
+      "baseUrlType": "orchestration",
+      "url": "<% site.applicationId + '/orchestrations/ChuckNorris/launch' %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "doneClicked",
+            "value" : "<% doneBtn.value %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "pageType": "edit",
+    "standardEditButtonsHidden" : true,
+    "headerSize": "VPS_DEFAULT",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "hello",
+          "label": "Changes have been successfully submited!",
+          "value": "<% '<< ' + cnQuote.value + ' >>' %>",
+          "enabled": false
+        },
+        {
+          "type": "grid",
+          "enabled": false,
+          "rowVariableName": "row",
+          "rows": "<% flowVariables.changesList %>",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "colName",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% row.name %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "colOldTitle",
+              "label": "Old Title",
+              "cellTemplate": {
+                "type": "text",
+                "id": "cellOBT",
+                "value": "<% row.oldTitle %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "colBusinessTitle",
+              "label": "New Title",
+              "cellTemplate": {
+                "type": "text",
+                "id": "cellNBT",
+                "value": "<% row.businessTitle %>"
+              }
+            }
+          ]
+        },
+        {
+          "type":"editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "Done",
+              "id": "doneBtn",
+              "buttonType": "PRIMARY",
+              "ignoreRequiredFields": "true"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

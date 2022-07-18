@@ -28,6 +28,13 @@
       "page": {
         "id": "addFilter"
       }
+    },
+    {
+      "id": "confirmation",
+      "routingPattern": "confirmation",
+      "page": {
+        "id": "confirmation"
+      }
     }
   ],
   "flowDefinitions": [
@@ -41,7 +48,7 @@
           "transitions": [
             {
               "id": "self",
-              "value": "titleChangeStep",
+              "value": "confirmationStep",
               "order": "a",
               "condition": "<% flowVariables.submitClicked %>"
             }
@@ -59,12 +66,29 @@
               "condition": "true"
             }
           ]
+        },
+        {
+          "id": "confirmationStep",
+          "taskId": "confirmation",
+          "transitions": [
+            {
+              "id": "titleChangeStep",
+              "value": "titleChangeStep",
+              "order": "a",
+                "condition": "<% flowVariables.doneClicked %>"
+            }
+          ]
         }
       ]
     }
   ],
   "applicationId": "Test_DynamicGrid_qxbfwx",
   "dataProviders": [
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
+    },
     {
       "key": "app",
       "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
