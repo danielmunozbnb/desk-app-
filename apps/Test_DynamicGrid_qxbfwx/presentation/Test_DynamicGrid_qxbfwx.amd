@@ -28,6 +28,13 @@
       "page": {
         "id": "addFilter"
       }
+    },
+    {
+      "id": "confirmation",
+      "routingPattern": "confirmation",
+      "page": {
+        "id": "confirmation"
+      }
     }
   ],
   "flowDefinitions": [
@@ -40,10 +47,22 @@
           "taskId": "titleChange",
           "transitions": [
             {
-              "id": "self",
-              "value": "titleChangeStep",
+              "id": "confirmation",
+              "value": "confirmationTask",
               "order": "a",
               "condition": "<% flowVariables.submitClicked %>"
+            }
+          ]
+        },
+        {
+          "id": "confirmationTask",
+          "taskId": "confirmation",
+          "transitions": [
+            {
+              "id": "titleChangeStep",
+              "value": "titleChangeStep",
+              "order": "a",
+              "condition": "<% flowVariables.okClicked %>"
             }
           ]
         },
@@ -84,6 +103,11 @@
     {
       "key": "wql",
       "value": "https://api.workday.com/wql/v1/"
+    },
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
     }
   ]
 }

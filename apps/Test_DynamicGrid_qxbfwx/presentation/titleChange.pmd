@@ -27,6 +27,56 @@
           {
             "outboundPath": "submitClicked",
             "value": "<% submitBtn.value %>"
+          },
+          {
+            "outboundPath": "changes",
+            "value": "<%
+                      var workersList = dataGrid.getSelectedRows().map(x => {
+                          var obj = {:}; //instantiates an empty map
+                          var worker_firstname = x.getChildrenMap().get('colFirstName').value;
+                          var workerid_lastname = x.getChildrenMap().get('colLastName').value;
+                          var workerbt = x.getChildrenMap().get('colBusinessTitle').value;
+                          obj.add('worker_firstname', worker_firstname);
+                          obj.add('worker_lastname', workerid_lastname);
+                          obj.add('worker_bt', workerbt);
+                          return obj;
+                      });
+
+                      var mainMap = {:}; //instantiates an empty map
+                      mainMap.add('changes_submitted',workersList);
+                      return mainMap;
+                      mainMap;
+                      %>"
+          },
+          {
+            "outboundPath": "titles",
+            "value": "<%
+                      var titlesList = dataGrid.getSelectedRows().map(x => {
+                          var businessTitle = x.getChildrenMap().get('colBusinessTitle').value;
+                          return businessTitle;
+                      });
+                      titlesList;
+                      %>"
+          },
+          {
+            "outboundPath": "names",
+            "value": "<%
+                      var titlesList = dataGrid.getSelectedRows().map(x => {
+                          var businessTitle = x.getChildrenMap().get('colLastName').value;
+                          return businessTitle;
+                      });
+                      titlesList;
+                      %>"
+          },
+          {
+            "outboundPath": "names_f",
+            "value": "<%
+                      var titlesList = dataGrid.getSelectedRows().map(x => {
+                          var businessTitle = x.getChildrenMap().get('colFirstName').value;
+                          return businessTitle;
+                      });
+                      titlesList;
+                      %>"
           }
         ]
       }
