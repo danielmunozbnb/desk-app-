@@ -47,22 +47,10 @@
           "taskId": "titleChange",
           "transitions": [
             {
-              "id": "confirmation",
-              "value": "confirmationTask",
+              "id": "self",
+              "value": "confirmationStep",
               "order": "a",
               "condition": "<% flowVariables.submitClicked %>"
-            }
-          ]
-        },
-        {
-          "id": "confirmationTask",
-          "taskId": "confirmation",
-          "transitions": [
-            {
-              "id": "titleChangeStep",
-              "value": "titleChangeStep",
-              "order": "a",
-              "condition": "<% flowVariables.okClicked %>"
             }
           ]
         },
@@ -78,12 +66,29 @@
               "condition": "true"
             }
           ]
+        },
+        {
+          "id": "confirmationStep",
+          "taskId": "confirmation",
+          "transitions": [
+            {
+              "id": "titleChangeStep",
+              "value": "titleChangeStep",
+              "order": "a",
+                "condition": "<% flowVariables.doneClicked %>"
+            }
+          ]
         }
       ]
     }
   ],
   "applicationId": "Test_DynamicGrid_qxbfwx",
   "dataProviders": [
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
+    },
     {
       "key": "app",
       "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
@@ -103,11 +108,6 @@
     {
       "key": "wql",
       "value": "https://api.workday.com/wql/v1/"
-    },
-    {
-      "key": "orchestration",
-      "value": "https://api.workday.com/orchestrate/v1/apps/",
-      "appDefault": false
     }
   ]
 }

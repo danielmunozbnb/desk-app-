@@ -2,15 +2,11 @@
   "id": "confirmation",
   "endPoints": [
     {
-      "name": "orchestration",
+      "name": "cnQuote",
       "baseUrlType": "orchestration",
-      "url": "<% site.applicationId + '/orchestrations/norris_orch/launch' %>",
-      "httpMethod": "GET",
+      "url": "<% site.applicationId + '/orchestrations/ChuckNorris/launch' %>",
       "authType": "sso"
-
     }
-
-
   ],
   "outboundData": {
     "outboundEndPoints": [
@@ -20,104 +16,76 @@
         "name" : "transitionOutboundVars",
         "values" : [
           {
-            "outboundPath": "okClicked",
-            "value": "<% okBtn.value %>"
+            "outboundPath" : "doneClicked",
+            "value" : "<% doneBtn.value %>"
           }
         ]
       }
     ]
   },
   "presentation": {
-    "headerSize": "VPS_DEFAULT",
-    "standardEditButtonsHidden": true,
     "pageType": "edit",
-    "title": {
-      "type": "title",
-      "label": "Confirmation",
-      "enabled": false
-    },
+    "standardEditButtonsHidden" : true,
+    "headerSize": "VPS_DEFAULT",
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
         {
-          "type": "readOnlyText",
-          "id": "message",
-          "label": "Confirmation message:",
-          "value": "You successfully submitted changes."
+          "type": "text",
+          "id": "hello",
+          "label": "Changes have been successfully submited!",
+          "value": "<% '<< ' + cnQuote.value + ' >>' %>",
+          "enabled": false
         },
         {
           "type": "grid",
-          "id": "dataGrid",
-          "gridType": "LIST",
-          "indexVariableName": "i",
-          "rows":
-          "<%
-           flowVariables.changes.changes_submitted
-           %>",
+          "enabled": false,
           "rowVariableName": "row",
-          "doNotRemove":true,
-          "doNotAdd":true,
-          "enabled":false,
-          "currentRowVariable": "currentRow",
+          "rows": "<% flowVariables.changesList %>",
           "columns": [
             {
               "type": "column",
-              "columnId": "worker_firstname",
-              "label": "First Name",
+              "columnId": "colName",
+              "label": "Name",
               "cellTemplate": {
                 "type": "text",
-                "value": "<% flowVariables.names_f.get(i) %>"
+                "value": "<% row.name %>"
               }
             },
             {
               "type": "column",
-              "columnId": "worker_lastname",
-              "label": "Last Name",
+              "columnId": "colOldTitle",
+              "label": "Old Title",
               "cellTemplate": {
                 "type": "text",
-                "value": "<% flowVariables.names.get(i) %>"
+                "id": "cellOBT",
+                "value": "<% row.oldTitle %>"
               }
             },
             {
               "type": "column",
-              "columnId": "worker_bt",
-              "label": "NEW Business Title",
+              "columnId": "colBusinessTitle",
+              "label": "New Title",
               "cellTemplate": {
                 "type": "text",
-                "id": "celdaBT",
-                "value": "<% flowVariables.titles.get(i) %>"
+                "id": "cellNBT",
+                "value": "<% row.businessTitle %>"
               }
             }
           ]
         },
         {
-          "type": "readOnlyText",
-          "id": "response",
-          "label": "response:",
-          "value": "<% orchestration.value %>"
-        },
-        {
-          "type": "editButtonBar",
+          "type":"editButtonBar",
           "editButtons": [
             {
               "type": "editButton",
-              "label": "Ok",
-              "id": "okBtn",
+              "label": "Done",
+              "id": "doneBtn",
               "buttonType": "PRIMARY",
               "ignoreRequiredFields": "true"
             }
           ]
-        }
-      ]
-    },
-    "footer": {
-      "type": "footer",
-      "children": [
-        {
-          "type": "richText",
-          "enabled": "false",
-          "value": "Powered By Workday Extend"
         }
       ]
     }

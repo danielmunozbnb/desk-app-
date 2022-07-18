@@ -29,59 +29,31 @@
             "value": "<% submitBtn.value %>"
           },
           {
-            "outboundPath": "changes",
+            "outboundPath": "changesList",
             "value": "<%
-                      var workersList = dataGrid.getSelectedRows().map(x => {
-                          var obj = {:}; //instantiates an empty map
-                          var worker_firstname = x.getChildrenMap().get('colFirstName').value;
-                          var workerid_lastname = x.getChildrenMap().get('colLastName').value;
-                          var workerbt = x.getChildrenMap().get('colBusinessTitle').value;
-                          obj.add('worker_firstname', worker_firstname);
-                          obj.add('worker_lastname', workerid_lastname);
-                          obj.add('worker_bt', workerbt);
+                      var newRows = dataGrid.getSelectedRows().map(x => {
+                          var obj = {:};
+                          var children = x.getChildrenMap();
+                          obj.add('name', children.get('colFirstName').value + ' ' + children.get('colLastName').value);
+                          obj.add('businessTitle', children.get('colBusinessTitle').value);
+                          obj.add('id', children.get('colEmployeeId').value);
                           return obj;
                       });
 
-                      var mainMap = {:}; //instantiates an empty map
-                      mainMap.add('changes_submitted',workersList);
-                      return mainMap;
-                      mainMap;
-                      %>"
-          },
-          {
-            "outboundPath": "titles",
-            "value": "<%
-                      var titlesList = dataGrid.getSelectedRows().map(x => {
-                          var businessTitle = x.getChildrenMap().get('colBusinessTitle').value;
-                          return businessTitle;
-                      });
-                      titlesList;
-                      %>"
-          },
-          {
-            "outboundPath": "names",
-            "value": "<%
-                      var titlesList = dataGrid.getSelectedRows().map(x => {
-                          var businessTitle = x.getChildrenMap().get('colLastName').value;
-                          return businessTitle;
-                      });
-                      titlesList;
-                      %>"
-          },
-          {
-            "outboundPath": "names_f",
-            "value": "<%
-                      var titlesList = dataGrid.getSelectedRows().map(x => {
-                          var businessTitle = x.getChildrenMap().get('colFirstName').value;
-                          return businessTitle;
-                      });
-                      titlesList;
+                      var item;
+                      for (item : newRows) {
+                        var oldRow = pageVariables.workersInfo.find(x => {x.worker.id == item.id });
+                        item.add('oldTitle', oldRow.businessTitle);
+                      }
+
+                      newRows;
                       %>"
           }
         ]
       }
     ]
   },
+  "onLoad": "<% pageVariables.workersInfo = flowVariables.search ? workersInfo.invoke({'search': flowVariables.search}).data : []; %>",
   "presentation": {
     "standardEditButtonsHidden": true,
     "pageType": "edit",
@@ -135,15 +107,13 @@
                             (flowVariables.search ?? 'No filters added');
                             %>"
                 },
-
-
                 {
                   "type": "grid",
                   "id": "dataGrid",
                   "gridType": "LIST",
                   "rows":
                     "<%
-                    flowVariables.search ? workersInfo.invoke({'search': flowVariables.search}).data : [];
+                    pageVariables.workersInfo;
                      %>",
                   "rowVariableName": "row",
                   "enabled": true,
