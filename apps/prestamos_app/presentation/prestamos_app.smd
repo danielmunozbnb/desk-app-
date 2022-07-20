@@ -1,0 +1,21 @@
+{
+  "id": "prestamos_app",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "id": "sso",
+        "scheme": "SSO"
+      }
+    ]
+  },
+  "siteId": "prestamos_app",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "prestamos_app"
+}
