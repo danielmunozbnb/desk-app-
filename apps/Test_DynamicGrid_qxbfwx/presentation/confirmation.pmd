@@ -27,6 +27,10 @@
     "pageType": "edit",
     "standardEditButtonsHidden" : true,
     "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Confirm submitted changes"
+    },
     "body": {
       "type": "section",
       "horizontal": false,
@@ -35,9 +39,15 @@
           "type": "text",
           "id": "hello",
           "label": "Changes have been successfully submited!",
-          "value": "<% '<< ' + cnQuote.value + ' >>' %>",
           "enabled": false
         },
+        {
+          "type": "image",
+          "id": "statusImage",
+          "label": "Meme of the day",
+          "imageUri": "<% cnQuote.value %>"
+        },
+
         {
           "type": "grid",
           "enabled": false,

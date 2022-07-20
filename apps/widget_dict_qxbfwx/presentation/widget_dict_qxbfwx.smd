@@ -1,0 +1,25 @@
+{
+  "id": "widget_dict_qxbfwx",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      },
+      {
+        "scheme": "NoAuth",
+        "id": "noauth"
+      }
+    ]
+  },
+  "siteId": "widget_dict_qxbfwx",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "widget_dict_qxbfwx"
+}

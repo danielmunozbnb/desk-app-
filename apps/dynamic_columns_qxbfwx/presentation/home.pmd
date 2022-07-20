@@ -1,0 +1,127 @@
+{
+  "id": "home",
+  "endPoints": [
+
+    {
+      "baseUrlType": "workday-staffing",
+      "name": "workers",
+      "authType": "sso",
+      "url": "<% '/workers?search=' + 'sch' %>"
+    },
+    {
+      "name": "workerSearch",
+      "baseUrlType": "workday-staffing",
+      "url": "<% '/workers?search=' + instanceListQuery %>",
+      "exclude": "<% empty instanceListQuery %>",
+      "authType": "sso",
+      "deferred": true
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Workday Extend",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "instanceList",
+          "id": "instanceListWorkerSearch",
+          "label": "Worker",
+          "values": "<% workers.data %>",
+          "multiSelect": false,
+          "searchEndPoint": "<% endpoints.workerSearch %>",
+          "searchResultValues": "<% workerSearch.data %>"
+        },
+        {
+          "type": "grid",
+          "label": "Hardcoded Grid",
+          "id": "simpleGridWorker",
+          "rows": "<% workers.data %>",
+          "rowVariableName": "thisRow",
+          "doNotRemoveRow":true,
+          "doNotAdd":true,
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "col1",
+              "label": "Worker",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% thisRow.descriptor %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "col2",
+              "label": "Supervisory Organization",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<% thisRow.primaryJob.supervisoryOrganization.descriptor %>"
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "id": "gridWithDynamicColumns",
+          "label": "Grid by JSON Columns",
+          "rowVariableName": "row",
+          "rows": "<% workers.data %>",
+          "doNotRemoveRow":true,
+          "doNotAdd":true,
+          "dynamicColumns": {
+            "type": "dynamicColumns",
+            "columns": "<%  [
+{'name': 'Name',
+            'id': 'descriptor',
+            'type': 'string',
+            'dataField': 'descriptor'},
+{'name': 'Email',
+            'id': 'email',
+            'type': 'string',
+            'dataField': 'person.email'},
+{'name': 'Supervisory Organization',
+            'id': 'supervisoryOrganization',
+            'type': 'string',
+            'dataField': 'primaryJob.supervisoryOrganization.descriptor'}
+            ] %>",
+            "columnVariableName": "xColumn",
+            "columnId": "<% xColumn.id %>",
+            "label": "<% xColumn.name %>",
+            "templateId": "<% xColumn.type %>",
+            "attributeName": "<% xColumn.dataField %>"
+          },
+          "cellTemplates": [
+            {
+              "type": "cellTemplate",
+              "templateId": "string",
+              "template": {
+                "type": "text"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Powered By Workday Extend"
+        }
+      ]
+    }
+  }
+}

@@ -50,7 +50,13 @@
               "id": "self",
               "value": "confirmationStep",
               "order": "a",
-              "condition": "<% flowVariables.submitClicked %>"
+              "condition": "<% flowVariables.submitClicked && !flowVariables.selectedRows %>"
+            },
+            {
+              "id": "self",
+              "value": "titleChangeStep",
+              "order": "b",
+              "condition": "<% true %>"
             }
           ]
         },

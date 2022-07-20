@@ -1,0 +1,26 @@
+{
+  "appProperties": [],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "home",
+      "routingPattern": "home",
+      "page": {
+        "id": "home"
+      }
+    }
+  ],
+  "applicationId": "reservar_salas_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "id": "home",
+
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "event",
+        "baseUrlType": "app",
+        "url": "Evento",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "onSend": "<%
+                   self.data
+                   %>",
+        "values": [
+          {
+            "outboundPath": "createdBy.id",
+            "value": "<% me.id %>"
+          },
+          {
+            "outboundPath": "image.id",
+            "value": "<% (!empty(createAnEventImage.id)) ? createAnEventImage.id : null %>"
+          }
+        ]
+
+      }
+    ]
+  },
+  "presentation": {
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "simpleTypes"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": true,
+      "sorted": false,
+      "children": [
+        {
+          "type":"editButtonBar",
+          "editButtons": [
+            { "type": "editButton",
+              "label": "Create event",
+              "id": "1",
+              "buttonType": "PRIMARY",
+              "ignoreRequiredFields": "true"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "id": "dataGrid",
+          "gridType": "LIST",
+          "rows":
+          "<%
+
+           %>",
+          "rowVariableName": "row",
+          "enabled": true,
+          "selectionEnabled": true,
+          "currentRowVariable": "currentRow",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "Sala_id",
+              "label": "SALA",
+              "cellTemplate": {
+                "type": "text",
+                "id": "celda_id",
+                "value": "<%  %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "evento_fecha",
+              "label": "Fecha del evento",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<%  %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "evento_horas",
+              "label": "Horas reservadas",
+              "cellTemplate": {
+                "type": "text",
+                "value": "<%  %>"
+              }
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "horizontal": false,
+          "sorted": false,
+          "children": [
+            {
+              "type": "readOnlyText",
+              "label": "Crear evento.",
+              "value": "Selecciona la fecha y las horas de inicio y fin de el evento a crear"
+            },
+            {
+              "id": "salas",
+              "type": "instanceList",
+              "label": "Elige la sala que quieres reservar",
+              "instanceList": [
+                {
+                  "id": "Delibes_id",
+                  "descriptor": "Sala Delibes"
+                },
+                {
+                  "id": "Góngora_id",
+                  "descriptor": "Sala Góngora"
+                }
+              ]
+            },
+            {
+              "type": "date",
+              "label": "date",
+              "id": "dateField",
+              "value": "<% date:getTodaysDate(clientTimeZone) %>",
+              "enabled": true,
+              "onChange":"<%
+
+
+
+                          %>"
+            },
+            {
+              "type": "time",
+              "label": "Start time",
+              "enabled": true
+            },
+            {
+              "type": "time",
+              "label": "End time",
+              "enabled": true
+            }
+
+          ]
+        }
+
+      ]
+    }
+  }
+}

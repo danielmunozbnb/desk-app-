@@ -1,0 +1,39 @@
+{
+  "id": 1,
+  "name": "Evento",
+  "label": "Evento",
+  "defaultSecurityDomains": [
+    "mySecurityDomain"
+  ],
+  "defaultCollection": {
+    "name": "eventoes",
+    "label": "Eventoes"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "sala",
+      "label": "Sala",
+      "type": "TEXT"
+    },
+    {
+      "id": 2,
+      "name": "fecha",
+      "label": "Fecha",
+      "precision": "DAY",
+      "type": "DATE"
+    },
+    {
+      "id": 3,
+      "name": "hora_inicio",
+      "label": "Hora inicio",
+      "type": "TIME"
+    },
+    {
+      "id": 4,
+      "name": "hora_fin",
+      "label": "Hora fin",
+      "type": "TIME"
+    }
+  ]
+}

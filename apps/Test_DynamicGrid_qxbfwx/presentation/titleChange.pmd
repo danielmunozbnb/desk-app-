@@ -20,13 +20,17 @@
         "onSend": "<% self.data %>"
       },
       {
-        "type" : "outboundVariable",
-        "variableScope" : "flow",
-        "name" : "transitionOutboundVars",
-        "values" : [
+        "type": "outboundVariable",
+        "variableScope": "flow",
+        "name": "transitionOutboundVars",
+        "values": [
           {
             "outboundPath": "submitClicked",
             "value": "<% submitBtn.value %>"
+          },
+          {
+            "outboundPath": "selectedRows",
+            "value": "<% empty(dataGrid.getSelectedRows()) %>"
           },
           {
             "outboundPath": "changesList",
@@ -42,8 +46,8 @@
 
                       var item;
                       for (item : newRows) {
-                        var oldRow = pageVariables.workersInfo.find(x => {x.worker.id == item.id });
-                        item.add('oldTitle', oldRow.businessTitle);
+                          var oldRow = pageVariables.workersInfo.find(x => {x.worker.id == item.id });
+                              item.add('oldTitle', oldRow.businessTitle);
                       }
 
                       newRows;
@@ -70,7 +74,7 @@
       "sorted": false,
       "children": [
         {
-          "type":"editButtonBar",
+          "type": "editButtonBar",
           "editButtons": [
             {
               "type": "editButton",
@@ -112,9 +116,9 @@
                   "id": "dataGrid",
                   "gridType": "LIST",
                   "rows":
-                    "<%
-                    pageVariables.workersInfo;
-                     %>",
+                  "<%
+                   pageVariables.workersInfo;
+                   %>",
                   "rowVariableName": "row",
                   "enabled": true,
                   "selectionEnabled": true,
@@ -165,6 +169,7 @@
             }
           ]
         }
+
       ]
     },
     "footer": {
@@ -173,7 +178,7 @@
         {
           "type": "richText",
           "enabled": "false",
-          "visible":"false",
+          "visible": "false",
           "value": "Powered By Daniel & Andrei"
         }
       ]
