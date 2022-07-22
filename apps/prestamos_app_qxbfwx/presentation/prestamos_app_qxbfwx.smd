@@ -1,5 +1,5 @@
 {
-  "id": "prestamos_app",
+  "id": "prestamos_app_qxbfwx",
   "languages": [
     {
       "code": "en-US",
@@ -14,8 +14,8 @@
       }
     ]
   },
-  "siteId": "prestamos_app",
+  "siteId": "prestamos_app_qxbfwx",
   "cdnEnabled": true,
   "siteProperties": [ ],
-  "applicationId": "prestamos_app"
+  "applicationId": "prestamos_app_qxbfwx"
 }

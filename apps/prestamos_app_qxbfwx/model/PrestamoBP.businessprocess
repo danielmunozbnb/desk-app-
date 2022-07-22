@@ -1,0 +1,24 @@
+{
+  "id": 1,
+  "name": "PrestamoBP",
+  "label": "Prestamo B P",
+  "description": "Business Process Type for Prestamo B P",
+  "targetBusinessObject": "Prestamo",
+  "approvalStep": {
+    "actions": [
+      "APPROVE",
+      "DENY",
+      "SEND_BACK"
+    ]
+  },
+  "revisePageRoute": "/revise/{eventStepId}",
+  "actionSteps": [
+    {
+      "id": 1,
+      "name": "ReviewPrestamoBP",
+      "label": "Review My Business Process",
+      "description": "Step to review my business process",
+      "pageRoute": "/review/{eventStepId}"
+    }
+  ]
+}

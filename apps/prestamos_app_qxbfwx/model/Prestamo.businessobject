@@ -1,0 +1,40 @@
+{
+  "id": 1,
+  "name": "Prestamo",
+  "label": "Prestamo",
+  "defaultSecurityDomains": [
+    "SecurityDomain"
+  ],
+  "defaultCollection": {
+    "name": "prestamoes",
+    "label": "Prestamoes"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "cantidad",
+      "label": "Cantidad",
+      "type": "CURRENCY"
+    },
+    {
+      "id": 2,
+      "name": "solicitante",
+      "label": "Solicitante",
+      "type": "SINGLE_INSTANCE",
+      "target": "WORKER"
+    },
+    {
+      "id": 3,
+      "name": "aprobado",
+      "label": "Aprobado",
+      "type": "BOOLEAN"
+    },
+    {
+      "id": 4,
+      "name": "aprobadoPor",
+      "label": "Aprobado por",
+      "type": "SINGLE_INSTANCE",
+      "target": "WORKER"
+    }
+  ]
+}

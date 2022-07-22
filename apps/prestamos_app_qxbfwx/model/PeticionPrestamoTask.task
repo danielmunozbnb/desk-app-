@@ -3,7 +3,7 @@
   "name": "PeticionPrestamoTask",
   "label": "Peticion Prestamo Task",
   "secured": true,
-  "businessObject": "MyBusinessObject",
+  "businessObject": "Prestamo",
   "routePath": "/",
   "securityDomains": [
     "SecurityDomain"

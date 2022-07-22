@@ -1,0 +1,42 @@
+{
+  "appProperties": [],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "home",
+      "routingPattern": "home",
+      "page": {
+        "id": "home"
+      }
+    }
+  ],
+  "applicationId": "prestamos_app_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/prestamos_app_qxbfwx/v1/"
+    },
+    {
+      "key": "workday-bp",
+      "value": "https://api.workday.com/businessProcess/v1/"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "https://api.workday.com/staffing/v1/"
+    },
+    {
+      "key": "workday-payroll",
+      "value": "https://api.workday.com/payroll/v1/"
+    },
+    {
+      "key": "workday-wql",
+      "value": "https://api.workday.com/wql/v1/"
+    }
+  ]
+}

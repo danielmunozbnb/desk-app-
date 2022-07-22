@@ -1,0 +1,92 @@
+{
+  "id": "home",
+  "endPoints": [
+    {
+      "name": "worker",
+      "baseUrlType": "workday-staffing",
+      "url": "workers/me",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "crearPeticion",
+        "baseUrlType": "app",
+        "url": "prestamoes",
+        "httpMethod": "POST",
+        "values": [
+
+          {
+            "outboundPath": "cantidad",
+            "value": "<% cantPrestamoInput.value %>"
+          },
+          {
+            "outboundPath": "solicitante",
+            "value": "<% worker.id %>"
+          },
+          {
+            "outboundPath": "aprobado",
+            "value": "false"
+          },
+          {
+            "outboundPath": "aprobadoPor",
+            "value": "<% worker.id %>"
+          }
+
+          ],
+      "onSend": "<%
+                 console.debug('Debug outbound data', json:asJSON(self.data));
+                 self.data
+                 %>"
+      }
+    ]
+  },
+  "onSubmit":
+  "<%
+   if (cantPrestamoInput.value <= 0)
+       cantPrestamoInput.setError('Prestamo no puede ser igual o inferior a 0');
+       else
+       cantPrestamoInput.clearError();
+   %>",
+  "presentation": {
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Petición de préstamos"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "currency",
+          "id": "cantPrestamoInput",
+          "currencyCode": "EUR",
+          "showCurrencySymbol": "true",
+          "label": "Cantidad a solicitar",
+          "fractionDigitsOverride": "2",
+          "required": true,
+          "valueOutBinding":"Prestamo.cantidad"
+        },
+        {
+          "type": "text",
+          "id": "motivoTxt",
+          "label": "Motivo de la solicitud",
+          "required": true
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "image",
+          "imageUri": "http://www.bnetbuilders.com/wp-content/uploads/BNB-logo-2.png",
+          "sizingHint": "THUMBNAIL",
+          "defaultPhoto": false,
+          "userPhoto": false
+        }
+      ]
+    }
+  }
+}
