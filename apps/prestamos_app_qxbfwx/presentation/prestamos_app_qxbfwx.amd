@@ -14,6 +14,13 @@
       "page": {
         "id": "home"
       }
+    },
+    {
+      "id": "viewBP",
+      "routingPattern": "viewBP",
+      "page": {
+        "id": "viewBP"
+      }
     }
   ],
   "applicationId": "prestamos_app_qxbfwx",
@@ -21,6 +28,11 @@
     {
       "key": "app",
       "value": "https://api.workday.com/apps/prestamos_app_qxbfwx/v1/"
+    },
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
     },
     {
       "key": "workday-bp",

@@ -10,8 +10,9 @@
   ],
   "outboundData": {
     "outboundEndPoints": [
+
       {
-        "name": "crearPeticion",
+        "name": "Prestamo",
         "baseUrlType": "app",
         "url": "prestamoes",
         "httpMethod": "POST",
@@ -19,26 +20,54 @@
 
           {
             "outboundPath": "cantidad",
-            "value": "<% cantPrestamoInput.value %>"
+            "value": "<% {
+                'currency': 'EUR',
+                'value': cantPrestamoInput.value
+            } %>"
           },
           {
             "outboundPath": "solicitante",
-            "value": "<% worker.id %>"
+            "value": "<% {
+                'descriptor': worker.descriptor,
+                'id': worker.id
+            } %>"
           },
           {
             "outboundPath": "aprobado",
-            "value": "false"
+            "value": "Pendiente de confirmación"
           },
           {
             "outboundPath": "aprobadoPor",
-            "value": "<% worker.id %>"
+            "value": "<% %>"
+          },
+          {
+            "outboundPath": "motivoSolicitud",
+            "value": "<% motivoTxt.value %>"
           }
 
-          ],
-      "onSend": "<%
-                 console.debug('Debug outbound data', json:asJSON(self.data));
-                 self.data
-                 %>"
+        ],
+        "onSend": "<%
+                   console.debug('Debug outbound data', json:asJSON(self.data));
+
+                   self.data;
+                   %>"
+      },
+      {
+        "name": "Prestamo B P Event",
+        "baseUrlType": "app",
+        "url": "prestamoBPEvents",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "businessProcessTarget.id",
+            "value": "<% console.info(Prestamo);
+
+                      Prestamo.id
+
+                      %>"
+          }
+        ]
       }
     ]
   },
@@ -58,6 +87,7 @@
     "body": {
       "type": "section",
       "children": [
+
         {
           "type": "currency",
           "id": "cantPrestamoInput",
@@ -65,14 +95,21 @@
           "showCurrencySymbol": "true",
           "label": "Cantidad a solicitar",
           "fractionDigitsOverride": "2",
-          "required": true,
-          "valueOutBinding":"Prestamo.cantidad"
+          "required": true
         },
         {
           "type": "text",
           "id": "motivoTxt",
           "label": "Motivo de la solicitud",
           "required": true
+        },
+        {
+          "type": "button",
+          "action": "PRIMARY",
+          "label": "BP",
+          "taskReference": {
+            "taskId": "viewBP"
+          }
         }
       ]
     },

@@ -27,7 +27,7 @@
       "id": 3,
       "name": "aprobado",
       "label": "Aprobado",
-      "type": "BOOLEAN"
+      "type": "TEXT"
     },
     {
       "id": 4,
@@ -35,6 +35,12 @@
       "label": "Aprobado por",
       "type": "SINGLE_INSTANCE",
       "target": "WORKER"
+    },
+    {
+      "id": 5,
+      "name": "motivoSolicitud",
+      "label": "Motivo de solicitud",
+      "type": "TEXT"
     }
   ]
 }

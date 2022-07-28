@@ -9,8 +9,11 @@
       "APPROVE",
       "DENY",
       "SEND_BACK"
-    ]
+    ],
+    "pageRoute": "/prestamoBPEvents/{eventId}"
   },
+  "details": {
+    "pageRoute": "/prestamoBPEvents/{eventId}"},
   "revisePageRoute": "/revise/{eventStepId}",
   "actionSteps": [
     {
