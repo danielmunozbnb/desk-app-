@@ -41,6 +41,12 @@
       "name": "motivoSolicitud",
       "label": "Motivo de solicitud",
       "type": "TEXT"
+    },
+    {
+      "id": 6,
+      "name": "solicitanteId",
+      "label": "Solicitante ID",
+      "type": "TEXT"
     }
   ]
 }

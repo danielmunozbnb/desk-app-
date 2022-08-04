@@ -10,14 +10,12 @@
   ],
   "outboundData": {
     "outboundEndPoints": [
-
       {
         "name": "Prestamo",
         "baseUrlType": "app",
         "url": "prestamoes",
         "httpMethod": "POST",
         "values": [
-
           {
             "outboundPath": "cantidad",
             "value": "<% {
@@ -31,6 +29,10 @@
                 'descriptor': worker.descriptor,
                 'id': worker.id
             } %>"
+          },
+          {
+            "outboundPath": "solicitanteId",
+            "value": "<% worker.id %>"
           },
           {
             "outboundPath": "aprobado",
@@ -73,10 +75,10 @@
   },
   "onSubmit":
   "<%
-   if (cantPrestamoInput.value <= 0)
-       cantPrestamoInput.setError('Prestamo no puede ser igual o inferior a 0');
-       else
-       cantPrestamoInput.clearError();
+      if (cantPrestamoInput.value <= 0)
+        cantPrestamoInput.setError('Prestamo no puede ser igual o inferior a 0');
+      else
+        cantPrestamoInput.clearError();
    %>",
   "presentation": {
     "pageType": "edit",
@@ -87,7 +89,6 @@
     "body": {
       "type": "section",
       "children": [
-
         {
           "type": "currency",
           "id": "cantPrestamoInput",
