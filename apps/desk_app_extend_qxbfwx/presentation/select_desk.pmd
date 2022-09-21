@@ -1,0 +1,56 @@
+{
+  "id": "select_desk",
+  "endPoints": [
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type" : "outboundVariable",
+        "variableScope" : "flow",
+        "name" : "transitionOutboundVars",
+        "values" : [
+          {
+            "outboundPath" : "search",
+            "value" : "<% searchNameTxt.value %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "micro": true,
+    "microFirstPageOnly": true,
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "standardEditButtonsHidden" : true,
+    "title": {
+      "type": "title",
+      "label": "Add new filter"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "searchNameTxt",
+          "label": "Please enter desk id"
+        },
+        {
+          "type": "button",
+          "id": "button1",
+          "label": "submit",
+          "action": "PRIMARY",
+          "taskReference": {
+            "taskId": "office_map",
+            "parameterBindings": {
+              "startDate": "2021-03-15"
+            },
+            "parameters": "<% searchNameTxt.value %>"
+          }
+        }
+      ]
+    }
+  }
+}
+

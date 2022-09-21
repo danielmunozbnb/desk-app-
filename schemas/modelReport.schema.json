@@ -61,36 +61,34 @@
     },
     "columns": {
       "type": "array",
-      "items": [
-        {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 32767
-            },
-            "name": {
-              "type": "string",
-              "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
-            },
-            "order": {
-              "type": "string"
-            },
-            "field": {
-              "type": "string"
-            },
-            "isSelfReferencing": {
-              "type": "boolean"
-            }
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32767
           },
-          "required": [
-            "id",
-            "name",
-            "order"
-          ]
-        }
-      ],
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+          },
+          "order": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "isSelfReferencing": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "order"
+        ]
+      },
       "additionalProperties": false
     }
   },

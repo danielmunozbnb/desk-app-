@@ -16,8 +16,8 @@
         "id": "wcpisu",
         "scheme": "WCPISU",
         "appId": "prestamos_app_qxbfwx",
-        "tokenHolder": "ISU",
-        "tokenEndpoint": "https://api.eu.wcp.workday.com/auth/v1/token",
+        "tokenHolder": "ISU_API",
+        "tokenEndpoint": "https://auth.api.workday.com/v1/token",
         "checkEnvironment": true
       }
     ]

@@ -1,0 +1,46 @@
+{
+  "id": "home",
+  "endPoints": [
+  ],
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Desk resevation Prototype"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "image",
+          "imageUri": "https://upload.wikimedia.org/wikipedia/commons/8/80/Workday_logo.svg",
+          "sizingHint": "THUMBNAIL",
+          "defaultPhoto": false,
+          "userPhoto": false
+        },
+        {
+          "type": "richText",
+          "label": "",
+          "id": "richTextId3",
+          "value": "<p style=\"text-align:left\"><span style=\"font-size:20px; color:blue;\">Welcome to a Workday Extend prototype <br/>.</span></p>"
+        },
+        {
+          "type": "richText",
+          "label": "",
+          "id": "richTextId4",
+          "value": "<p style=\"text-align:left\"><span style=\"font-size:16px; color:black;\">View Workers data and edit their Business Titles all in one page.</span></p>"
+        },
+        {
+          "type": "button",
+          "id": "startBtn",
+          "label": "START",
+          "action": "PRIMARY",
+          "taskReference": {
+            "taskId": "select_desk"
+          }
+        }
+      ]
+    }
+  }
+}

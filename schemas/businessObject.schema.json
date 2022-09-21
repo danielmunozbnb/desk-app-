@@ -447,7 +447,7 @@
     },
     "derivedBoolean": {
       "type": "object",
-      "id": "DerivedTextField",
+      "id": "DerivedBooleanField",
       "properties": {
         "id": {
           "type": "integer",

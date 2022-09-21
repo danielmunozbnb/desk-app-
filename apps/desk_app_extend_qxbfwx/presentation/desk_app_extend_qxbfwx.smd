@@ -1,0 +1,29 @@
+{
+  "id": "desk_app_extend_qxbfwx",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "id": "AWSV4",
+        "scheme": "AWSV4",
+        "accessKeyId": "SoVK6YvjAGEEW26gDnBrECxbmnDAii72e7Z8kxAN",
+        "appId": "desk_app_extend_qxbfwx",
+        "awsRegion": "ue-west-2",
+        "awsService": "execute-api"
+      },
+      {
+        "id" : "sso",
+        "scheme" : "SSO"
+      }
+    ]
+  },
+  "siteId": "desk_app_extend_qxbfwx",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "desk_app_extend_qxbfwx"
+}

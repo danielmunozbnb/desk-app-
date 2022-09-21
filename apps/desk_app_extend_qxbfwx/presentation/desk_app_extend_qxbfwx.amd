@@ -1,0 +1,58 @@
+{
+  "appProperties": [ ],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "select_desk",
+      "routingPattern": "select_desk",
+      "page": {
+        "id": "select_desk"
+      }
+    },
+    {
+      "id": "office_map",
+      "routingPattern": "office_map",
+      "page": {
+        "id": "office_map"
+      }
+    }
+  ],
+  "applicationId": "desk_app_extend_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "exampleAWS",
+      "value": "https://kvkzwnnbwg.execute-api.eu-west-2.amazonaws.com/"
+    },
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/",
+      "appDefault": false
+    },
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
+    },
+    {
+      "key": "workday-bp",
+      "value": "https://api.workday.com/businessProcess/v1/"
+    },
+    {
+      "key": "workday-common",
+      "value": "https://api.workday.com/common/v1/"
+    },
+    {
+      "key": "workday-staffing",
+      "value": "https://api.workday.com/staffing/v1/"
+    },
+    {
+      "key": "wql",
+      "value": "https://api.workday.com/wql/v1/"
+    }
+  ]
+}

@@ -178,7 +178,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "decimals"
       ],
       "additionalProperties": false
     },
@@ -346,7 +347,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "precision"
       ],
       "additionalProperties": false
     },
@@ -439,7 +441,7 @@
     },
     "derivedBoolean": {
       "type": "object",
-      "id": "DerivedTextField",
+      "id": "DerivedBooleanField",
       "properties": {
         "id": {
           "type": "integer",

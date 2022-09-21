@@ -24,6 +24,9 @@
     "allowsCancel": {
       "type": "boolean"
     },
+    "allowsManualSendBack": {
+      "type": "boolean"
+    },
     "approvalStep": {
       "type": "object",
       "id": "ApprovalStep",

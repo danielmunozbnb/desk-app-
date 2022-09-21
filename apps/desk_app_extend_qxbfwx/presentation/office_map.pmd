@@ -1,0 +1,51 @@
+{
+  "id": "office_map",
+  "endPoints": [
+    {
+      "name": "cnQuote",
+      "baseUrlType": "orchestration",
+      "url": "<% site.applicationId + '/orchestrations/desk_orch2/launch' %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+    ]
+  },
+  "presentation": {
+    "pageType": "edit",
+    "standardEditButtonsHidden" : true,
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Confirm submitted changes"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "hello",
+          "label": "Reservation submited!",
+          "enabled": false
+        },
+        {
+          "type": "text",
+          "id": "base64",
+          "label": "<% cnQuote %>",
+          "enabled": false
+        },
+        {
+          "type": "image",
+          "id": "statusImage",
+          "label": "Ready?",
+          "imageUri": "<% cnQuote.body %>"
+        }
+
+
+
+      ]
+    }
+  }
+}
