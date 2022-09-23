@@ -13,8 +13,6 @@
     ]
   },
   "presentation": {
-    "pageType": "edit",
-    "standardEditButtonsHidden" : true,
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
@@ -32,15 +30,24 @@
         },
         {
           "type": "text",
-          "id": "base64",
-          "label": "<% orch %>",
-          "enabled": false
+          "id": "reqDescriptor",
+          "label": "Desk selected:",
+          "value": "<% flowVariables.selected_desk %>"
         },
         {
           "type": "image",
           "id": "statusImage",
           "label": "Ready",
           "imageUri": "<% 'data:image/png;charset=utf-8;base64,' + orch.body %>"
+        },
+        {
+          "type": "button",
+          "id": "backBtn",
+          "label": "OK",
+          "action": "PRIMARY",
+          "taskReference": {
+            "taskId": "home"
+          }
         }
 
 

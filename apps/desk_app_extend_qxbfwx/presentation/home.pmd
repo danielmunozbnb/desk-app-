@@ -29,12 +29,12 @@
           "type": "richText",
           "label": "",
           "id": "richTextId4",
-          "value": "<p style=\"text-align:left\"><span style=\"font-size:16px; color:black;\">View Workers data and edit their Business Titles all in one page.</span></p>"
+          "value": "<p style=\"text-align:left\"><span style=\"font-size:16px; color:black;\">Resrvation app.</span></p>"
         },
         {
           "type": "button",
           "id": "startBtn",
-          "label": "START",
+          "label": "START RESERVATION",
           "action": "PRIMARY",
           "taskReference": {
             "taskId": "select_desk"

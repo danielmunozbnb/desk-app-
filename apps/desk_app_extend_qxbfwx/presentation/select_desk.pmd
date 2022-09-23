@@ -1,6 +1,12 @@
 {
   "id": "select_desk",
   "endPoints": [
+    {
+      "name": "orch",
+      "baseUrlType": "orchestration",
+      "url": "<% site.applicationId + '/orchestrations/desk_orch2/launch' %>",
+      "authType": "sso"
+    }
   ],
   "outboundData": {
     "outboundEndPoints": [
@@ -10,7 +16,7 @@
         "name" : "transitionOutboundVars",
         "values" : [
           {
-            "outboundPath" : "search",
+            "outboundPath" : "selected_desk",
             "value" : "<% searchNameTxt.value %>"
           }
         ]
@@ -25,29 +31,35 @@
     "standardEditButtonsHidden" : true,
     "title": {
       "type": "title",
-      "label": "Add new filter"
+      "label": "select desk"
     },
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
         {
-          "type": "text",
-          "id": "searchNameTxt",
-          "label": "Please enter desk id"
+          "type": "image",
+          "id": "statusImage",
+          "label": "Ready",
+          "imageUri": "<% 'data:image/png;charset=utf-8;base64,' + orch.body %>"
         },
         {
-          "type": "button",
-          "id": "button1",
-          "label": "submit",
-          "action": "PRIMARY",
-          "taskReference": {
-            "taskId": "office_map",
-            "parameterBindings": {
-              "startDate": "2021-03-15"
-            },
-            "parameters": "<% searchNameTxt.value %>"
-          }
+          "type": "text",
+          "id": "searchNameTxt",
+          "label": "Please enter desk id",
+          "valueOutBinding": "selected_desk"
+        },
+        {
+          "type":"editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "select desk",
+              "id": "continueBtn",
+              "buttonType": "PRIMARY",
+              "ignoreRequiredFields": "true"
+            }
+          ]
         }
       ]
     }

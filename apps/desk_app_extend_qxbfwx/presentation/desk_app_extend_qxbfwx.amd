@@ -23,6 +23,52 @@
       }
     }
   ],
+  "flowDefinitions": [
+    {
+      "id": "selfRef",
+      "name": "selfRef",
+      "flowSteps": [
+        {
+          "id": "home",
+          "taskId": "root",
+          "startsFlow": true,
+          "transitions": [
+            {
+              "id": "self",
+              "value": "selectDeskStep",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "selectDeskStep",
+          "taskId": "select_desk",
+          "transitions": [
+            {
+              "id": "officemapStep",
+              "value": "officemapStep",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "officemapStep",
+          "taskId": "office_map",
+          "transitions": [
+            {
+              "id": "home",
+              "value": "home",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
+        }
+
+      ]
+    }
+  ],
   "applicationId": "desk_app_extend_qxbfwx",
   "dataProviders": [
     {
