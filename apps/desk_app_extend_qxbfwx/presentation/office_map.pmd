@@ -2,7 +2,7 @@
   "id": "office_map",
   "endPoints": [
     {
-      "name": "cnQuote",
+      "name": "orch",
       "baseUrlType": "orchestration",
       "url": "<% site.applicationId + '/orchestrations/desk_orch2/launch' %>",
       "authType": "sso"
@@ -33,14 +33,14 @@
         {
           "type": "text",
           "id": "base64",
-          "label": "<% cnQuote %>",
+          "label": "<% orch %>",
           "enabled": false
         },
         {
           "type": "image",
           "id": "statusImage",
-          "label": "Ready?",
-          "imageUri": "<% cnQuote.body %>"
+          "label": "Ready",
+          "imageUri": "<% 'data:image/png;charset=utf-8;base64,' + orch.body %>"
         }
 
 
