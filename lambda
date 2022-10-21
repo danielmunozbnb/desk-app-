@@ -1,0 +1,150 @@
+import requests
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+from io import BytesIO
+import json
+import base64
+
+
+
+PIC_RADIUS = 45
+CIR_RADIUS = int(PIC_RADIUS * 3/3) #2/3
+STATES = {
+    'occupied': (249, 107, 133),
+    'free': (178, 230, 114),
+    'unavailable': (255, 212, 120)
+}
+
+
+
+FONT = ImageFont.load_default()
+"""
+no puedo poner otra font, he usado muchas rutas del OS a un tff, layers?
+no puedo cambiar el size de la default font
+"""
+
+def get_pil_image(pic_url: str) -> Image:
+    """
+    :param pic_url: URL of the picture we want to get as Image
+    :return: Image object of the picture
+    """
+    im = requests.get(pic_url)
+    return Image.open(BytesIO(im.content))
+
+
+def get_ligher_color(color: tuple) -> tuple:
+    """
+    :param color: RGB int tuple
+    :return: lighter color
+    """
+    return tuple(map(lambda x: x + 40, color))
+
+
+def draw_desk_state(desk: json, draw: ImageDraw):
+    """
+    Draws a circle on the office's floor plan in the coordinates specified by the desk. The color of this circle depends
+    on the desk's reservation state.
+    :param desk: json object containing the info of a single desk
+    :param draw: office's floor plan ImageDraw
+    """
+    x = desk['x']
+    y = desk['y']
+    color = STATES[desk['state']]
+    draw.ellipse((x - CIR_RADIUS, y - CIR_RADIUS, x + CIR_RADIUS, y + CIR_RADIUS), fill=color, outline=get_ligher_color(color),
+                 width=CIR_RADIUS // 3)
+
+
+def draw_desk_id(desk: json, draw: ImageDraw):
+    """
+    Draws the desk's ID text on top of the circle pointing out its reservation state.
+    :param desk: json object containing the info of a single desk
+    :param draw: office's floor plan ImageDraw
+    :return:
+    """
+    x = desk['x']
+    y = desk['y']
+    id = desk['id']
+    w = draw.textlength(id, font=FONT)
+    radius = PIC_RADIUS if desk['state'] == 'occupied' else CIR_RADIUS
+    position_text = (x - w / 2, y - radius - FONT.size - 10)
+    position_box = (position_text[0] - FONT.size * 0.22, position_text[1])
+    box_size = (w + FONT.size * 0.4, FONT.size * 1.2)
+    draw.rounded_rectangle(position_box + (position_box[0] + box_size[0], position_box[1] + box_size[1]), fill='white',
+                           radius=FONT.size * 0.5)
+    draw.text(position_text, id, font=FONT, fill='black')
+
+
+def draw_worker_pic(desk: json, img: Image):
+    """
+    Draws a circular thumbnail using the worker's profile picture who made a reservation on this desk
+    :param desk: json object containing the info of a single desk
+    :param img: office's floor plan Image
+    """
+    x = desk['x']
+    y = desk['y']
+    picture = desk['worker']['picture']
+    mask_size = (PIC_RADIUS * 2, PIC_RADIUS * 2)
+    mask = Image.new('L', mask_size)
+    mask_draw = ImageDraw.Draw(mask)
+    mask_draw.ellipse((0, 0) + (mask_size[0] - 1, mask_size[1] - 1), fill=255)
+
+    worker_pic = get_pil_image(picture)
+    thumbnail = ImageOps.fit(worker_pic, mask.size)
+    thumbnail.putalpha(mask)
+
+    img.paste(thumbnail, (x - PIC_RADIUS, y - PIC_RADIUS, x + PIC_RADIUS, y + PIC_RADIUS), mask)
+
+
+def update_floor_plan(desks: json, draw: ImageDraw, img: Image):
+    """
+    Draws the reservation state of all the office's desks, on its floor plan
+    :param desks: json array containing the info of all the office's desks
+    :param draw: office's floor plan ImageDraw
+    :param img: office's floor plan Image
+    """
+    for desk in desks['desks']:
+        #draw_desk_id(desk, draw)        #no consigo poner otro font 
+        if desk['state'] == 'occupied':
+            draw_worker_pic(desk, img)
+        else:
+            draw_desk_state(desk, draw)
+
+
+# AWS's 'main' function
+def lambda_handler(event, context):
+    print(event)
+    if 'isBase64Encoded' in event:
+        print('ENCODED')
+        body = json.load(base64.b64decode(event['body']).decode('utf-8'))
+    else:
+        print('NO ENCODED')
+        body = event['body']
+
+    img = get_pil_image(body['floorPlan'])
+    #img_draft= img.draft("L", (img.width // 2, img.height // 2))
+    draw = ImageDraw.Draw(img)
+
+    global PIC_RADIUS, CIR_RADIUS, FONT
+    
+    #Simbolos proporcionales a la imagen, no tiene porqué funcionar, de momento están a tamaño fijo
+    
+    #PIC_RADIUS = int(min(img.size[0], img.size[1]) * 0.065)
+    #CIR_RADIUS = int(PIC_RADIUS * 2/3)
+    #FONT.size = CIR_RADIUS+30
+    
+    
+    update_floor_plan(body, draw, img)
+
+    img_bytes = BytesIO()
+    img.save(img_bytes, format='PNG')
+    img_bytes = img_bytes.getvalue()
+
+    transactionResponse = base64.b64encode(img_bytes).decode('utf-8')
+
+    responseObject = {}
+    responseObject['statusCode'] = 200
+    responseObject['headers'] = {}
+    responseObject['headers']['Content-Type'] = "image/png"
+    responseObject['body'] = transactionResponse
+    responseObject['isBase64Encoded'] = True
+
+    return responseObject
