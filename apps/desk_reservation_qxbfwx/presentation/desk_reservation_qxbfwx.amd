@@ -1,0 +1,227 @@
+{
+  "appProperties": [ ],
+  "flowDefinitions": [
+    {
+      "id": "viewDesksForDayFlow",
+      "name": "ViewDesksForDay,",
+      "flowSteps": [
+        {
+          "id": "microDeskOccupationForDayStep",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "deskOccupationForDayStep",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "microDeskOccupationForDay"
+        },
+        {
+          "id": "deskOccupationForDayStep",
+          "endsFlow": true,
+          "taskId": "deskOccupationForDay"
+        }
+      ]
+    },
+    {
+      "id": "bookDesk",
+      "name": "BookDesk,",
+      "flowSteps": [
+        {
+          "id": "microBookDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "BookDesk",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "microViewAvailableDeskForDate"
+        },
+        {
+          "id": "BookDesk",
+          "endsFlow": true,
+          "taskId": "bookDesk"
+        }
+      ]
+    },
+    {
+      "id": "cancelDesk",
+      "name": "CancelDesk,",
+      "flowSteps": [
+        {
+          "id": "microCancelDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "CancelDesk",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "microCancelDesk"
+        },
+        {
+          "id": "CancelDesk",
+          "endsFlow": true,
+          "taskId": "cancelDesk"
+        }
+      ]
+    },
+    {
+      "id": "viewBookingsByWorkerFlow",
+      "name": "ViewBookingsByWorker,",
+      "flowSteps": [
+        {
+          "id": "microSelectWorker",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "bookingsByWorker",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "microViewReservationsByWorker"
+        },
+        {
+          "id": "bookingsByWorker",
+          "endsFlow": true,
+          "taskId": "reservationsByWorker"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "root",
+      "routingPattern": "/",
+      "page": {
+        "id": "home"
+      }
+    },
+    {
+      "id": "bookDesk",
+      "routingPattern": "bookDesk",
+      "page": {
+        "id": "bookDesk"
+      }
+    },
+    {
+      "id": "maintainAreas",
+      "routingPattern": "maintainAreas",
+      "page": {
+        "id": "maintainAreas"
+      }
+    },
+    {
+      "id": "microViewAvailableDeskForDate",
+      "routingPattern": "microViewAvailableDeskForDate",
+      "page": {
+        "id": "microViewAvailableDeskForDate"
+      }
+    },
+    {
+      "id": "maintainDesks",
+      "routingPattern": "maintainDesks",
+      "page": {
+        "id": "maintainDesks"
+      }
+    },
+    {
+      "id": "microViewReservationsByWorker",
+      "routingPattern": "microViewReservationsByWorker",
+      "page": {
+        "id": "microViewReservationsByWorker"
+      }
+    },
+    {
+      "id": "reservationsByWorker",
+      "routingPattern": "reservationsByWorker",
+      "page": {
+        "id": "reservationsByWorker"
+      }
+    },
+    {
+      "id": "microCancelDesk",
+      "routingPattern": "microCancelDesk",
+      "page": {
+        "id": "microCancelDesk"
+      }
+    },
+    {
+      "id": "cancelDesk",
+      "routingPattern": "cancelDesk",
+      "page": {
+        "id": "cancelDesk"
+      }
+    },
+    {
+      "id": "viewMyReservations",
+      "routingPattern": "viewMyReservations",
+      "page": {
+        "id": "viewMyReservations"
+      }
+    },
+    {
+      "id": "ViewMyTeamReservations",
+      "routingPattern": "ViewMyTeamReservations",
+      "page": {
+        "id": "ViewMyTeamReservations"
+      }
+    },
+    {
+      "id": "microDeskOccupationForDay",
+      "routingPattern": "microDeskOccupationForDay",
+      "page": {
+        "id": "microDeskOccupationForDay"
+      }
+    },
+    {
+      "id": "deskOccupationForDay",
+      "routingPattern": "deskOccupationForDay",
+      "page": {
+        "id": "deskOccupationForDay"
+      }
+    },
+    {
+      "id": "checkInForTodayDesk",
+      "routingPattern": "checkInForTodayDesk",
+      "page": {
+        "id": "checkInForTodayDesk"
+      }
+    },
+    {
+      "id": "CancelReservation",
+      "routingPattern": "CancelReservation",
+      "page": {
+        "id": "CancelReservation"
+      }
+    }
+  ],
+  "applicationId": "desk_reservation_qxbfwx",
+  "dataProviders": [
+    {
+      "key": "app",
+      "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
+    },
+    {
+      "key": "workday",
+      "value": "https://api.workday.com"
+    },
+    {
+      "key": "workday-bp",
+      "value": "https://api.workday.com/businessProcess/v1/"
+    },
+    {
+      "key": "WORKDAY-WQL",
+      "value": "https://api.workday.com/wql/v1/"
+    },
+    {
+      "key": "COMMON",
+      "value": "https://api.workday.com/common/v1"
+    }
+  ]
+}

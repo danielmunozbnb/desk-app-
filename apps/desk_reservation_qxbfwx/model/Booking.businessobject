@@ -1,0 +1,41 @@
+{
+  "id": 3,
+  "name": "Booking",
+  "label": "Booking",
+  "defaultSecurityDomains": [
+    "DeskReservation"
+  ],
+  "defaultCollection": {
+    "name": "bookings",
+    "label": "Bookings"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "worker",
+      "label": "Worker",
+      "type": "SINGLE_INSTANCE",
+      "target": "WORKER"
+    },
+    {
+      "id": 2,
+      "name": "desk",
+      "label": "Desk",
+      "type": "SINGLE_INSTANCE",
+      "target": "Desk"
+    },
+    {
+      "id": 3,
+      "name": "date",
+      "label": "Date",
+      "type": "DATE",
+      "precision": "DAY"
+    },
+    {
+      "id": 4,
+      "name": "checkedIn",
+      "label": "Checked in",
+      "type": "BOOLEAN"
+    }
+  ]
+}

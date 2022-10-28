@@ -1,0 +1,28 @@
+{
+  "id": 4,
+  "name": "AreaRestrictedOrganization",
+  "label": "Area Restricted Organization",
+  "defaultSecurityDomains": [
+    "DeskReservation"
+  ],
+  "defaultCollection": {
+    "name": "areaRestrictedOrganizations",
+    "label": "Area Restricted Organizations"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "area",
+      "label": "Area",
+      "type": "SINGLE_INSTANCE",
+      "target": "Area"
+    },
+    {
+      "id": 2,
+      "name": "organization",
+      "label": "Organization",
+      "type": "SINGLE_INSTANCE",
+      "target": "SUPERVISORY_ORGANIZATION"
+    }
+  ]
+}

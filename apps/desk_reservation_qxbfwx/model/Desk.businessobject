@@ -1,0 +1,45 @@
+{
+  "id": 2,
+  "name": "Desk",
+  "label": "Desk",
+  "defaultSecurityDomains": [
+    "DeskReservation"
+  ],
+  "defaultCollection": {
+    "name": "desks",
+    "label": "Desks"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "deskName",
+      "label": "Desk Name",
+      "type": "TEXT"
+    },
+    {
+      "id": 2,
+      "name": "area",
+      "label": "Area",
+      "type": "SINGLE_INSTANCE",
+      "target": "Area"
+    },
+    {
+      "id": 3,
+      "name": "coordX",
+      "label": "Coordinate X",
+      "type": "INTEGER"
+    },
+    {
+      "id": 4,
+      "name": "coordY",
+      "label": "Coordinate Y",
+      "type": "INTEGER"
+    },
+    {
+      "id": 5,
+      "name": "inUse",
+      "label": "In Use",
+      "type": "BOOLEAN"
+    }
+  ]
+}

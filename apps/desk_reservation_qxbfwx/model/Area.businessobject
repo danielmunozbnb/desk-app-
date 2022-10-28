@@ -1,0 +1,40 @@
+{
+  "id": 1,
+  "name": "Area",
+  "label": "Area",
+  "defaultSecurityDomains": [
+    "DeskReservation"
+  ],
+  "defaultCollection": {
+    "name": "areas",
+    "label": "Areas"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "name",
+      "label": "Name",
+      "type": "TEXT"
+    },
+    {
+      "id": 2,
+      "name": "location",
+      "label": "Location",
+      "type": "SINGLE_INSTANCE",
+      "target": "LOCATION"
+    },
+    {
+      "id": 3,
+      "name": "description",
+      "label": "Area Description",
+      "type": "TEXT"
+    },
+
+    {
+      "id": 4,
+      "name": "inUse",
+      "label": "In Use",
+      "type": "BOOLEAN"
+    }
+  ]
+}

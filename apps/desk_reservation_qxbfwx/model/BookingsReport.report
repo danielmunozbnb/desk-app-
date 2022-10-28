@@ -1,0 +1,31 @@
+{
+  "id": 1,
+  "name": "BookingsReport",
+  "businessObject": "Booking",
+  "defaultSecurityDomains": [
+    "DeskReservation"
+  ],
+  "sortConfigs": [
+    {
+      "id": 1,
+      "order": "a",
+      "field": "desk",
+      "direction": "ASCENDING"
+    }
+  ],
+  "columns": [
+    {
+      "id": 1,
+      "name": "Booking",
+      "order": "a",
+      "isSelfReferencing": true
+    },
+    {
+      "id": 2,
+      "name": "Desk",
+      "order": "b",
+      "field": "desk"
+
+    }
+  ]
+}

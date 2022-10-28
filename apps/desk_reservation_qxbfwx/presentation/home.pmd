@@ -1,0 +1,34 @@
+{
+  "id": "home",
+  "presentation": {
+    "title": {
+      "type": "title",
+      "label": "Workday Extend"
+    },
+    "body": {
+      "type": "section",
+      "children": [
+        {
+          "type": "button",
+          "label": "Maintain Areas",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "maintainAreas"
+          },
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET"
+        },
+        {
+          "type": "button",
+          "label": "view reservations",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "viewMyReservations"
+          },
+          "action": "PRIMARY",
+          "commandHttpMethod": "GET"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "desk_reservation_qxbfwx",
+  "languages": [
+    {
+      "code": "en-US",
+      "description": "English"
+    }
+  ],
+  "siteAuth": {
+    "authTypes": [
+      {
+        "scheme": "SSO",
+        "id": "sso"
+      }
+    ]
+  },
+  "siteId": "desk_reservation_qxbfwx",
+  "cdnEnabled": true,
+  "siteProperties": [ ],
+  "applicationId": "desk_reservation_qxbfwx"
+}

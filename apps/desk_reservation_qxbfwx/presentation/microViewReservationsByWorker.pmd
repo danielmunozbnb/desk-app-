@@ -1,0 +1,63 @@
+{
+  "id": "microViewReservationsByWorker",
+  "endPoints": [
+    {
+      "baseUrlType": "COMMON",
+      "name": "workers",
+      "authType": "sso",
+      "url": "<%'/workers?search='+ instanceListQuery%>",
+      "exclude": "<% empty instanceListQuery %>",
+      "deferred": true
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "workerOutbound",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "selectedWorker",
+            "value": "<%
+                      worker.value[0];
+                      %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "View Reservations By Worker",
+      "enabled": true
+    },
+    "pageType": "edit",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "instanceList",
+          "id": "worker",
+          "label": "Select a Worker!",
+          "required": true,
+          "multiSelect": "false",
+          "values": "<% [] %>",
+          "searchEndPoint": "<% endpoints.workers %>",
+          "searchResultValues": "<% var namesList = [];
+          for (var Worker : workers.data){
+
+              namesList.add({'wid':Worker.id,'id':Worker.id,'descriptor': Worker.descriptor, 'name': Worker.descriptor});
+
+          }
+          return namesList;%>"
+        }
+      ]
+    }
+  }
+}
