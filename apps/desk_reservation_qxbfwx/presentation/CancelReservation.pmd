@@ -2,30 +2,10 @@
   "id": "CancelReservation",
   "endPoints": [
     {
-      "baseUrlType": "COMMON",
-      "name": "workers",
-      "authType": "sso",
-      "url": "<%'/workers/me'%>"
-    },
-    {
-      "name": "bookingsurl",
+      "name": "booking_url",
       "baseUrlType": "app",
       "url": "<% 'bookings/' + queryParams.bookingId + '/Desk' %>",
       "authType": "sso"
-    },
-    {
-      "baseUrlType": "WORKDAY-WQL",
-      "name": "deskByID",
-      "authType": "sso",
-      "url": "<%'data?query=SELECT%20workdayID%2C%20deskName%2C%20area%20FROM%20desk_reservation_qxbfwx_desks%20WHERE%20workdayID%20%3D%22' + bookingId + '%22' %>",
-      "deferred": true
-    },
-    {
-      "baseUrlType": "WORKDAY-WQL",
-      "name": "areaByID",
-      "authType": "sso",
-      "url": "<%'data?query=SELECT%20workdayID%2C%20name%20FROM%20desk_reservation_qxbfwx_areas%20WHERE%20workdayID%20%3D%22' + bookingId + '%22' %>",
-      "deferred": true
     }
 
   ],
@@ -44,17 +24,16 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Workday Extend"
+      "label": "Cancel Reservation"
     },
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
         {
-          "type": "text",
-          "id": "hello",
-          "label": "DESK: ",
-          "value": "<% bookings.desk.descriptor %>"
+          "type": "readOnlyText",
+          "label": "Cancel reservation?",
+          "value":"(show reservation)"
         },
         {
           "type": "checkBox",

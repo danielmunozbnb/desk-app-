@@ -79,6 +79,15 @@
             "type": "taskReference",
             "taskId": "bookDesk"
           }
+        },
+        {
+          "type": "button",
+          "label": "Admin's panel",
+          "action": "SECONDARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "AdminPanel"
+          }
         }
       ]
     },

@@ -45,6 +45,10 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Maintain Areas"
+    },
     "body": {
       "type": "section",
       "horizontal": false,

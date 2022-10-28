@@ -1,5 +1,5 @@
 {
-  "appProperties": [ ],
+  "appProperties": [],
   "flowDefinitions": [
     {
       "id": "viewDesksForDayFlow",
@@ -198,6 +198,13 @@
       "routingPattern": "CancelReservation",
       "page": {
         "id": "CancelReservation"
+      }
+    },
+    {
+      "id": "AdminPanel",
+      "routingPattern": "AdminPanel",
+      "page": {
+        "id": "AdminPanel"
       }
     }
   ],
