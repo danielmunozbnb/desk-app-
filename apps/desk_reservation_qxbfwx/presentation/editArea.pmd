@@ -1,0 +1,38 @@
+{
+  "id": "editArea",
+  "endPoints": [
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "standardEditButtonsHidden": true,
+    "micro": true,
+    "microFirstPageOnly": true,
+    "title": {
+      "type": "title",
+      "label": "Workday Extend",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "Submit",
+              "id": "submitBtn",
+              "buttonType": "PRIMARY"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

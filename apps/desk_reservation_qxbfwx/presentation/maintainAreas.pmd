@@ -14,37 +14,9 @@
       "authType": "sso"
     }
   ],
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "name": "areaPUT",
-        "baseUrlType": "app",
-        "httpMethod": "PUT",
-        "url": "<% 'areas/' +  itemId.value%>",
-        "exclude": "<% empty itemId.value%>",
-        "authType": "sso"
-      },
-      {
-        "name": "areaPOST",
-        "baseUrlType": "app",
-        "httpMethod": "POST",
-        "url": "areas/",
-        "exclude": "<% !empty itemId.value%>",
-        "authType": "sso"
-      },
-      {
-        "name": "areaDELETE",
-        "baseUrlType": "app",
-        "httpMethod": "DELETE",
-        "url": "<% 'areas/' +  itemId.value%>",
-        "exclude": "<% empty itemId.value%>",
-        "authType": "sso"
-      }
-    ]
-  },
   "presentation": {
     "headerSize": "VPS_DEFAULT",
-    "pageType": "edit",
+    "pageType": "view",
     "title": {
       "type": "title",
       "label": "Maintain Areas"
@@ -63,33 +35,12 @@
           "columns": [
             {
               "type": "column",
-              "columnId": "WID",
-              "label": "WID",
-              "cellTemplate": {
-                "type": "hidden",
-                "id": "itemId",
-                "value": "<% row.id %>",
-                "enabled": "false"
-              }
-            },
-            {
-              "type": "column",
               "columnId": "nameColumnId",
               "label": "Name",
               "cellTemplate": {
                 "type": "text",
                 "id": "areaName",
-                "value": "<% row.name %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.getValue() %>",
-                    "valueOutBinding": "areaPOST.name"
-                  },
-                  {
-                    "value": "<% self.getValue() %>",
-                    "valueOutBinding": "areaPUT.name"
-                  }
-                ]
+                "value": "<% row.name %>"
               }
             },
             {
@@ -97,22 +48,9 @@
               "columnId": "locationColumnId",
               "label": "Location",
               "cellTemplate": {
-                "type": "instanceList",
-                "id": "areaLocation",
-                "values": "<% allLocations.data %>",
-                "selectedValuesAndDescriptors": "<% [{'workdayID':row.location.id, 'locationName':row.location.descriptor}] %>",
-                "idKey": "workdayID",
-                "displayKey": "locationName",
-                "valuesOut": [
-                  {
-                    "value": "<% areaLocation.value[0] %>",
-                    "valueOutBinding": "areaPOST.location.id"
-                  },
-                  {
-                    "value": "<% areaLocation.value[0] %>",
-                    "valueOutBinding": "areaPUT.location.id"
-                  }
-                ]
+                "type": "text",
+                "id": "areaName",
+                "value": "<% row.location.descriptor %>"
               }
             },
             {
@@ -122,33 +60,42 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "areaFloor",
-                "value": "<% row.description %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.getValue() %>",
-                    "valueOutBinding": "areaPOST.description"
-                  },
-                  {
-                    "value": "<% self.getValue() %>",
-                    "valueOutBinding": "areaPUT.description"
-                  }
-                ]
+                "value": "<% row.description %>"
               }
             },
             {
               "type": "column",
-              "columnId": "doorColumnId",
-              "label": "Puerta",
+              "columnId": "columnActions",
               "cellTemplate": {
-                "type": "button",
-                "id": "areaDelete",
-                "label": "Eliminate",
-                "render": "<% !row.inUse %>",
-                "action": "PRIMARY"
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Edit",
+                    "taskReference": {
+                      "taskId": "editArea",
+                      "parameterBindings": {
+                        "bookingId": "<% row.id %>"
+                      }
+                    }
+                  }
+                ]
               }
             }
           ]
+        },
+        {
+          "type": "button",
+          "label": "New Area",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "maintainAreas"
+          }
         }
+
       ]
     }
   }

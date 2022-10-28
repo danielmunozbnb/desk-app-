@@ -92,6 +92,29 @@
           "taskId": "reservationsByWorker"
         }
       ]
+    },
+    {
+      "id": "editAreaFlow",
+      "name": "editAreaFlow",
+      "flowSteps": [
+        {
+          "id": "editArea",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainAreas",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "editArea"
+        },
+        {
+          "id": "maintainAreas",
+          "endsFlow": true,
+          "taskId": "maintainAreas"
+        }
+      ]
     }
   ],
   "tasks": [
@@ -205,6 +228,13 @@
       "routingPattern": "AdminPanel",
       "page": {
         "id": "AdminPanel"
+      }
+    },
+    {
+      "id": "editArea",
+      "routingPattern": "editArea",
+      "page": {
+        "id": "editArea"
       }
     }
   ],
