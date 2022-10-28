@@ -1,32 +1,94 @@
 {
   "id": "home",
+  "endPoints": [
+  ],
   "presentation": {
+    "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Workday Extend"
+      "label": "Desk Reservation Home"
     },
     "body": {
       "type": "section",
+      "horizontal": false,
       "children": [
         {
-          "type": "button",
-          "label": "Maintain Areas",
-          "taskReference": {
-            "type": "taskReference",
-            "taskId": "maintainAreas"
-          },
-          "action": "PRIMARY",
-          "commandHttpMethod": "GET"
+          "type": "section",
+          "horizontal": true,
+          "columnWidthRatios": [
+              0.25,
+              0.75
+          ],
+          "children": [
+            {
+              "type": "section",
+              "children": [
+                {
+                  "type": "richText",
+                  "label": "Today's booking",
+                  "value": "<h1 style='font-size:32px'><b>D32</b></h1><p>Planta 5 Derecha<br/>Madrid</p>"
+                },
+                {
+                  "type": "section",
+                  "id": "secTodaysBookingBtns",
+                  "horizontal": true,
+                  "children": [
+                    {
+                      "type": "button",
+                      "label": "CHECK-OUT",
+                      "action": "PRIMARY"
+                    },
+                    {
+                      "type": "button",
+                      "label": "CANCEL",
+                      "action": "AUXILIARY"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "id": "secOfficePlanImg",
+              "children": [
+                {
+                  "type": "image",
+                  "imageUri": "https://picsum.photos/id/1080/6858/4574",
+                  "sizingHint": "INLINE",
+                  "defaultPhoto": false,
+                  "userPhoto": false
+                }
+              ]
+            }
+          ]
         },
         {
           "type": "button",
-          "label": "view reservations",
+          "label": "VIEW MY BOOKINGS",
+          "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
             "taskId": "viewMyReservations"
-          },
+          }
+        },
+        {
+          "type": "button",
+          "label": "BOOK DESK",
           "action": "PRIMARY",
-          "commandHttpMethod": "GET"
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "bookDesk"
+          }
+        }
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "richText",
+          "enabled": "false",
+          "value": "Made By BNB"
         }
       ]
     }
