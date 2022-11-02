@@ -1,9 +1,26 @@
 {
   "id": "editArea",
+  "include": [
+        "wql.script"
+  ],
   "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "get_area",
+      "authType": "sso",
+      "url": "/data?query=<%wql.Area(queryParams.areaId).urlEncode()%>"
+    }
   ],
   "outboundData": {
     "outboundEndPoints": [
+      {
+        "name": "areaUpdate",
+        "baseUrlType": "app",
+        "url": "<% 'desk_reservation_qxbfwx_areas/' + queryParams.areaId %>",
+        "httpMethod": "PUT",
+        "authType": "sso",
+        "onSend": "<% self.data %>"
+      }
     ]
   },
   "presentation": {
@@ -21,6 +38,47 @@
       "type": "section",
       "horizontal": false,
       "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "Areas",
+          "doNotAdd": true,
+          "doNotRemove": true,
+          "rows": "<% get_area.data %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaName",
+                "value": "<% row.name %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationColumnId",
+              "label": "Location",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaName",
+                "value": "<% row.location.descriptor %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "Descripción",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaFloor",
+                "value": "<% row.description %>"
+              }
+            }
+          ]
+        },
         {
           "type": "editButtonBar",
           "editButtons": [

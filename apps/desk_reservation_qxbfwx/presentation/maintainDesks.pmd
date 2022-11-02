@@ -1,5 +1,8 @@
 {
   "id": "maintainDesks",
+  "include": [
+        "wql.script"
+  ],
   "endPoints": [
     {
       "name": "areas",
@@ -21,37 +24,9 @@
       "deferred": true
     }
   ],
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "name": "deskPUT",
-        "baseUrlType": "app",
-        "httpMethod": "PUT",
-        "url": "<% 'desks/' +  itemId.value%>",
-        "exclude": "<% empty(itemId.value) %>",
-        "authType": "sso"
-      },
-      {
-        "name": "deskPOST",
-        "baseUrlType": "app",
-        "httpMethod": "POST",
-        "url": "desks/",
-        "exclude": "<% !empty(itemId.value) %>",
-        "authType": "sso"
-      },
-      {
-        "name": "deskDELETE",
-        "baseUrlType": "app",
-        "httpMethod": "DELETE",
-        "url": "<% 'desks/' +  itemId.value%>",
-        "exclude": "<% empty(itemId.value)%>",
-        "authType": "sso"
-      }
-    ]
-  },
   "presentation": {
     "headerSize": "VPS_DEFAULT",
-    "pageType": "edit",
+    "pageType": "view",
     "body": {
       "type": "section",
       "horizontal": false,
@@ -62,7 +37,6 @@
           "label": "Desks",
           "rows": "<% desks.data %>",
           "rowVariableName": "row",
-          "deleteEndPoint": "deskDELETE",
           "columns": [
             {
               "type": "column",
@@ -75,86 +49,49 @@
                   {
                     "type": "text",
                     "id": "deskName",
-                    "value": "<% row.deskName %>",
-                    "valuesOut": [
-                      {
-                        "value": "<% self.value %>",
-                        "valueOutBinding": "deskPOST.deskName"
-                      },
-                      {
-                        "value": "<% self.value %>",
-                        "valueOutBinding": "deskPUT.deskName"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "hidden",
-                    "id": "itemId",
-                    "enabled": false,
-                    "value": "<% row.id %>"
+                    "value": "<% row.deskName %>"
                   }
                 ]
               }
             },
             {
               "type": "column",
-              "columnId": "desksColumnId",
+              "columnId": "areaColumnId",
               "label": "Area",
               "cellTemplate": {
-                "type": "instanceList",
+                "type": "text",
                 "id": "deskArea",
-                "values": "<% areas.data %>",
-                "selectedValuesAndDescriptors": "<% [{'id':row.area.id, 'name':areaByID.invoke({'id': row.area.id}).data[0].name}] %>",
-                "displayKey": "name",
-                "valuesOut": [
-                  {
-                    "value": "<% deskArea.value[0] %>",
-                    "valueOutBinding": "deskPOST.area.id"
-                  },
-                  {
-                    "value": "<% deskArea.value[0] %>",
-                    "valueOutBinding": "deskPUT.area.id"
-                  }
-                ]
+                "values": "<% row.deskArea %>"
               }
             },
             {
               "type": "column",
-              "columnId": "deskCoordX",
-              "label": "Coordinate X",
+              "columnId": "inUseId",
+              "label": "en uso",
               "cellTemplate": {
-                "type": "number",
-                "fractionDigits": 2,
-                "id": "deskCoordX",
-                "value": "<% row.coordX %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPOST.coordX"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPUT.coordX"
-                  }
-                ]
+                "type": "text",
+                "id": "inUse",
+                "values": "<% row.inUse %>"
               }
             },
             {
               "type": "column",
-              "columnId": "deskCoordY",
-              "label": "Desk Coordinate Y",
+              "columnId": "columnActions",
               "cellTemplate": {
-                "type": "number",
-                "id": "deskCoordY",
-                "value": "<% row.coordY %>",
-                "valuesOut": [
+                "type": "section",
+                "horizontal": true,
+                "children": [
                   {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPOST.coordY"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPUT.coordY"
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Edit",
+                    "taskReference": {
+                      "taskId": "editDesk",
+                      "parameterBindings": {
+                        "deskId": "<% row.id %>"
+                      }
+
+                    }
                   }
                 ]
               }

@@ -236,6 +236,13 @@
       "page": {
         "id": "editArea"
       }
+    },
+    {
+      "id": "editDesk",
+      "routingPattern": "editDesk",
+      "page": {
+        "id": "editDesk"
+      }
     }
   ],
   "applicationId": "desk_reservation_qxbfwx",

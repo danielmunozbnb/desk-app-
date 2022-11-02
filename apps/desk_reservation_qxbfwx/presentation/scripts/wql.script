@@ -1,0 +1,35 @@
+var getArea = function(workdayID) {
+  var query = 'SELECT Area, name, workdayID, description, location FROM desk_reservation_qxbfwx_areas WHERE workdayID=\'' + workdayID + '\'';
+  console.info(query);
+
+  return query;
+};
+
+{
+  "Area":getArea
+}
+
+
+
+var getDesks = function(workdayID) {
+  var query = 'SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks';
+  console.info(query);
+
+  return query;
+};
+
+{
+  "Desks":getDesks
+}
+
+
+var getDesk = function(workdayID) {
+  var query = 'SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID=\'' + workdayID + '\'';
+  console.info(query);
+
+  return query;
+};
+
+{
+  "Desk":getDesk
+}

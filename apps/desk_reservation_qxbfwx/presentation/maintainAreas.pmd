@@ -30,9 +30,18 @@
           "id": "gridAreas",
           "label": "Areas",
           "rows": "<% areas.data %>",
-          "deleteEndPoint": "areaDELETE",
           "rowVariableName": "row",
           "columns": [
+            {
+              "type": "column",
+              "columnId": "WIDColumnId",
+              "label": "WID",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaWID",
+                "value": "<% row.id %>"
+              }
+            },
             {
               "type": "column",
               "columnId": "nameColumnId",
@@ -65,6 +74,16 @@
             },
             {
               "type": "column",
+              "columnId": "inUseColumnId",
+              "label": "en uso",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaUse",
+                "value": "<% row.inUse %>"
+              }
+            },
+            {
+              "type": "column",
               "columnId": "columnActions",
               "cellTemplate": {
                 "type": "section",
@@ -77,7 +96,7 @@
                     "taskReference": {
                       "taskId": "editArea",
                       "parameterBindings": {
-                        "bookingId": "<% row.id %>"
+                        "areaId": "<% row.id %>"
                       }
                     }
                   }
