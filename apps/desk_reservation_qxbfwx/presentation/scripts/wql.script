@@ -1,35 +1,46 @@
+var getTodaysReservation = function() {
+  var query = string:formatMessage('SELECT Booking FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
+  query.urlEncode();
+};
+
+var getTodaysReservedDesk = function() {
+  var query = string:formatMessage('SELECT desk FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
+  query.urlEncode()
+};
+
+var getAreaAndDeskName = function(deskID) {
+  var query = string:formatMessage('SELECT area, deskName FROM desk_reservation_qxbfwx_desks WHERE Desk = "{0}"', deskID);
+  query.urlEncode()
+};
+
+var getAreaName = function(areaID) {
+  var query = string:formatMessage('SELECT name FROM desk_reservation_qxbfwx_areas WHERE Area = "{0}"', areaID);
+  query.urlEncode()
+};
+
+var getLocation = function(areaID) {
+  var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas WHERE Area = "{0}"', areaID);
+  query.urlEncode()
+};
+
 var getArea = function(workdayID) {
-  var query = 'SELECT Area, name, workdayID, description, location FROM desk_reservation_qxbfwx_areas WHERE workdayID=\'' + workdayID + '\'';
+  var query = string:formatMessage('SELECT Area, name, workdayID, description, location FROM desk_reservation_qxbfwx_areas WHERE workdayID = "{0}"', workdayID);
   console.info(query);
-
-  return query;
+  query.urlEncode();
 };
-
-{
-  "Area":getArea
-}
-
-
-
-var getDesks = function(workdayID) {
-  var query = 'SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks';
-  console.info(query);
-
-  return query;
-};
-
-{
-  "Desks":getDesks
-}
-
 
 var getDesk = function(workdayID) {
-  var query = 'SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID=\'' + workdayID + '\'';
+  var query = string:formatMessage('SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', workdayID);
   console.info(query);
-
-  return query;
+  query.urlEncode();
 };
 
 {
-  "Desk":getDesk
+  "getTodaysReservation": getTodaysReservation,
+  "getTodaysBookedDesk": getTodaysReservedDesk,
+  "getAreaAndDeskName": getAreaAndDeskName,
+  "getAreaName": getAreaName,
+  "getLocation": getLocation,
+  "Desk":getDesk,
+  "Area":getArea
 }

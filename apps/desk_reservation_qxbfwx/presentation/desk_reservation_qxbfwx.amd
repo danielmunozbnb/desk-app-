@@ -264,6 +264,10 @@
       "value": "https://api.workday.com/wql/v1/"
     },
     {
+      "key": "WORKDAY-WQL-QUERY",
+      "value": "https://api.workday.com/wql/v1/data?query="
+    },
+    {
       "key": "COMMON",
       "value": "https://api.workday.com/common/v1"
     }

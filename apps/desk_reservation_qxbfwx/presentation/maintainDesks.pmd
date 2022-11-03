@@ -61,7 +61,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "deskArea",
-                "values": "<% row.deskArea %>"
+                "value": "<% row.deskArea %>"
               }
             },
             {
@@ -71,7 +71,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "inUse",
-                "values": "<% row.inUse %>"
+                "value": "<% row.inUse %>"
               }
             },
             {
