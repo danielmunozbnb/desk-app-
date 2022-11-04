@@ -139,6 +139,15 @@
             "type": "taskReference",
             "taskId": "microViewAvailableDeskForDate"
           }
+        },
+        {
+          "type": "button",
+          "label": "admin panel",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "AdminPanel"
+          }
         }
       ]
     },

@@ -5,6 +5,13 @@
   ],
   "endPoints": [
     {
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "name": "getAreaName",
+      "authType": "sso",
+      "url": "<%wql.getAreaName(id)%>",
+      "deferred":true
+    },
+    {
       "name": "areas",
       "baseUrlType": "app",
       "url": "areas",
@@ -61,7 +68,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "deskArea",
-                "value": "<% row.deskArea %>"
+                "value": "<% var areaName = getAreaName.invoke({'id': row.area.id}); return areaName.data[0].name; %>"
               }
             },
             {

@@ -8,7 +8,7 @@
       "baseUrlType": "WORKDAY-WQL",
       "name": "get_area",
       "authType": "sso",
-      "url": "/data?query=<%wql.Area(queryParams.areaId).urlEncode()%>"
+      "url": "/data?query=<%wql.Area(queryParams.areaId)%>"
     }
   ],
   "outboundData": {
@@ -16,8 +16,8 @@
       {
         "name": "areaUpdate",
         "baseUrlType": "app",
-        "url": "<% 'desk_reservation_qxbfwx_areas/' + queryParams.areaId %>",
-        "httpMethod": "PUT",
+        "url": "<% 'areas/' + queryParams.areaId %>",
+        "httpMethod": "POST",
         "authType": "sso",
         "onSend": "<% self.data %>"
       }
@@ -75,6 +75,16 @@
                 "type": "text",
                 "id": "areaFloor",
                 "value": "<% row.description %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "areaId",
+              "label": "wid",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaid",
+                "value": "<% row.id %>"
               }
             }
           ]
