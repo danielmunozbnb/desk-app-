@@ -243,6 +243,13 @@
       "page": {
         "id": "editDesk"
       }
+    },
+    {
+      "id": "checkOut",
+      "routingPattern": "checkOut",
+      "page": {
+        "id": "checkOut"
+      }
     }
   ],
   "applicationId": "desk_reservation_qxbfwx",

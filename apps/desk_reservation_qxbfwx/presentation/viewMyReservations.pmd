@@ -102,12 +102,12 @@
             },
             {
               "type": "column",
-              "columnId": "checkedInColumnId",
-              "label": "Checked in",
+              "columnId": "checkedOutColumnId",
+              "label": "Checked out",
               "cellTemplate": {
                 "type": "text",
-                "id": "checkedInText",
-                "value": "<% row.checkedIn %>"
+                "id": "checkedOutText",
+                "value": "<% row.checkedOut %>"
               }
             },
             {

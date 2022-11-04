@@ -1,5 +1,5 @@
-var getTodaysReservation = function() {
-  var query = string:formatMessage('SELECT Booking FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
+var getTodaysReservAndCheckedOut = function() {
+  var query = string:formatMessage('SELECT Booking, checkedOut FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
   query.urlEncode();
 };
 
@@ -36,8 +36,8 @@ var getDesk = function(workdayID) {
 };
 
 {
-  "getTodaysReservation": getTodaysReservation,
-  "getTodaysBookedDesk": getTodaysReservedDesk,
+  "getTodaysReservAndCheckedOut": getTodaysReservAndCheckedOut,
+  "getTodaysReservedDesk": getTodaysReservedDesk,
   "getAreaAndDeskName": getAreaAndDeskName,
   "getAreaName": getAreaName,
   "getLocation": getLocation,

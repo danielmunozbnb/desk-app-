@@ -7,14 +7,13 @@
     {
       "name": "todaysReservation",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysReservation() %>",
-      "authType": "sso",
-      "deferred": true
+      "url": "<% wql.getTodaysReservAndCheckedOut() %>",
+      "authType": "sso"
     },
     {
       "name": "todaysReservDesk",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysBookedDesk() %>",
+      "url": "<% wql.getTodaysReservedDesk() %>",
       "authType": "sso"
     },
     {
@@ -65,7 +64,7 @@
                   "label": "Today's booking",
                   "value": "<%
                             var deskData = todaysReservDesk.data;
-                            if(empty deskData) {
+                            if(empty deskData || todaysReservation.data[0].checkedOut) {
                                 '<h1 style=\"font-size:32px\"><b>None</b></h1>'
                             } else {
                                 deskData = deskData[0];
@@ -82,13 +81,20 @@
                 {
                   "type": "section",
                   "id": "secTodaysBookingBtns",
-                  "render": "<% !empty todaysReservDesk.data %>",
+                  "render": "<% !empty todaysReservDesk.data && !todaysReservation.data[0].checkedOut %>",
                   "horizontal": true,
                   "children": [
                     {
                       "type": "button",
                       "label": "CHECK-OUT",
-                      "action": "PRIMARY"
+                      "action": "PRIMARY",
+                      "taskReference": {
+                        "type": "taskReference",
+                        "taskId": "checkOut",
+                        "parameterBindings": {
+                          "bookingId": "<% console.debug(todaysReservation.data[0]); todaysReservation.data[0].Booking.id %>"
+                        }
+                      }
                     },
                     {
                       "type": "button",
@@ -98,7 +104,7 @@
                         "type": "taskReference",
                         "taskId": "CancelReservation",
                         "parameterBindings": {
-                          "bookingId": "<% todaysReservation.invoke().data[0].Booking.id %>"
+                          "bookingId": "<% todaysReservation.data[0].Booking.id %>"
                         }
                       }
                     }
@@ -109,7 +115,7 @@
             {
               "type": "section",
               "id": "secOfficePlanImg",
-              "render": "<% !empty todaysReservDesk.data %>",
+              "render": "<% !empty todaysReservDesk.data && !todaysReservation.data[0].checkedOut %>",
               "children": [
                 {
                   "type": "image",
