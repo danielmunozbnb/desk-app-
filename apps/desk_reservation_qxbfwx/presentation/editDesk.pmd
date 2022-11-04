@@ -102,7 +102,7 @@
                     "type": "hidden",
                     "id": "itemId",
                     "enabled": false,
-                    "value": "<% row.id %>"
+                    "value": "<% row.workdayID %>"
                   }
                 ]
               }
@@ -127,57 +127,6 @@
                     "valueOutBinding": "deskPUT.area.id"
                   }
                 ]
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "deskCoordX",
-              "label": "Coordinate X",
-              "cellTemplate": {
-                "type": "number",
-                "fractionDigits": 2,
-                "id": "deskCoordX",
-                "value": "<% row.coordX %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPOST.coordX"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPUT.coordX"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "deskCoordY",
-              "label": "Desk Coordinate Y",
-              "cellTemplate": {
-                "type": "number",
-                "id": "deskCoordY",
-                "value": "<% row.coordY %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPOST.coordY"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "deskPUT.coordY"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "deskid",
-              "label": "wid",
-              "cellTemplate": {
-                "type": "number",
-                "id": "desk_id",
-                "value": "<% row.id %>"
               }
             }
           ]
