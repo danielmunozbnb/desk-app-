@@ -14,12 +14,18 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "areaUpdate",
+        "name": "areaPUT",
         "baseUrlType": "app",
-        "url": "<% 'areas/' + queryParams.areaId %>",
+        "httpMethod": "PUT",
+        "url": "<% 'areas/' +  queryParams.areaId %>",
+        "authType": "sso"
+      },
+      {
+        "name": "areaPOST",
+        "baseUrlType": "app",
         "httpMethod": "POST",
-        "authType": "sso",
-        "onSend": "<% self.data %>"
+        "url": "areas/",
+        "authType": "sso"
       }
     ]
   },
@@ -52,9 +58,31 @@
               "columnId": "nameColumnId",
               "label": "Name",
               "cellTemplate": {
-                "type": "text",
-                "id": "areaName",
-                "value": "<% row.name %>"
+                "type": "fieldSet",
+                "id": "fieldSetAreakNameID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "areaName",
+                    "value": "<% row.name %>",
+                    "valuesOut": [
+                      {
+                        "value": "<% self.value %>",
+                        "valueOutBinding": "areaPOST.areaName"
+                      },
+                      {
+                        "value": "<% self.value %>",
+                        "valueOutBinding": "areaPUT.areaName"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "hidden",
+                    "id": "itemId",
+                    "enabled": false,
+                    "value": "<% row.workdayID %>"
+                  }
+                ]
               }
             },
             {
@@ -63,7 +91,7 @@
               "label": "Location",
               "cellTemplate": {
                 "type": "text",
-                "id": "areaName",
+                "id": "areaLocation",
                 "value": "<% row.location.descriptor %>"
               }
             },
@@ -74,17 +102,17 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "areaFloor",
-                "value": "<% row.description %>"
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "areaId",
-              "label": "wid",
-              "cellTemplate": {
-                "type": "text",
-                "id": "areaid",
-                "value": "<% row.id %>"
+                "value": "<% row.description %>",
+                "valuesOut": [
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPOST.areaFloor"
+                  },
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPUT.areaFloor"
+                  }
+                ]
               }
             }
           ]
