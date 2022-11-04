@@ -169,6 +169,16 @@
                   }
                 ]
               }
+            },
+            {
+              "type": "column",
+              "columnId": "deskid",
+              "label": "wid",
+              "cellTemplate": {
+                "type": "number",
+                "id": "desk_id",
+                "value": "<% row.id %>"
+              }
             }
           ]
         }
