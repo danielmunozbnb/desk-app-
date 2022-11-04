@@ -17,10 +17,10 @@
       "authType": "sso"
     },
     {
-      "baseUrlType": "WORKDAY-WQL",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "areaByID",
       "authType": "sso",
-      "url": "<%'data?query=SELECT%20workdayID%2C%20name%20FROM%20desk_reservation_qxbfwx_areas%20WHERE%20workdayID%20%3D%22' + id + '%22' %>",
+      "url": "<% wql.getAreaName(id) %>",
       "deferred": true
     }
   ],
