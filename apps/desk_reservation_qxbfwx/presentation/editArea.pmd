@@ -92,7 +92,17 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "areaLocation",
-                "value": "<% row.location.descriptor %>"
+                "value": "<% row.location.descriptor %>",
+                "valuesOut": [
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPOST.areaLocation"
+                  },
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPUT.areaLocation"
+                  }
+                ]
               }
             },
             {
