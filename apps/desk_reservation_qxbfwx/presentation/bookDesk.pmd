@@ -68,7 +68,7 @@
                           if( area == item.area.id){
                               var booked = false;
                               for (var booking : reservations.data){
-                                if(item.id == booking.desk.id && booking.date == flowVariables.selectedDate){
+                                if(item.id == booking.desk.id && booking.date == flowVariables.selectedDate && booking.checkedOut==false){
                                     booked = true
                                 };
                               }
