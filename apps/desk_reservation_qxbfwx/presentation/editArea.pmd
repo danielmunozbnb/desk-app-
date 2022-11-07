@@ -16,7 +16,7 @@
       {
         "name": "areaPUT",
         "baseUrlType": "app",
-        "httpMethod": "PUT",
+        "httpMethod": "PATCH",
         "url": "<% 'areas/' +  queryParams.areaId %>",
         "authType": "sso"
       },
