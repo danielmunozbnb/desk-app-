@@ -37,7 +37,7 @@
 
              var deskToday = function(){
                  for (var booking : bookings.data){
-                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd') && !booking.checkedIn){
+                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd') && !booking.checkedOut){
                          return 'Your booked desk for today is: ' + deskByID.invoke({'id': booking.desk.id}).data[0].deskName + '. Do you want to check in?';
                      }
                  }
@@ -46,7 +46,7 @@
 
              var deskidToday = function(){
                  for (var booking : bookings.data){
-                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd')&& !booking.checkedIn){
+                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd')&& !booking.checkedOut){
                          return booking.id;
                      }
                  }
@@ -81,7 +81,7 @@
           "value": false,
           "label": "Confirm",
           "required": "<% deskidToday() != null %>",
-          "valueOutBinding": "bookingPost.checkedIn"
+          "valueOutBinding": "bookingPost.checkedOut"
         }
       ]
     }

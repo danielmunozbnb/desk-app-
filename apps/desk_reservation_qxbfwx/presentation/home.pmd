@@ -7,14 +7,13 @@
     {
       "name": "todaysReservation",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysReservation() %>",
-      "authType": "sso",
-      "deferred": true
+      "url": "<% wql.getTodaysReservAndCheckedOut() %>",
+      "authType": "sso"
     },
     {
-      "name": "todaysReservDesk",
+      "name": "todaysDeskAndBooking",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysBookedDesk() %>",
+      "url": "<% wql.getTodaysDeskAndBooking() %>",
       "authType": "sso"
     },
     {
@@ -64,31 +63,38 @@
                   "type": "richText",
                   "label": "Today's booking",
                   "value": "<%
-                            var deskData = todaysReservDesk.data;
+                            var deskData = todaysDeskAndBooking.data;
                             if(empty deskData) {
                                 '<h1 style=\"font-size:32px\"><b>None</b></h1>'
                             } else {
                                 deskData = deskData[0];
-                                    var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
-                                    var deskName = deskAndArea.deskName;
-                                    var areaName = areaNameByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].name;
-                                    var locationName = locationByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].location.descriptor;
+                                var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
+                                var deskName = deskAndArea.deskName;
+                                var areaName = areaNameByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].name;
+                                var locationName = locationByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].location.descriptor;
 
-                                    '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
-                                        + areaName + '<br/>' + locationName + '</p>'
+                                '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
+                                    + areaName + '<br/>' + locationName + '</p>'
                             }
                             %>"
                 },
                 {
                   "type": "section",
                   "id": "secTodaysBookingBtns",
-                  "render": "<% !empty todaysReservDesk.data %>",
+                  "render": "<% !empty todaysDeskAndBooking.data %>",
                   "horizontal": true,
                   "children": [
                     {
                       "type": "button",
                       "label": "CHECK-OUT",
-                      "action": "PRIMARY"
+                      "action": "PRIMARY",
+                      "taskReference": {
+                        "type": "taskReference",
+                        "taskId": "checkOut",
+                        "parameterBindings": {
+                          "bookingId": "<% console.debug(todaysDeskAndBooking.data[0]); todaysDeskAndBooking.data[0].workdayID %>"
+                        }
+                      }
                     },
                     {
                       "type": "button",
@@ -98,7 +104,7 @@
                         "type": "taskReference",
                         "taskId": "CancelReservation",
                         "parameterBindings": {
-                          "bookingId": "<% todaysReservation.invoke().data[0].Booking.id %>"
+                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
                         }
                       }
                     }
@@ -109,7 +115,7 @@
             {
               "type": "section",
               "id": "secOfficePlanImg",
-              "render": "<% !empty todaysReservDesk.data %>",
+              "render": "<% !empty todaysDeskAndBooking.data %>",
               "children": [
                 {
                   "type": "image",

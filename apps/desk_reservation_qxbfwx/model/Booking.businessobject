@@ -33,8 +33,8 @@
     },
     {
       "id": 4,
-      "name": "checkedIn",
-      "label": "Checked in",
+      "name": "checkedOut",
+      "label": "Checked out",
       "type": "BOOLEAN"
     }
   ]
