@@ -1,0 +1,89 @@
+{
+  "id": "checkInForTodayDesk",
+  "endPoints": [
+    {
+      "baseUrlType": "COMMON",
+      "name": "workers",
+      "authType": "sso",
+      "url": "<%'/workers/me'%>"
+    },
+    {
+      "name": "bookings",
+      "baseUrlType": "app",
+      "url": "bookings",
+      "authType": "sso"
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "deskByID",
+      "authType": "sso",
+      "url": "<%'data?query=SELECT%20workdayID%2C%20deskName%20FROM%20desk_reservation_qxbfwx_desks%20WHERE%20workdayID%20%3D%22' + id + '%22' %>",
+      "deferred": true
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "bookingPost",
+        "baseUrlType": "app",
+        "httpMethod": "PATCH",
+        "url": "<% 'bookings/' + hidden1id.value%>",
+        "exclude": "<% empty hidden1id.value%>",
+        "authType": "sso"
+      }
+    ]
+  },
+  "script": "<%
+
+             var deskToday = function(){
+                 for (var booking : bookings.data){
+                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd') && !booking.checkedOut){
+                         return 'Your booked desk for today is: ' + deskByID.invoke({'id': booking.desk.id}).data[0].deskName + '. Do you want to check in?';
+                     }
+                 }
+                 return 'There is not a desk booked for today, or the desk was already checked in.';
+             }
+
+             var deskidToday = function(){
+                 for (var booking : bookings.data){
+                     if(booking.worker.id == workers.id && booking.date == date:getTodaysDateFormatted(date:getDateTimeZone(userTimeZone),'yyyy-MM-dd')&& !booking.checkedOut){
+                         return booking.id;
+                     }
+                 }
+                 return null;
+             }
+
+
+
+             %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "texto",
+          "value": "<%deskToday()%>",
+          "enabled": false
+        },
+        {
+          "type": "hidden",
+          "id": "hidden1id",
+          "value": "<%deskidToday()%>"
+        },
+        {
+          "type": "checkBox",
+          "id": "checkboxID",
+          "render": "<% deskidToday() != null %>",
+          "value": false,
+          "label": "Confirm",
+          "required": "<% deskidToday() != null %>",
+          "valueOutBinding": "bookingPost.checkedOut"
+        }
+      ]
+    }
+  }
+}

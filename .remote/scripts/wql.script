@@ -3,8 +3,8 @@ var getTodaysReservAndCheckedOut = function() {
   query.urlEncode();
 };
 
-var getTodaysDeskAndBooking = function() {
-  var query = string:formatMessage('SELECT desk, workdayID FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND checkedOut = false', date:now().format('yyyy-MM-dd'));
+var getTodaysReservedDesk = function() {
+  var query = string:formatMessage('SELECT desk FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND checkedOut = false', date:now().format('yyyy-MM-dd'));
   query.urlEncode()
 };
 
@@ -37,7 +37,7 @@ var getDesk = function(workdayID) {
 
 {
   "getTodaysReservAndCheckedOut": getTodaysReservAndCheckedOut,
-  "getTodaysDeskAndBooking": getTodaysDeskAndBooking,
+  "getTodaysReservedDesk": getTodaysReservedDesk,
   "getAreaAndDeskName": getAreaAndDeskName,
   "getAreaName": getAreaName,
   "getLocation": getLocation,

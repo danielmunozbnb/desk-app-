@@ -1,0 +1,144 @@
+{
+  "id": "editArea",
+  "include": [
+    "wql.script"
+  ],
+  "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "get_area",
+      "authType": "sso",
+      "url": "/data?query=<%wql.Area(queryParams.areaId)%>"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "areaPUT",
+        "baseUrlType": "app",
+        "httpMethod": "PUT",
+        "url": "<% 'areas/' +  queryParams.areaId %>",
+        "authType": "sso"
+      },
+      {
+        "name": "areaPOST",
+        "baseUrlType": "app",
+        "httpMethod": "POST",
+        "url": "areas/",
+        "authType": "sso"
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "standardEditButtonsHidden": true,
+    "micro": true,
+    "microFirstPageOnly": true,
+    "title": {
+      "type": "title",
+      "label": "Workday Extend",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "Areas",
+          "doNotAdd": true,
+          "doNotRemove": true,
+          "rows": "<% get_area.data %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "fieldSet",
+                "id": "fieldSetAreakNameID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "areaName",
+                    "value": "<% row.name %>",
+                    "valuesOut": [
+                      {
+                        "value": "<% self.value %>",
+                        "valueOutBinding": "areaPOST.areaName"
+                      },
+                      {
+                        "value": "<% self.value %>",
+                        "valueOutBinding": "areaPUT.areaName"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "hidden",
+                    "id": "itemId",
+                    "enabled": false,
+                    "value": "<% row.workdayID %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationColumnId",
+              "label": "Location",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaLocation",
+                "value": "<% row.location.descriptor %>",
+                "valuesOut": [
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPOST.areaLocation"
+                  },
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPUT.areaLocation"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "Descripción",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaFloor",
+                "value": "<% row.description %>",
+                "valuesOut": [
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPOST.areaFloor"
+                  },
+                  {
+                    "value": "<% self.value %>",
+                    "valueOutBinding": "areaPUT.areaFloor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "editButtonBar",
+          "editButtons": [
+            {
+              "type": "editButton",
+              "label": "Submit",
+              "id": "submitBtn",
+              "buttonType": "PRIMARY"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

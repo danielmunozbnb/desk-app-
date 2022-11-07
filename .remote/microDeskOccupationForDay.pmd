@@ -1,0 +1,51 @@
+{
+  "id": "microDeskOccupationForDay",
+  "endPoints": [ ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "dayForDesks",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "selectedDate",
+            "value": "<%
+                      fecha.value.format('yyyy-MM-dd');
+                      %>"
+          }
+        ]
+      }
+    ]
+  },
+  "presentation": {
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "View Reservations for a Day",
+      "enabled": true
+    },
+    "pageType": "edit",
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "fieldSet",
+          "title": "Select a date",
+          "id": "fechaFieldSet",
+          "children": [
+            {
+              "type": "date",
+              "id": "fecha",
+              "datePrecision": "DAY",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

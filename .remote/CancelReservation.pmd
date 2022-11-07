@@ -1,0 +1,46 @@
+{
+  "id": "CancelReservation",
+  "endPoints": [
+    {
+      "name": "booking_url",
+      "baseUrlType": "app",
+      "url": "<% 'bookings/' + queryParams.bookingId + '/Desk' %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "deleteBooking",
+        "baseUrlType": "app",
+        "url": "<% 'bookings/' + queryParams.bookingId %>",
+        "httpMethod": "DELETE",
+        "authType": "sso"
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "Cancel Reservation"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "readOnlyText",
+          "label": "Cancel reservation?",
+          "value": "(show reservation)"
+        },
+        {
+          "type": "checkBox",
+          "id": "confirmStopDonation",
+          "label": "Confirm",
+          "required": "<% true %>"
+        }
+      ]
+    }
+  }
+}

@@ -112,7 +112,7 @@
                             deskAvailableForArea.setValues(fillDesks(areasInstaceList.value[0] ));
                         }
 
-                        deskAvailableForArea.setValue([]);
+                          deskAvailableForArea.setValue([]);
                         deskAvailableForArea.clearError();
 
                         if(!empty areasInstaceList.value){

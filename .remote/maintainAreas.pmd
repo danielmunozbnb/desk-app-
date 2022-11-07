@@ -1,0 +1,110 @@
+{
+  "id": "maintainAreas",
+  "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "allLocations",
+      "authType": "sso",
+      "url": "data?query=SELECT%20locationName%2C%20workdayID%20FROM%20locations%20(locationUsagesForLocation%20%3D%20(46db411c4a5245fbb39834d8b2cba049))"
+    },
+    {
+      "name": "areas",
+      "baseUrlType": "app",
+      "url": "areas",
+      "authType": "sso"
+    }
+  ],
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "view",
+    "title": {
+      "type": "title",
+      "label": "Maintain Areas"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "Areas",
+          "rows": "<% areas.data %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaName",
+                "value": "<% row.name %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationColumnId",
+              "label": "Location",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaName",
+                "value": "<% row.location.descriptor %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "Descripción",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaFloor",
+                "value": "<% row.description %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "inUseColumnId",
+              "label": "en uso",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaUse",
+                "value": "<% row.inUse %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnActions",
+              "cellTemplate": {
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Edit",
+                    "taskReference": {
+                      "taskId": "editArea",
+                      "parameterBindings": {
+                        "areaId": "<% row.id %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "label": "New Area",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "maintainAreas"
+          }
+        }
+      ]
+    }
+  }
+}

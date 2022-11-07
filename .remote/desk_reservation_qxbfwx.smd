@@ -1,5 +1,5 @@
 {
-  "id": "MC_ej2_qxbfwx",
+  "id": "desk_reservation_qxbfwx",
   "languages": [
     {
       "code": "en-US",
@@ -14,8 +14,8 @@
       }
     ]
   },
-  "siteId": "MC_ej2_qxbfwx",
+  "siteId": "desk_reservation_qxbfwx",
   "cdnEnabled": true,
   "siteProperties": [ ],
-  "applicationId": "MC_ej2_qxbfwx"
+  "applicationId": "desk_reservation_qxbfwx"
 }

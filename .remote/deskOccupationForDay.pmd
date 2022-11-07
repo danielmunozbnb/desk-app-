@@ -1,0 +1,79 @@
+{
+  "id": "deskOccupationForDay",
+  "endPoints": [
+    {
+      "name": "bookings",
+      "baseUrlType": "app",
+      "url": "bookings",
+      "authType": "sso"
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "deskByID",
+      "authType": "sso",
+      "url": "<%'data?query=SELECT%20workdayID%2C%20deskName%20FROM%20desk_reservation_qxbfwx_desks%20WHERE%20workdayID%20%3D%22' + id + '%22' %>",
+      "deferred": true
+    }
+  ],
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "view",
+    "title": {
+      "type": "title",
+      "label": "View Desks for a Day",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "Bookings for the worker",
+          "rows": "<%
+                   var list = [];
+
+                   for (var booking : bookings.data){
+                       if(booking.date == flowVariables.selectedDate){
+                           list.add(booking);
+                       }
+                   }
+                   return list;
+
+                   %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "bookingColumnId",
+              "label": "Bookings",
+              "cellTemplate": {
+                "type": "instanceList",
+                "id": "bookingName",
+                "enabled": false,
+                "instanceList": [
+                  {
+                    "id": "<%row.id%>",
+                    "descriptor": "<%deskByID.invoke({'id': row.desk.id}).data[0].deskName%>",
+                    "wid": "<%row.id%>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "Date",
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaFloor",
+                "value": "<% row.date %>"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
