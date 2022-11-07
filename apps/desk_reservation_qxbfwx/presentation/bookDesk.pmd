@@ -1,11 +1,21 @@
 {
   "id": "bookDesk",
+  "include": [
+        "wql.script"
+  ],
   "endPoints": [
     {
       "name": "areas",
       "baseUrlType": "app",
       "url": "/areas",
       "authType": "sso"
+    },
+    {
+      "name": "desksByAreaID",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getDesksByAreaID(areaID) %>",
+      "authType": "sso",
+      "deferred": true
     },
     {
       "name": "desk",
@@ -39,8 +49,8 @@
         "name": "areasPUT",
         "baseUrlType": "app",
         "httpMethod": "PATCH",
-        "url": "<%'areas/' + areasInstaceList.selectedEntries[0].id %>",
-        "exclude": "<% empty areasInstaceList.selectedEntries[0].id%>",
+        "url": "<%'areas/' + areasInstanceList.selectedEntries[0].id %>",
+        "exclude": "<% empty areasInstanceList.selectedEntries[0].id%>",
         "authType": "sso"
       },
       {
@@ -61,27 +71,22 @@
   },
   "script": "<%
 
-              var fillDesks = function(area){
-                var desks = [];
-                for (var item : desk.data){
-                  if(!empty area){
-                          if( area == item.area.id){
-                              var booked = false;
-                              for (var booking : reservations.data){
-                                if(item.id == booking.desk.id && booking.date == flowVariables.selectedDate && booking.checkedOut==false){
-                                    booked = true
-                                };
-                              }
-                              if(booked == false){
-                                  desks.add(item);
-                              }
+              var fillDesks = function(areaID) {
+                if (empty areaID) {
+                  return [];
+                }
 
-                          }
+                var desks = [];
+                for (var desk : desksByAreaID.invoke({'areaID': areaID}).data) {
+                  for (var booking : reservations.data) {
+                    if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate && !booking.checkedOut)) {
+                        desks.add(desk);
+                    };
                   }
                 }
+                console.debug(desks);
                 return desks;
               };
-
             %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
@@ -103,19 +108,19 @@
         },
         {
           "type": "instanceList",
-          "id": "areasInstaceList",
+          "id": "areasInstanceList",
           "label": "Areas",
           "displayKey": "name",
           "values": "<% areas.data %>",
           "onChange": "<%
-                        if(!empty areasInstaceList.value){
-                            deskAvailableForArea.setValues(fillDesks(areasInstaceList.value[0] ));
+                        if(!empty areasInstanceList.value){
+                            deskAvailableForArea.setValues(fillDesks(areasInstanceList.value[0]));
                         }
 
                         deskAvailableForArea.setValue([]);
                         deskAvailableForArea.clearError();
 
-                        if(!empty areasInstaceList.value){
+                        if(!empty areasInstanceList.value){
                              deskAvailableForArea.setVisible(true);
                         }else{
                             deskAvailableForArea.visible = false;

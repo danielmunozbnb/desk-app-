@@ -29,11 +29,16 @@ var getArea = function(workdayID) {
   query.urlEncode();
 };
 
-var getDesk = function(workdayID) {
-  var query = string:formatMessage('SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', workdayID);
+var getDesk = function(deskID) {
+  var query = string:formatMessage('SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', deskID);
   console.info(query);
   query.urlEncode();
 };
+
+var getDesksByAreaID = function(areaID) {
+  var query = string:formatMessage('SELECT Desk FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
+  query.urlEncode();
+}
 
 {
   "getTodaysReservAndCheckedOut": getTodaysReservAndCheckedOut,
@@ -42,5 +47,6 @@ var getDesk = function(workdayID) {
   "getAreaName": getAreaName,
   "getLocation": getLocation,
   "Desk":getDesk,
-  "Area":getArea
+  "Area":getArea,
+  "getDesksByAreaID": getDesksByAreaID
 }
