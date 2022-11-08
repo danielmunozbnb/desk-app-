@@ -36,7 +36,7 @@ var getDesk = function(deskID) {
 };
 
 var getDesksByAreaID = function(areaID) {
-  var query = string:formatMessage('SELECT Desk FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
+  var query = string:formatMessage('SELECT Desk, deskName FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
   query.urlEncode();
 }
 

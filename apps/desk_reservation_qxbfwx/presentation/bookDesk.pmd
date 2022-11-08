@@ -80,8 +80,9 @@
                 for (var desk : desksByAreaID.invoke({'areaID': areaID}).data) {
                   for (var booking : reservations.data) {
                     if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate && !booking.checkedOut)) {
-                        desks.add(desk);
-                    };
+                      desks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
+                      break;
+                    }
                   }
                 }
                 console.debug(desks);
@@ -113,17 +114,17 @@
           "displayKey": "name",
           "values": "<% areas.data %>",
           "onChange": "<%
-                        if(!empty areasInstanceList.value){
-                            deskAvailableForArea.setValues(fillDesks(areasInstanceList.value[0]));
+                        if (!empty areasInstanceList.value) {
+                          deskAvailableForArea.setValues(fillDesks(areasInstanceList.value[0]));
                         }
 
                         deskAvailableForArea.setValue([]);
                         deskAvailableForArea.clearError();
 
-                        if(!empty areasInstanceList.value){
-                             deskAvailableForArea.setVisible(true);
-                        }else{
-                            deskAvailableForArea.visible = false;
+                        if (!empty areasInstanceList.value) {
+                          deskAvailableForArea.setVisible(true);
+                        } else {
+                          deskAvailableForArea.visible = false;
                         }
                       %>"
         },
