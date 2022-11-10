@@ -10,8 +10,8 @@
         "authType": "sso",
         "values": [
           {
-            "outboundPath": "checkedOut",
-            "value": "<% true %>"
+            "outboundPath": "state",
+            "value": "<% 3 %>"
           }
         ]
       }

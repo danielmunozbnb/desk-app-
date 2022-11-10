@@ -1,10 +1,8 @@
-// Task: home / Landing Page
-var getNonCheckedOutReserv = function() {
-
+var reservStates = ['', 'Reserved', 'Canceled', 'Checked out'];
+var getReservState = function(stateInt) {
+  reservStates.get(stateInt);
 };
-// ===
-
 
 {
-  "getCurrentTime": getCurrentTime
+  "getReservState": getReservState
 }

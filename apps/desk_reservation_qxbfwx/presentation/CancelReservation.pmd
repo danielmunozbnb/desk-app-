@@ -12,11 +12,17 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "deleteBooking",
+        "name": "cancelReservation",
         "baseUrlType": "app",
         "url": "<% 'bookings/' + queryParams.bookingId %>",
-        "httpMethod": "DELETE",
-        "authType": "sso"
+        "httpMethod": "PATCH",
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "state",
+            "value": "<% 2 %>"
+          }
+        ]
       }
     ]
   },

@@ -1,5 +1,8 @@
 {
   "id": "viewMyReservations",
+  "include": [
+    "functions.script"
+  ],
   "endPoints": [
     {
       "baseUrlType": "COMMON",
@@ -49,7 +52,7 @@
         {
           "type": "grid",
           "id": "gridAreas",
-          "label": "Bookings for the worker",
+          "label": "Reservations for the worker",
           "rows": "<%
                    var list = [];
 
@@ -66,7 +69,7 @@
             {
               "type": "column",
               "columnId": "bookingColumnId",
-              "label": "Bookings",
+              "label": "Reservations",
               "cellTemplate": {
                 "type": "instanceList",
                 "id": "bookingName",
@@ -74,8 +77,8 @@
                 "instanceList": [
                   {
                     "id": "<%row.id%>",
-                    "descriptor": "<%deskByID.invoke({'id': row.desk.id}).data[0].deskName%>",
-                    "wid": "<%row.id%>"
+                    "descriptor": "<% deskByID.invoke({'id': row.desk.id}).data[0].deskName %>",
+                    "wid": "<% row.id %>"
                   }
                 ]
               }
@@ -87,7 +90,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "areaTextId",
-                "value": "<% areaByID.invoke({'id': deskByID.invoke({'id':row.desk.id}).data[0].area.id}).data[0].name%>"
+                "value": "<% areaByID.invoke({'id': deskByID.invoke({'id':row.desk.id}).data[0].area.id}).data[0].name %>"
               }
             },
             {
@@ -103,11 +106,11 @@
             {
               "type": "column",
               "columnId": "checkedOutColumnId",
-              "label": "Checked out",
+              "label": "State",
               "cellTemplate": {
                 "type": "text",
                 "id": "checkedOutText",
-                "value": "<% row.checkedOut %>"
+                "value": "<% functions.getReservState(row.state) %>"
               }
             },
             {

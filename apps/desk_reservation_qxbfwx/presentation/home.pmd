@@ -7,7 +7,7 @@
     {
       "name": "todaysReservation",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysReservAndCheckedOut() %>",
+      "url": "<% wql.getTodaysReservAndState() %>",
       "authType": "sso"
     },
     {
@@ -130,7 +130,7 @@
         },
         {
           "type": "button",
-          "label": "VIEW MY BOOKINGS",
+          "label": "VIEW MY RESERVATIONS",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",

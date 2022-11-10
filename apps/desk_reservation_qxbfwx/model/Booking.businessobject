@@ -27,15 +27,15 @@
     {
       "id": 3,
       "name": "date",
-      "label": "Date",
+      "label": "Reserved date",
       "type": "DATE",
       "precision": "DAY"
     },
     {
       "id": 4,
-      "name": "checkedOut",
-      "label": "Checked out",
-      "type": "BOOLEAN"
+      "name": "state",
+      "label": "State",
+      "type": "INTEGER"
     }
   ]
 }

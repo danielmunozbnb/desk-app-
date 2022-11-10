@@ -43,7 +43,14 @@
         "baseUrlType": "app",
         "httpMethod": "POST",
         "url": "bookings/",
-        "authType": "sso"
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "state",
+            "value": "<% 1 %>"
+          }
+        ],
+        "_onSend": "<% console.debug(self.data) %>"
       },
       {
         "name": "areasPUT",
@@ -76,17 +83,22 @@
                   return [];
                 }
 
-                var desks = [];
-                for (var desk : desksByAreaID.invoke({'areaID': areaID}).data) {
-                  for (var booking : reservations.data) {
-                    if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate && !booking.checkedOut)) {
-                      desks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
-                      break;
+                var reservations = reservations.data;
+                var desks = desksByAreaID.invoke({'areaID': areaID}).data;
+                if (empty reservations) {
+                  return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
+                } else {
+                  var validDesks = [];
+                  for (var desk : desks) {
+                    for (var booking : reservations) {
+                      if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate && booking.state == 1)) {
+                        validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
+                        break;
+                      }
                     }
                   }
+                  return validDesks;
                 }
-                console.debug(desks);
-                return desks;
               };
             %>",
   "presentation": {
