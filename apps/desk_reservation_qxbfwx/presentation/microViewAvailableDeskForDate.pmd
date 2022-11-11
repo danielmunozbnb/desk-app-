@@ -1,6 +1,19 @@
 {
   "id": "microViewAvailableDeskForDate",
-  "endPoints": [ ],
+  "endPoints": [
+    {
+      "baseUrlType": "COMMON",
+      "name": "workers",
+      "authType": "sso",
+      "url": "<%'/workers/me'%>"
+    },
+    {
+      "name": "bookings",
+      "baseUrlType": "app",
+      "url": "bookings",
+      "authType": "sso"
+    }
+  ],
   "outboundData": {
     "outboundEndPoints": [
       {
@@ -11,13 +24,47 @@
           {
             "outboundPath": "selectedDate",
             "value": "<%
-                        fecha.value.format('yyyy-MM-dd');
+                      fecha.value.format('yyyy-MM-dd');
+                      %>"
+          }
+        ]
+      },
+
+      {
+        "type": "outboundVariable",
+        "name": "dailyBooking",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "alreadyBooked",
+            "value": "<%
+                      console.info('qwerty-script= ',checkReservation());
+                      console.info('qwerty-fechaElegida= ',fecha.value.format('yyyy-MM-dd'));
+                          checkReservation();
                       %>"
           }
         ]
       }
+
     ]
   },
+  "script": "<%
+
+
+             var checkReservation = function() {
+                 fecha.clearError();
+                 for (var booking : bookings.data){
+                     console.info('qwertyBooking= ',booking.date);
+                     if(booking.worker.id == workers.id  &&  booking.date == fecha.value.format('yyyy-MM-dd') ){
+
+                         fecha.setError('Reservation already submitted for that day');
+                             return true;
+                     }
+                 }
+                 return false;
+             }
+
+             %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "micro": "true",
@@ -41,7 +88,19 @@
               "type": "date",
               "id": "fecha",
               "datePrecision": "DAY",
-              "required": true
+              "required": true,
+              "onChange":"<% checkReservation(); %>"
+            },
+            {
+              "type": "date",
+              "id": "checkInDateTime",
+              "label": "Today is:",
+              "datePrecision": "DAY",
+              "displayTimeZone": "<% userTimeZone %>",
+              "inputTimeZone": "<% userTimeZone %>",
+              "value": "<% date:getTodaysDate(date:getDateTimeZone(userTimeZone)) %>",
+              "enabled": false
+
             }
           ]
         }

@@ -8,6 +8,7 @@
         {
           "id": "microDeskOccupationForDayStep",
           "transitions": [
+
             {
               "order": "a",
               "value": "deskOccupationForDayStep",
@@ -33,8 +34,13 @@
           "transitions": [
             {
               "order": "a",
+              "value": "microBookDesk",
+              "condition": "<%flowVariables.alreadyBooked%>"
+            },
+            {
+              "order": "b",
               "value": "BookDesk",
-              "condition": "true"
+              "condition": "<%!flowVariables.alreadyBooked%>"
             }
           ],
           "startsFlow": true,
