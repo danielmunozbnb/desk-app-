@@ -29,7 +29,6 @@
           }
         ]
       },
-
       {
         "type": "outboundVariable",
         "name": "dailyBooking",
@@ -40,7 +39,7 @@
             "value": "<%
                       console.info('qwerty-script= ',checkReservation());
                       console.info('qwerty-fechaElegida= ',fecha.value.format('yyyy-MM-dd'));
-                          checkReservation();
+                      checkReservation();
                       %>"
           }
         ]
@@ -49,21 +48,17 @@
     ]
   },
   "script": "<%
-
-
              var checkReservation = function() {
                  fecha.clearError();
                  for (var booking : bookings.data){
                      console.info('qwertyBooking= ',booking.date);
-                     if(booking.worker.id == workers.id  &&  booking.date == fecha.value.format('yyyy-MM-dd') ){
-
+                     if(booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd') && booking.state == 1){
                          fecha.setError('Reservation already submitted for that day');
                              return true;
                      }
                  }
                  return false;
              }
-
              %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
@@ -100,7 +95,6 @@
               "inputTimeZone": "<% userTimeZone %>",
               "value": "<% date:getTodaysDate(date:getDateTimeZone(userTimeZone)) %>",
               "enabled": false
-
             }
           ]
         }
