@@ -7,7 +7,6 @@
       "url": "<% 'bookings/' + queryParams.bookingId + '/Desk' %>",
       "authType": "sso"
     }
-
   ],
   "outboundData": {
     "outboundEndPoints": [
@@ -33,7 +32,7 @@
         {
           "type": "readOnlyText",
           "label": "Cancel reservation?",
-          "value":"(show reservation)"
+          "value": "(show reservation)"
         },
         {
           "type": "checkBox",
@@ -45,4 +44,3 @@
     }
   }
 }
-

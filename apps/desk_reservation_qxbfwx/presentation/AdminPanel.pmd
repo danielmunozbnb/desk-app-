@@ -1,7 +1,6 @@
 {
   "id": "AdminPanel",
-  "endPoints": [
-  ],
+  "endPoints": [ ],
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "title": {

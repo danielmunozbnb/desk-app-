@@ -1,5 +1,5 @@
 {
-  "appProperties": [],
+  "appProperties": [ ],
   "flowDefinitions": [
     {
       "id": "viewDesksForDayFlow",
@@ -90,29 +90,6 @@
           "id": "bookingsByWorker",
           "endsFlow": true,
           "taskId": "reservationsByWorker"
-        }
-      ]
-    },
-    {
-      "id": "editAreaFlow",
-      "name": "editAreaFlow",
-      "flowSteps": [
-        {
-          "id": "editArea",
-          "transitions": [
-            {
-              "order": "a",
-              "value": "maintainAreas",
-              "condition": "true"
-            }
-          ],
-          "startsFlow": true,
-          "taskId": "editArea"
-        },
-        {
-          "id": "maintainAreas",
-          "endsFlow": true,
-          "taskId": "maintainAreas"
         }
       ]
     }
@@ -236,13 +213,6 @@
       "page": {
         "id": "editArea"
       }
-    },
-    {
-      "id": "editDesk",
-      "routingPattern": "editDesk",
-      "page": {
-        "id": "editDesk"
-      }
     }
   ],
   "applicationId": "desk_reservation_qxbfwx",
@@ -262,10 +232,6 @@
     {
       "key": "WORKDAY-WQL",
       "value": "https://api.workday.com/wql/v1/"
-    },
-    {
-      "key": "WORKDAY-WQL-QUERY",
-      "value": "https://api.workday.com/wql/v1/data?query="
     },
     {
       "key": "COMMON",

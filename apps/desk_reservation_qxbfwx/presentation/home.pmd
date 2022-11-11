@@ -1,49 +1,11 @@
 {
   "id": "home",
-  "include": [
-        "wql.script"
-  ],
-  "endPoints": [
-    {
-      "name": "todaysReservation",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysReservation() %>",
-      "authType": "sso",
-      "deferred": true
-    },
-    {
-      "name": "todaysReservDesk",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysBookedDesk() %>",
-      "authType": "sso"
-    },
-    {
-      "name": "areaIDDeskNameByDeskID",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getAreaAndDeskName(deskID) %>",
-      "authType": "sso",
-      "deferred": true
-    },
-    {
-      "name": "areaNameByAreaID",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getAreaName(areaID) %>",
-      "authType": "sso",
-      "deferred": true
-    },
-    {
-      "name": "locationByAreaID",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getLocation(areaID) %>",
-      "authType": "sso",
-      "deferred": true
-    }
-  ],
+  "endPoints": [ ],
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Desk Reservation Landing Page"
+      "label": "Desk Reservation Home"
     },
     "body": {
       "type": "section",
@@ -53,8 +15,8 @@
           "type": "section",
           "horizontal": true,
           "columnWidthRatios": [
-              0.25,
-              0.75
+            0.25,
+            0.75
           ],
           "children": [
             {
@@ -63,26 +25,11 @@
                 {
                   "type": "richText",
                   "label": "Today's booking",
-                  "value": "<%
-                            var deskData = todaysReservDesk.data;
-                            if(empty deskData) {
-                                '<h1 style=\"font-size:32px\"><b>None</b></h1>'
-                            } else {
-                                deskData = deskData[0];
-                                    var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
-                                    var deskName = deskAndArea.deskName;
-                                    var areaName = areaNameByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].name;
-                                    var locationName = locationByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].location.descriptor;
-
-                                    '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
-                                        + areaName + '<br/>' + locationName + '</p>'
-                            }
-                            %>"
+                  "value": "<h1 style='font-size:32px'><b>D32</b></h1><p>Planta 5 Derecha<br/>Madrid</p>"
                 },
                 {
                   "type": "section",
                   "id": "secTodaysBookingBtns",
-                  "render": "<% !empty todaysReservDesk.data %>",
                   "horizontal": true,
                   "children": [
                     {
@@ -93,14 +40,7 @@
                     {
                       "type": "button",
                       "label": "CANCEL",
-                      "action": "AUXILIARY",
-                      "taskReference": {
-                        "type": "taskReference",
-                        "taskId": "CancelReservation",
-                        "parameterBindings": {
-                          "bookingId": "<% todaysReservation.invoke().data[0].Booking.id %>"
-                        }
-                      }
+                      "action": "AUXILIARY"
                     }
                   ]
                 }
@@ -109,11 +49,10 @@
             {
               "type": "section",
               "id": "secOfficePlanImg",
-              "render": "<% !empty todaysReservDesk.data %>",
               "children": [
                 {
                   "type": "image",
-                  "imageUri": "https://upload.wikimedia.org/wikipedia/commons/3/3b/World_Map_1689.JPG",
+                  "imageUri": "https://picsum.photos/id/1080/6858/4574",
                   "sizingHint": "INLINE",
                   "defaultPhoto": false,
                   "userPhoto": false
@@ -137,13 +76,13 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "microViewAvailableDeskForDate"
+            "taskId": "bookDesk"
           }
         },
         {
           "type": "button",
-          "label": "admin panel",
-          "action": "PRIMARY",
+          "label": "Admin's panel",
+          "action": "SECONDARY",
           "taskReference": {
             "type": "taskReference",
             "taskId": "AdminPanel"
