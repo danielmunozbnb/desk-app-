@@ -48,31 +48,16 @@
           {
             "outboundPath": "state",
             "value": "<% 1 %>"
+          },
+          {
+            "outboundPath": "worker.id",
+            "value": "<% currLoginUser.id %>"
+          },
+          {
+            "outboundPath": "date",
+            "value": "<% flowVariables.selectedDate %>"
           }
-        ],
-        "_onSend": "<% console.debug(self.data) %>"
-      },
-      {
-        "name": "areasPUT",
-        "baseUrlType": "app",
-        "httpMethod": "PATCH",
-        "url": "<%'areas/' + areasInstanceList.selectedEntries[0].id %>",
-        "exclude": "<% empty areasInstanceList.selectedEntries[0].id%>",
-        "authType": "sso"
-      },
-      {
-        "name": "deskPUT",
-        "baseUrlType": "app",
-        "httpMethod": "PATCH",
-        "url": "<%'desks/' + deskAvailableForArea.selectedEntries[0].id %>",
-        "exclude": "<% empty deskAvailableForArea.selectedEntries[0].id %>",
-        "authType": "sso",
-        "onSend": "<%
-                  self.data = {:};
-                  self.data.inUse = inUse.value;
-                  self.data;
-
-                  %>"
+        ]
       }
     ]
   },
@@ -104,21 +89,10 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
-    "title": {
-      "type": "title",
-      "label": "Workday Extend",
-      "enabled": false
-    },
     "body": {
       "type": "section",
       "horizontal": false,
       "children": [
-        {
-          "type": "hidden",
-          "value": true,
-          "id": "inUse",
-          "label": "inUse"
-        },
         {
           "type": "instanceList",
           "id": "areasInstanceList",
@@ -149,18 +123,6 @@
           "valueOutBinding": "bookingPost.desk.id",
           "visible": true,
           "required": true
-        },
-        {
-          "type": "hidden",
-          "label": "The Worker",
-          "valueOutBinding": "bookingPost.worker.id",
-          "value": "<% currLoginUser.id %>"
-        },
-        {
-          "type": "hidden",
-          "label": "Day for the worker",
-          "valueOutBinding": "bookingPost.date",
-          "value": "<% flowVariables.selectedDate %>"
         }
       ]
     }

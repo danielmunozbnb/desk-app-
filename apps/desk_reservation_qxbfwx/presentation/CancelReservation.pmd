@@ -7,7 +7,6 @@
       "url": "<% 'bookings/' + queryParams.bookingId + '/Desk' %>",
       "authType": "sso"
     }
-
   ],
   "outboundData": {
     "outboundEndPoints": [

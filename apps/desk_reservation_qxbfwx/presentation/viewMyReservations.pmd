@@ -1,7 +1,8 @@
 {
   "id": "viewMyReservations",
   "include": [
-    "functions.script"
+    "functions.script",
+    "wql.script"
   ],
   "endPoints": [
     {
@@ -24,21 +25,13 @@
       "deferred": true
     },
     {
-      "baseUrlType": "WORKDAY-WQL",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "areaByID",
       "authType": "sso",
-      "url": "<%'data?query=SELECT%20workdayID%2C%20name%20FROM%20desk_reservation_qxbfwx_areas%20WHERE%20workdayID%20%3D%22' + id + '%22' %>",
+      "url": "<% wql.getAreaName(id) %>",
       "deferred": true
     }
   ],
-  "script": "<%
-            var getAreaID = function(id){
-
-                return deskByID.invoke({'id': id}).data[0].area.id;
-
-            }
-
-            %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "title": {
@@ -56,8 +49,10 @@
           "rows": "<%
                    var list = [];
 
+                   console.debug(bookings.data);
+                   console.debug(date:now().format('yyyy-MM-dd'));
                    for (var booking : bookings.data){
-                       if(booking.worker.id == workers.id){
+                       if(booking.date >= date:now().format('yyyy-MM-dd') && booking.worker.id == workers.id){
                            list.add(booking);
                        }
                    }
@@ -76,7 +71,7 @@
                 "enabled": false,
                 "instanceList": [
                   {
-                    "id": "<%row.id%>",
+                    "id": "<% row.id %>",
                     "descriptor": "<% deskByID.invoke({'id': row.desk.id}).data[0].deskName %>",
                     "wid": "<% row.id %>"
                   }

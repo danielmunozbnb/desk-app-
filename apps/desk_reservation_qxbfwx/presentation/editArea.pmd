@@ -5,26 +5,19 @@
   ],
   "endPoints": [
     {
-      "baseUrlType": "WORKDAY-WQL",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "get_area",
       "authType": "sso",
-      "url": "/data?query=<%wql.Area(queryParams.areaId)%>"
+      "url": "<% wql.Area(queryParams.areaId) %>"
     }
   ],
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "areaPUT",
+        "name": "areaPATCH",
         "baseUrlType": "app",
         "httpMethod": "PATCH",
-        "url": "<% 'areas/' +  queryParams.areaId %>",
-        "authType": "sso"
-      },
-      {
-        "name": "areaPOST",
-        "baseUrlType": "app",
-        "httpMethod": "POST",
-        "url": "areas/",
+        "url": "<% 'areas/' + queryParams.areaId %>",
         "authType": "sso"
       }
     ]
@@ -68,11 +61,7 @@
                     "valuesOut": [
                       {
                         "value": "<% self.value %>",
-                        "valueOutBinding": "areaPOST.areaName"
-                      },
-                      {
-                        "value": "<% self.value %>",
-                        "valueOutBinding": "areaPUT.areaName"
+                        "valueOutBinding": "areaPATCH.name"
                       }
                     ]
                   },
@@ -81,26 +70,6 @@
                     "id": "itemId",
                     "enabled": false,
                     "value": "<% row.workdayID %>"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "locationColumnId",
-              "label": "Location",
-              "cellTemplate": {
-                "type": "text",
-                "id": "areaLocation",
-                "value": "<% row.location.descriptor %>",
-                "valuesOut": [
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "areaPOST.areaLocation"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "areaPUT.areaLocation"
                   }
                 ]
               }
@@ -116,25 +85,10 @@
                 "valuesOut": [
                   {
                     "value": "<% self.value %>",
-                    "valueOutBinding": "areaPOST.areaFloor"
-                  },
-                  {
-                    "value": "<% self.value %>",
-                    "valueOutBinding": "areaPUT.areaFloor"
+                    "valueOutBinding": "areaPATCH.description"
                   }
                 ]
               }
-            }
-          ]
-        },
-        {
-          "type": "editButtonBar",
-          "editButtons": [
-            {
-              "type": "editButton",
-              "label": "Submit",
-              "id": "submitBtn",
-              "buttonType": "PRIMARY"
             }
           ]
         }

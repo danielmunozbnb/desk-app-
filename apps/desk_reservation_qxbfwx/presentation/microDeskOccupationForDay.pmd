@@ -38,6 +38,12 @@
           "id": "fechaFieldSet",
           "children": [
             {
+              "type": "text",
+              "id": "textitoRico",
+              "label": "JAJA",
+              "value": "XD"
+            },
+            {
               "type": "date",
               "id": "fecha",
               "datePrecision": "DAY",

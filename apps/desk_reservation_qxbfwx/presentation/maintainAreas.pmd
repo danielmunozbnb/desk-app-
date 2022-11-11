@@ -29,7 +29,7 @@
           "type": "grid",
           "id": "gridAreas",
           "label": "Areas",
-          "rows": "<% areas.data %>",
+          "rows": "<% console.debug(areas.data); areas.data %>",
           "rowVariableName": "row",
           "columns": [
             {
@@ -74,10 +74,9 @@
             },
             {
               "type": "column",
-              "columnId": "columnActions",
+              "columnId": "columnEdit",
               "cellTemplate": {
                 "type": "section",
-                "horizontal": true,
                 "children": [
                   {
                     "type": "button",
@@ -85,6 +84,26 @@
                     "label": "Edit",
                     "taskReference": {
                       "taskId": "editArea",
+                      "parameterBindings": {
+                        "areaId": "<% row.id %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnDelete",
+              "cellTemplate": {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Delete",
+                    "taskReference": {
+                      "taskId": "deleteArea",
                       "parameterBindings": {
                         "areaId": "<% row.id %>"
                       }

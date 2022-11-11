@@ -1,13 +1,12 @@
 {
-  "id": "cancelDesk",
-  "endPoints": [ ],
+  "id": "deleteDesk",
   "outboundData": {
     "outboundEndPoints": [
       {
         "baseUrlType": "app",
         "name": "bookings",
         "authType": "sso",
-        "url": "<%'bookings/' + flowVariables.selectedBooking%>",
+        "url": "<%'desks/' + queryParams.areaId %>",
         "httpMethod": "DELETE"
       }
     ]
@@ -15,11 +14,6 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
-    "title": {
-      "type": "title",
-      "label": "Workday Extend",
-      "enabled": false
-    },
     "body": {
       "type": "section",
       "horizontal": false,
@@ -27,7 +21,7 @@
         {
           "type": "checkBox",
           "id": "confirmationCheckBox",
-          "label": "Check to confirm you want to cancel this booking.",
+          "label": "<% 'Check to confirm you want to delete desk: ' + queryParams.deskName %>",
           "required": true
         }
       ]

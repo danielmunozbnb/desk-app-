@@ -18,6 +18,11 @@ var getAreaName = function(areaID) {
   query.urlEncode()
 };
 
+var getDeskName = function(deskID) {
+  var query = string:formatMessage('SELECT name FROM desk_reservation_qxbfwx_desks WHERE Desk = "{0}"', deskID);
+  query.urlEncode()
+};
+
 var getLocation = function(areaID) {
   var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas WHERE Area = "{0}"', areaID);
   query.urlEncode()
@@ -45,6 +50,7 @@ var getDesksByAreaID = function(areaID) {
   "getTodaysDeskAndBooking": getTodaysDeskAndBooking,
   "getAreaAndDeskName": getAreaAndDeskName,
   "getAreaName": getAreaName,
+  "getDeskName": getDeskName,
   "getLocation": getLocation,
   "Desk":getDesk,
   "Area":getArea,

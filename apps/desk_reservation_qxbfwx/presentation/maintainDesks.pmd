@@ -8,7 +8,7 @@
       "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "getAreaName",
       "authType": "sso",
-      "url": "<%wql.getAreaName(id)%>",
+      "url": "<% wql.getAreaName(id) %>",
       "deferred":true
     },
     {
@@ -97,7 +97,27 @@
                       "parameterBindings": {
                         "deskId": "<% row.id %>"
                       }
-
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnDelete",
+              "cellTemplate": {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Delete",
+                    "taskReference": {
+                      "taskId": "deleteDesk",
+                      "parameterBindings": {
+                        "areaId": "<% row.id %>",
+                        "deskName": "<% row.deskName %>"
+                      }
                     }
                   }
                 ]

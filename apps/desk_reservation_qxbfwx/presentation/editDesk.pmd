@@ -34,27 +34,10 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "deskPUT",
+        "name": "deskPATCH",
         "baseUrlType": "app",
-        "httpMethod": "PUT",
+        "httpMethod": "PATCH",
         "url": "<% 'desks/' +  itemId.value%>",
-        "exclude": "<% empty(itemId.value) %>",
-        "authType": "sso"
-      },
-      {
-        "name": "deskPOST",
-        "baseUrlType": "app",
-        "httpMethod": "POST",
-        "url": "desks/",
-        "exclude": "<% !empty(itemId.value) %>",
-        "authType": "sso"
-      },
-      {
-        "name": "deskDELETE",
-        "baseUrlType": "app",
-        "httpMethod": "DELETE",
-        "url": "<% 'desks/' +  itemId.value%>",
-        "exclude": "<% empty(itemId.value)%>",
         "authType": "sso"
       }
     ]
@@ -74,7 +57,6 @@
           "doNotRemove": true,
           "rows": "<% getDesk.data %>",
           "rowVariableName": "row",
-          "deleteEndPoint": "deskDELETE",
           "columns": [
             {
               "type": "column",
@@ -91,11 +73,7 @@
                     "valuesOut": [
                       {
                         "value": "<% self.value %>",
-                        "valueOutBinding": "deskPOST.deskName"
-                      },
-                      {
-                        "value": "<% self.value %>",
-                        "valueOutBinding": "deskPUT.deskName"
+                        "valueOutBinding": "deskPATCH.deskName"
                       }
                     ]
                   },
@@ -121,11 +99,7 @@
                 "valuesOut": [
                   {
                     "value": "<% deskArea.value[0] %>",
-                    "valueOutBinding": "deskPOST.area.id"
-                  },
-                  {
-                    "value": "<% deskArea.value[0] %>",
-                    "valueOutBinding": "deskPUT.area.id"
+                    "valueOutBinding": "deskPATCH.area.id"
                   }
                 ]
               }

@@ -250,6 +250,20 @@
       "page": {
         "id": "checkOut"
       }
+    },
+    {
+      "id": "deleteArea",
+      "routingPattern": "deleteArea",
+      "page": {
+        "id": "deleteArea"
+      }
+    },
+    {
+      "id": "deleteDesk",
+      "routingPattern": "deleteDesk",
+      "page": {
+        "id": "deleteDesk"
+      }
     }
   ],
   "applicationId": "desk_reservation_qxbfwx",
