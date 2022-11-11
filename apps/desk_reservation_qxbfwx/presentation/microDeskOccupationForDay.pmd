@@ -1,6 +1,13 @@
 {
   "id": "microDeskOccupationForDay",
-  "endPoints": [ ],
+  "endPoints": [
+    {
+      "name": "reservations",
+      "baseUrlType": "app",
+      "url": "/bookings",
+      "authType": "sso"
+    }
+  ],
   "outboundData": {
     "outboundEndPoints": [
       {
@@ -49,6 +56,7 @@
               "datePrecision": "DAY",
               "required": true
             }
+
           ]
         }
       ]

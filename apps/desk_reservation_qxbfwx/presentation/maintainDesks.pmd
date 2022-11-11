@@ -124,6 +124,15 @@
               }
             }
           ]
+        },
+        {
+          "type": "button",
+          "label": "New Desk",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "maintainDesks"
+          }
         }
       ]
     }
