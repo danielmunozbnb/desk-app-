@@ -25,7 +25,6 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
-    "standardEditButtonsHidden": true,
     "micro": true,
     "microFirstPageOnly": true,
     "title": {
