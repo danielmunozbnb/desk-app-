@@ -58,6 +58,20 @@
             "value": "<% flowVariables.selectedDate %>"
           }
         ]
+      },
+      {
+        "name": "notificationEvent",
+        "baseUrlType": "app",
+        "url": "reservationNotificationEvents",
+        "httpMethod": "POST",
+        "authType": "sso",
+        "onSend": "<% console.debug(json:asJSON(self.data)); self.data; %>",
+        "values": [
+          {
+            "outboundPath": "businessProcessTarget.id",
+            "value": "<% bookingPost.id %>"
+          }
+        ]
       }
     ]
   },

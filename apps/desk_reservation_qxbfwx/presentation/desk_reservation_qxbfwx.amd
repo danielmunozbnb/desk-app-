@@ -150,15 +150,15 @@
       "flowSteps": [
         {
           "id": "editDesk",
+          "startsFlow": true,
+          "taskId": "editDesk",
           "transitions": [
             {
               "order": "a",
               "value": "maintainDesks",
               "condition": "true"
             }
-          ],
-          "startsFlow": true,
-          "taskId": "editDesk"
+          ]
         },
         {
           "id": "maintainDesks",

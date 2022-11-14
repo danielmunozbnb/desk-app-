@@ -15,7 +15,8 @@
       "name": "worker",
       "label": "Worker",
       "type": "SINGLE_INSTANCE",
-      "target": "WORKER"
+      "target": "WORKER",
+      "secureByTarget": true
     },
     {
       "id": 2,
