@@ -31,6 +31,8 @@
       "flowSteps": [
         {
           "id": "microBookDesk",
+          "startsFlow": true,
+          "taskId": "microViewAvailableDeskForDate",
           "transitions": [
             {
               "order": "a",
@@ -42,9 +44,7 @@
               "value": "BookDesk",
               "condition": "<%!flowVariables.alreadyBooked%>"
             }
-          ],
-          "startsFlow": true,
-          "taskId": "microViewAvailableDeskForDate"
+          ]
         },
         {
           "id": "BookDesk",

@@ -52,7 +52,7 @@ var getDesksByAreaID = function(areaID) {
   "getAreaName": getAreaName,
   "getDeskName": getDeskName,
   "getLocation": getLocation,
-  "Desk":getDesk,
-  "Area":getArea,
+  "Desk": getDesk,
+  "Area": getArea,
   "getDesksByAreaID": getDesksByAreaID
 }

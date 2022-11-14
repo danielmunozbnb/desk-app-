@@ -25,13 +25,11 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
-    "standardEditButtonsHidden": true,
     "micro": true,
     "microFirstPageOnly": true,
     "title": {
       "type": "title",
-      "label": "Workday Extend",
-      "enabled": false
+      "label": "Edit Area"
     },
     "body": {
       "type": "section",

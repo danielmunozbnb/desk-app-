@@ -45,6 +45,12 @@
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
+    "micro": true,
+    "microFirstPageOnly": true,
+    "title": {
+      "type": "title",
+      "label": "Edit Desk"
+    },
     "body": {
       "type": "section",
       "horizontal": false,
