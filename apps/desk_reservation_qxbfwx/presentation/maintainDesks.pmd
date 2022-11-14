@@ -133,6 +133,15 @@
             "type": "taskReference",
             "taskId": "maintainDesks"
           }
+        },
+        {
+          "type": "button",
+          "label": "Mass entry desks",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "editableGridDesks"
+          }
         }
       ]
     }

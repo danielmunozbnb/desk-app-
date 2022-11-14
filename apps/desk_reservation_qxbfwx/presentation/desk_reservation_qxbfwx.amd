@@ -8,7 +8,6 @@
         {
           "id": "microDeskOccupationForDayStep",
           "transitions": [
-
             {
               "order": "a",
               "value": "deskOccupationForDayStep",
@@ -77,6 +76,29 @@
       ]
     },
     {
+      "id": "cancelReservation",
+      "name": "cancelReservation",
+      "flowSteps": [
+        {
+          "id": "confirmCancel",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "viewMyReservations",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "CancelReservation"
+        },
+        {
+          "id": "viewMyReservations",
+          "endsFlow": true,
+          "taskId": "viewMyReservations"
+        }
+      ]
+    },
+    {
       "id": "viewBookingsByWorkerFlow",
       "name": "ViewBookingsByWorker,",
       "flowSteps": [
@@ -119,6 +141,29 @@
           "id": "maintainAreas",
           "endsFlow": true,
           "taskId": "maintainAreas"
+        }
+      ]
+    },
+    {
+      "id": "editDeskFlow",
+      "name": "editDeskFlow",
+      "flowSteps": [
+        {
+          "id": "editDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainDesks",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "editDesk"
+        },
+        {
+          "id": "maintainDesks",
+          "endsFlow": true,
+          "taskId": "maintainDesks"
         }
       ]
     }
@@ -269,6 +314,13 @@
       "routingPattern": "deleteDesk",
       "page": {
         "id": "deleteDesk"
+      }
+    },
+    {
+      "id": "editableGridDesks",
+      "routingPattern": "editableGridDesks",
+      "page": {
+        "id": "editableGridDesks"
       }
     }
   ],
