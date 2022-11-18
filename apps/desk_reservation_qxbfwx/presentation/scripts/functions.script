@@ -1,8 +1,13 @@
-var reservStates = ['', 'Reserved', 'Canceled', 'Checked out'];
+var reservStates = ['', 'Reserved', 'Canceled', 'Checked out', 'Proposed'];
 var getReservState = function(stateInt) {
   reservStates.get(stateInt);
 };
 
+var isProposedOrReserved = function(stateInt) {
+  stateInt == 1 || stateInt == 4;
+};
+
 {
-  "getReservState": getReservState
+  "getReservState": getReservState,
+  "isProposedOrReserved": isProposedOrReserved
 }

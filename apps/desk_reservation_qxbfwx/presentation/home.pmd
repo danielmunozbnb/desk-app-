@@ -1,7 +1,7 @@
 {
   "id": "home",
   "include": [
-        "wql.script"
+    "wql.script"
   ],
   "endPoints": [
     {

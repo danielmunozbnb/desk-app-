@@ -1,7 +1,8 @@
 {
   "id": "bookDesk",
   "include": [
-        "wql.script"
+    "functions.script",
+    "wql.script"
   ],
   "endPoints": [
     {
@@ -47,7 +48,7 @@
         "values": [
           {
             "outboundPath": "state",
-            "value": "<% 1 %>"
+            "value": "<% 4 %>"
           },
           {
             "outboundPath": "worker.id",
@@ -90,7 +91,8 @@
                   var validDesks = [];
                   for (var desk : desks) {
                     for (var booking : reservations) {
-                      if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate && booking.state == 1)) {
+                      if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
+                            && functions.isProposedOrReserved(booking.state))) {
                         validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
                         break;
                       }

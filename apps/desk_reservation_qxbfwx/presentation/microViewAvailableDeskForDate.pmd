@@ -1,5 +1,8 @@
 {
   "id": "microViewAvailableDeskForDate",
+  "include": [
+    "functions.script"
+  ],
   "endPoints": [
     {
       "baseUrlType": "COMMON",
@@ -44,7 +47,6 @@
           }
         ]
       }
-
     ]
   },
   "script": "<%
@@ -52,7 +54,8 @@
                  fecha.clearError();
                  for (var booking : bookings.data){
                      console.info('qwertyBooking= ',booking.date);
-                     if(booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd') && booking.state == 1){
+                     if(booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd')
+                         && functions.isProposedOrReserved(booking.state)) {
                          fecha.setError('Reservation already submitted for that day');
                              return true;
                      }
