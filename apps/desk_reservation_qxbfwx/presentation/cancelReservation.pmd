@@ -1,5 +1,8 @@
 {
-  "id": "CancelReservation",
+  "id": "cancelReservation",
+  "include": [
+    "states.script"
+  ],
   "endPoints": [
     {
       "name": "booking_url",
@@ -11,7 +14,7 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "cancelReservation",
+        "name": "cancelReserv",
         "baseUrlType": "app",
         "url": "<% 'bookings/' + queryParams.bookingId %>",
         "httpMethod": "PATCH",
@@ -19,7 +22,7 @@
         "values": [
           {
             "outboundPath": "state",
-            "value": "<% 2 %>"
+            "value": "<% states.canceled %>"
           }
         ]
       }

@@ -36,7 +36,7 @@
       "id": 4,
       "name": "state",
       "label": "State",
-      "type": "INTEGER"
+      "type": "TEXT"
     }
   ]
 }

@@ -1,7 +1,8 @@
 {
   "id": "microViewAvailableDeskForDate",
   "include": [
-    "functions.script"
+    "wql.script",
+    "states.script"
   ],
   "endPoints": [
     {
@@ -15,6 +16,13 @@
       "baseUrlType": "app",
       "url": "bookings",
       "authType": "sso"
+    },
+    {
+      "name": "bookingEventStatus",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getBookingEventStatus(id) %>",
+      "authType": "sso",
+      "deferred": true
     }
   ],
   "outboundData": {
@@ -40,8 +48,6 @@
           {
             "outboundPath": "alreadyBooked",
             "value": "<%
-                      console.info('qwerty-script= ',checkReservation());
-                      console.info('qwerty-fechaElegida= ',fecha.value.format('yyyy-MM-dd'));
                       checkReservation();
                       %>"
           }
@@ -52,12 +58,14 @@
   "script": "<%
              var checkReservation = function() {
                  fecha.clearError();
+                 if (empty bookings.data) {
+                   return false;
+                 }
                  for (var booking : bookings.data){
-                     console.info('qwertyBooking= ',booking.date);
-                     if(booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd')
-                         && functions.isProposedOrReserved(booking.state)) {
+                     if (booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd')
+                         && states.isRequestedOrReserved(bookingEventStatus, booking.id, booking.state)) {
                          fecha.setError('Reservation already submitted for that day');
-                             return true;
+                         return true;
                      }
                  }
                  return false;
@@ -87,7 +95,7 @@
               "id": "fecha",
               "datePrecision": "DAY",
               "required": true,
-              "onChange":"<% checkReservation(); %>"
+              "onChange":"<% checkReservation() %>"
             },
             {
               "type": "date",

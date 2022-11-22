@@ -1,5 +1,5 @@
 var getTodaysReservAndState = function() {
-  var query = string:formatMessage('SELECT Booking, state FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
+  var query = string:formatMessage('SELECT workdayID, state FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
   query.urlEncode();
 };
 
@@ -46,7 +46,7 @@ var getDesksByAreaID = function(areaID) {
 }
 
 var getBookingEventStatus = function(bookingID) {
-  var query = string:formatMessage('SELECT status FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE Booking = "{0}"', bookingID);
+  var query = string:formatMessage('SELECT status FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
   query.urlEncode();
 }
 

@@ -1,7 +1,7 @@
 {
   "id": "viewMyReservations",
   "include": [
-    "functions.script",
+    "states.script",
     "wql.script"
   ],
   "endPoints": [
@@ -18,10 +18,10 @@
       "authType": "sso"
     },
     {
-      "baseUrlType": "WORKDAY-WQL",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "deskByID",
       "authType": "sso",
-      "url": "<%'data?query=SELECT%20workdayID%2C%20deskName%2C%20area%20FROM%20desk_reservation_qxbfwx_desks%20WHERE%20workdayID%20%3D%22' + id + '%22' %>",
+      "url": "<% wql.getAreaAndDeskName(id) %>",
       "deferred": true
     },
     {
@@ -29,6 +29,13 @@
       "name": "areaByID",
       "authType": "sso",
       "url": "<% wql.getAreaName(id) %>",
+      "deferred": true
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "name": "bookingEventStatus",
+      "authType": "sso",
+      "url": "<% wql.getBookingEventStatus(id) %>",
       "deferred": true
     }
   ],
@@ -49,12 +56,20 @@
           "rows": "<%
                    var list = [];
 
-                   console.debug(bookings.data);
-                   console.debug(date:now().format('yyyy-MM-dd'));
-                   for (var booking : bookings.data){
-                       if(booking.date >= date:now().format('yyyy-MM-dd') && booking.worker.id == workers.id){
-                           list.add(booking);
+                   for (var booking : bookings.data) {
+                     if(booking.date >= date:now().format('yyyy-MM-dd') && booking.worker.id == workers.id) {
+                       if (!(booking.state.startsWith(states.canceledFL) || booking.state.startsWith(states.checkedOutFL))) {
+                         var eventStatus = bookingEventStatus.invoke({'id': booking.id}).data[0].status;
+                         if (eventStatus.startsWith(states.reservedEFL)) {
+                           booking.state = states.reserved;
+                         } else if (eventStatus.startsWith(states.deniedEFL)) {
+                           booking.state = states.denied;
+                         } else {
+                           booking.state = states.requested;
+                         }
+                         list.add(booking);
                        }
+                     }
                    }
                    return list;
 
@@ -100,12 +115,12 @@
             },
             {
               "type": "column",
-              "columnId": "checkedOutColumnId",
+              "columnId": "stateCol",
               "label": "State",
               "cellTemplate": {
                 "type": "text",
-                "id": "checkedOutText",
-                "value": "<% functions.getReservState(row.state) %>"
+                "id": "stateText",
+                "value": "<% row.state %>"
               }
             },
             {
@@ -119,6 +134,7 @@
                     "type": "button",
                     "action": "SECONDARY",
                     "label": "Cancel",
+                    "visible": "<% row.state.startsWith(states.reservedFL) %>",
                     "taskReference": {
                       "taskId": "CancelReservation",
                       "parameterBindings": {

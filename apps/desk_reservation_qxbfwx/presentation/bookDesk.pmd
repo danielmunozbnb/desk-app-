@@ -1,7 +1,7 @@
 {
   "id": "bookDesk",
   "include": [
-    "functions.script",
+    "states.script",
     "wql.script"
   ],
   "endPoints": [
@@ -15,6 +15,13 @@
       "name": "desksByAreaID",
       "baseUrlType": "WORKDAY-WQL-QUERY",
       "url": "<% wql.getDesksByAreaID(areaID) %>",
+      "authType": "sso",
+      "deferred": true
+    },
+    {
+      "name": "bookingEventStatus",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getBookingEventStatus(id) %>",
       "authType": "sso",
       "deferred": true
     },
@@ -48,7 +55,7 @@
         "values": [
           {
             "outboundPath": "state",
-            "value": "<% 4 %>"
+            "value": "<% states.requested %>"
           },
           {
             "outboundPath": "worker.id",
@@ -88,14 +95,22 @@
                 if (empty reservations) {
                   return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
                 } else {
+                  // For each desk, we check whether it's already reserved or requested by a worker for that specific date.
+                  // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
                   var validDesks = [];
+                  var skipDesk = false;
                   for (var desk : desks) {
                     for (var booking : reservations) {
-                      if (!(desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
-                            && functions.isProposedOrReserved(booking.state))) {
-                        validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
+                      if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
+                            && states.isRequestedOrReserved(bookingEventStatus, booking.id, booking.state)) {
+                        skipDesk = true;
                         break;
                       }
+                    }
+                    if (skipDesk) {
+                      skipDesk = false;
+                    } else {
+                      validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
                     }
                   }
                   return validDesks;

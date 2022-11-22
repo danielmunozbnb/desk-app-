@@ -89,7 +89,7 @@
             }
           ],
           "startsFlow": true,
-          "taskId": "CancelReservation"
+          "taskId": "cancelReservation"
         },
         {
           "id": "viewMyReservations",
@@ -268,17 +268,17 @@
       }
     },
     {
-      "id": "CancelReservation",
-      "routingPattern": "CancelReservation",
+      "id": "cancelReservation",
+      "routingPattern": "cancelReservation",
       "page": {
-        "id": "CancelReservation"
+        "id": "cancelReservation"
       }
     },
     {
-      "id": "AdminPanel",
-      "routingPattern": "AdminPanel",
+      "id": "adminPanel",
+      "routingPattern": "adminPanel",
       "page": {
-        "id": "AdminPanel"
+        "id": "adminPanel"
       }
     },
     {

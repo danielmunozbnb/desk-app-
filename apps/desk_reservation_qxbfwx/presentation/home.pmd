@@ -36,6 +36,13 @@
       "url": "<% wql.getLocation(areaID) %>",
       "authType": "sso",
       "deferred": true
+    },
+    {
+      "name": "bookingStatus",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getBookingEventStatus(bookingID) %>",
+      "authType": "sso",
+      "deferred": true
     }
   ],
   "presentation": {
@@ -63,18 +70,30 @@
                   "type": "richText",
                   "label": "Today's booking",
                   "value": "<%
+                            var noneText = '<h1 style=\"font-size:32px\"><b>None</b></h1>';
                             var deskData = todaysDeskAndBooking.data;
                             if(empty deskData) {
-                                '<h1 style=\"font-size:32px\"><b>None</b></h1>'
+                                noneText
                             } else {
                                 deskData = deskData[0];
-                                var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
-                                var deskName = deskAndArea.deskName;
-                                var areaName = areaNameByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].name;
-                                var locationName = locationByAreaID.invoke({'areaID': deskAndArea.area.id}).data[0].location.descriptor;
+                                if (!deskData.state.startsWith('Su')) {
+                                  noneText
+                                } else {
+                                  var status = bookingStatus.invoke({'bookingID': deskData.workdayID}).data[0].status;
+                                  if (!status.startsWith('Su')) {
+                                    noneText
+                                  } else {
+                                    var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
+                                    var deskName = deskAndArea.deskName;
+                                    var areaID = deskAndArea.area.id;
 
-                                '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
-                                    + areaName + '<br/>' + locationName + '</p>'
+                                    var areaName = areaNameByAreaID.invoke({'areaID': areaID}).data[0].name;
+                                    var locationName = locationByAreaID.invoke({'areaID': areaID}).data[0].location.descriptor;
+
+                                    '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
+                                        + areaName + '<br/>' + locationName + '</p>'
+                                  }
+                                }
                             }
                             %>"
                 },

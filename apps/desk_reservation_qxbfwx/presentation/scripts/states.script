@@ -1,0 +1,39 @@
+var requested = "Requested";
+var requestedEFL = "In"; // EFL = Event First Letters
+var requestedFL = "Re"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var reserved = "Reserved";
+var reservedEFL = "Su";
+var reservedFL = "Re"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var denied = "Denied";
+var deniedEFL = "De";
+
+var canceled = "Canceled";
+var canceledFL = "Ca"; // FL = First Letters. This is saved in booking's "state" field, not in Event.
+var checkedOut = "Checked-out";
+var checkedOutFL = "Ch";
+
+var isRequestedOrReserved = function(statusEndpoint, bookingID, bookingState) {
+  var status = statusEndpoint.invoke({'id': bookingID});
+  if (empty status) {
+    false;
+  } else {
+    status = status.data[0].status;
+    bookingState.startsWith(requestedFL) && (status.startsWith(requestedEFL) || status.startsWith(reservedEFL))
+  }
+};
+
+{
+  "requested": requested,
+  "requestedEFL": requestedEFL,
+  "requestedFL": requestedFL,
+  "reserved": reserved,
+  "reservedEFL": reservedEFL,
+  "reservedFL": reservedFL,
+  "denied": denied,
+  "deniedEFL": deniedEFL,
+  "canceled": canceled,
+  "canceledFL": canceledFL,
+  "checkedOut": checkedOut,
+  "checkedOutFL": checkedOutFL,
+  "isRequestedOrReserved": isRequestedOrReserved
+}
