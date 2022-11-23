@@ -1,6 +1,7 @@
 {
   "id": "home",
   "include": [
+    "states.script",
     "wql.script"
   ],
   "endPoints": [
@@ -67,32 +68,33 @@
               "type": "section",
               "children": [
                 {
+                  "id": "today",
                   "type": "richText",
                   "label": "Today's booking",
                   "value": "<%
                             var noneText = '<h1 style=\"font-size:32px\"><b>None</b></h1>';
                             var deskData = todaysDeskAndBooking.data;
                             if(empty deskData) {
+                                pageVariables.showTodaysBookingInfo = false;
                                 noneText
                             } else {
                                 deskData = deskData[0];
-                                if (!deskData.state.startsWith('Su')) {
+                                var status = bookingStatus.invoke({'bookingID': deskData.workdayID}).data[0].status;
+                                if (!status.startsWith(states.reservedEFL)) {
+                                  pageVariables.showTodaysBookingInfo = false;
                                   noneText
                                 } else {
-                                  var status = bookingStatus.invoke({'bookingID': deskData.workdayID}).data[0].status;
-                                  if (!status.startsWith('Su')) {
-                                    noneText
-                                  } else {
-                                    var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
-                                    var deskName = deskAndArea.deskName;
-                                    var areaID = deskAndArea.area.id;
+                                  pageVariables.showTodaysBookingInfo = true;
 
-                                    var areaName = areaNameByAreaID.invoke({'areaID': areaID}).data[0].name;
-                                    var locationName = locationByAreaID.invoke({'areaID': areaID}).data[0].location.descriptor;
+                                  var deskAndArea = areaIDDeskNameByDeskID.invoke({'deskID': deskData.desk.id}).data[0];
+                                  var deskName = deskAndArea.deskName;
+                                  var areaID = deskAndArea.area.id;
 
-                                    '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
-                                        + areaName + '<br/>' + locationName + '</p>'
-                                  }
+                                  var areaName = areaNameByAreaID.invoke({'areaID': areaID}).data[0].name;
+                                  var locationName = locationByAreaID.invoke({'areaID': areaID}).data[0].location.descriptor;
+
+                                  '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
+                                      + areaName + '<br/>' + locationName + '</p>'
                                 }
                             }
                             %>"
@@ -100,7 +102,7 @@
                 {
                   "type": "section",
                   "id": "secTodaysBookingBtns",
-                  "render": "<% !empty todaysDeskAndBooking.data %>",
+                  "render": "<% pageVariables.showTodaysBookingInfo %>",
                   "horizontal": true,
                   "children": [
                     {
@@ -111,7 +113,7 @@
                         "type": "taskReference",
                         "taskId": "checkOut",
                         "parameterBindings": {
-                          "bookingId": "<% console.debug(todaysDeskAndBooking.data[0]); todaysDeskAndBooking.data[0].workdayID %>"
+                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
                         }
                       }
                     },
@@ -121,7 +123,7 @@
                       "action": "AUXILIARY",
                       "taskReference": {
                         "type": "taskReference",
-                        "taskId": "CancelReservation",
+                        "taskId": "cancelReservation",
                         "parameterBindings": {
                           "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
                         }
@@ -134,7 +136,7 @@
             {
               "type": "section",
               "id": "secOfficePlanImg",
-              "render": "<% !empty todaysDeskAndBooking.data %>",
+              "render": "<% pageVariables.showTodaysBookingInfo %>",
               "children": [
                 {
                   "type": "image",
@@ -171,7 +173,7 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "AdminPanel"
+            "taskId": "adminPanel"
           }
         }
       ]

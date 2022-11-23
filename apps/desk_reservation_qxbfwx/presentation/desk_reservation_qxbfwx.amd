@@ -61,7 +61,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "CancelDesk",
+              "value": "cancelDesk",
               "condition": "true"
             }
           ],
@@ -69,15 +69,15 @@
           "taskId": "microCancelDesk"
         },
         {
-          "id": "CancelDesk",
+          "id": "cancelDesk",
           "endsFlow": true,
           "taskId": "cancelDesk"
         }
       ]
     },
     {
-      "id": "cancelReservation",
-      "name": "cancelReservation",
+      "id": "cancelReservationFlow",
+      "name": "cancelReservationFlow",
       "flowSteps": [
         {
           "id": "confirmCancel",

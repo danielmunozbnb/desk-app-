@@ -126,28 +126,28 @@
       "children": [
         {
           "type": "instanceList",
-          "id": "areasInstanceList",
+          "id": "areasIList",
           "label": "Areas",
           "displayKey": "name",
           "values": "<% areas.data %>",
           "onChange": "<%
-                        if (!empty areasInstanceList.value) {
-                          deskAvailableForArea.setValues(fillDesks(areasInstanceList.value[0]));
-                        }
-
-                        deskAvailableForArea.setValue([]);
-                        deskAvailableForArea.clearError();
-
-                        if (!empty areasInstanceList.value) {
-                          deskAvailableForArea.setVisible(true);
+                        desksAvailableIList.clearError();
+                        if (!empty areasIList.value) {
+                          var desks = fillDesks(areasIList.value[0]);
+                          desksAvailableIList.setValues(desks);
+                          desksAvailableIList.visible = true;
+                          if (empty desks) {
+                              desksAvailableIList.setError('There are no desks available');
+                          }
                         } else {
-                          deskAvailableForArea.visible = false;
+                          desksAvailableIList.visible = false;
                         }
+                        desksAvailableIList.setValue([]);
                       %>"
         },
         {
           "type": "instanceList",
-          "id": "deskAvailableForArea",
+          "id": "desksAvailableIList",
           "label": "Desks available",
           "displayKey": "deskName",
           "values": "<% [] %>",

@@ -58,8 +58,9 @@
 
                    for (var booking : bookings.data) {
                      if(booking.date >= date:now().format('yyyy-MM-dd') && booking.worker.id == workers.id) {
-                       if (!(booking.state.startsWith(states.canceledFL) || booking.state.startsWith(states.checkedOutFL))) {
+                       if (booking.state.startsWith(states.requestedFL)) {
                          var eventStatus = bookingEventStatus.invoke({'id': booking.id}).data[0].status;
+
                          if (eventStatus.startsWith(states.reservedEFL)) {
                            booking.state = states.reserved;
                          } else if (eventStatus.startsWith(states.deniedEFL)) {
@@ -136,7 +137,7 @@
                     "label": "Cancel",
                     "visible": "<% row.state.startsWith(states.reservedFL) %>",
                     "taskReference": {
-                      "taskId": "CancelReservation",
+                      "taskId": "cancelReservation",
                       "parameterBindings": {
                         "bookingId": "<% row.id %>"
                       }

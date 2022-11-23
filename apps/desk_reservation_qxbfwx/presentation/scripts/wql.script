@@ -4,7 +4,7 @@ var getTodaysReservAndState = function() {
 };
 
 var getTodaysDeskAndBooking = function() {
-  var query = string:formatMessage('SELECT desk, workdayID FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND state = 1', date:now().format('yyyy-MM-dd'));
+  var query = string:formatMessage('SELECT desk, workdayID FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND state = "Requested"', date:now().format('yyyy-MM-dd'));
   query.urlEncode()
 };
 

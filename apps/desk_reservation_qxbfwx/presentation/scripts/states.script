@@ -1,9 +1,9 @@
 var requested = "Requested";
 var requestedEFL = "In"; // EFL = Event First Letters
-var requestedFL = "Re"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var requestedFL = "Req"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
 var reserved = "Reserved";
 var reservedEFL = "Su";
-var reservedFL = "Re"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var reservedFL = "Res"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
 var denied = "Denied";
 var deniedEFL = "De";
 
