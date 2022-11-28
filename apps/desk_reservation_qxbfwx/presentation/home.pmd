@@ -160,7 +160,7 @@
         },
         {
           "type": "button",
-          "label": "BOOK DESK",
+          "label": "Book Desk",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
@@ -169,7 +169,7 @@
         },
         {
           "type": "button",
-          "label": "admin panel",
+          "label": "Admin Panel",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
