@@ -166,6 +166,29 @@
           "taskId": "maintainDesks"
         }
       ]
+    },
+    {
+      "id": "maintainAreasFlow",
+      "name": "maintainAreasFlow",
+      "flowSteps": [
+        {
+          "id": "selectLocationMaintainAreas",
+          "startsFlow": true,
+          "taskId": "selectLocationMaintainAreas",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainArea",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "maintainArea",
+          "endsFlow": true,
+          "taskId": "maintainAreas"
+        }
+      ]
     }
   ],
   "tasks": [
@@ -321,6 +344,13 @@
       "routingPattern": "editableGridDesks",
       "page": {
         "id": "editableGridDesks"
+      }
+    },
+    {
+      "id": "selectLocationMaintainAreas",
+      "routingPattern": "selectLocationMaintainAreas",
+      "page": {
+        "id": "selectLocationMaintainAreas"
       }
     }
   ],

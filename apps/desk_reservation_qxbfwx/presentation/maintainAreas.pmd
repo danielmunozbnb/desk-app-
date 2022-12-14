@@ -1,5 +1,8 @@
 {
   "id": "maintainAreas",
+  "include": [
+        "wql.script"
+  ],
   "endPoints": [
     {
       "baseUrlType": "WORKDAY-WQL",
@@ -12,14 +15,43 @@
       "baseUrlType": "app",
       "url": "areas",
       "authType": "sso"
+    },
+    {
+      "name": "getAreasByLocation",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getAreasByLocation(location) %>",
+      "authType": "sso",
+      "deferred": true
     }
   ],
+  "script": "<%
+             var fillAreas = function(location) {
+                 if (empty location) {
+                     return [];
+                 }
+
+                 var areas = getAreasByLocation.invoke({'location': location}).data;
+                 var validAreas = [];
+                 for (var area : areas) {
+                     validAreas.add({'id': area.Area.id, 'name': area.name, 'location': area.location, 'description': area.description, 'inUse': area.inUse});
+                 }
+                 return validAreas;
+
+
+             };
+             %>",
+  "onLoad":"<%
+            console.debug(flowVariables.location);
+
+            var areas = fillAreas(flowVariables.location);
+            pageVariables.areas = areas;
+            %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "view",
     "title": {
       "type": "title",
-      "label": "Maintain Areas"
+      "label": "<%'Maintain Areas'%>"
     },
     "body": {
       "type": "section",
@@ -28,8 +60,8 @@
         {
           "type": "grid",
           "id": "gridAreas",
-          "label": "Areas",
-          "rows": "<% console.debug(areas.data); areas.data %>",
+          "label": "<%'Areas'%>",
+          "rows": "<% pageVariables.areas %>",
           "rowVariableName": "row",
           "columns": [
             {
@@ -85,7 +117,8 @@
                     "taskReference": {
                       "taskId": "editArea",
                       "parameterBindings": {
-                        "areaId": "<% row.id %>"
+                        "areaId": "<% row.id %>",
+                        "locationId": "<% row.location.id %>"
                       }
                     }
                   }
@@ -117,13 +150,18 @@
         {
           "type": "button",
           "label": "New Area",
-          "action": "PRIMARY",
-          "taskReference": {
-            "type": "taskReference",
-            "taskId": "maintainAreas"
-          }
+          "action": "PRIMARY"
         }
 
+      ]
+    },
+    "footer": {
+      "type": "footer",
+      "children": [
+        {
+          "type": "pod",
+          "podId": "backHome"
+        }
       ]
     }
   }

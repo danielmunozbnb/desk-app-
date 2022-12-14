@@ -19,14 +19,24 @@
         "httpMethod": "PATCH",
         "url": "<% 'areas/' + queryParams.areaId %>",
         "authType": "sso"
+      },
+      {
+        "type": "outboundVariable",
+        "name": "locationFlowVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "location",
+            "value": "<% queryParams.locationId %>"
+          }
+        ]
       }
     ]
   },
+  "onSubmit":"<% console.debug(queryParams.locationId);%>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
-    "micro": true,
-    "microFirstPageOnly": true,
     "title": {
       "type": "title",
       "label": "Edit Area"
