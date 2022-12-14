@@ -108,22 +108,22 @@
                      // For each desk, we check whether it's already Booked or requested by a worker for that specific date.
                      // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
                      var validDesks = [];
-                     var skipDesk = false;
-                     for (var desk : desks) {
-                         for (var booking : bookings) {
-                             if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
-                                 && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
-                                 skipDesk = true;
-                                     break;
+                         var skipDesk = false;
+                         for (var desk : desks) {
+                             for (var booking : bookings) {
+                                 if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
+                                     && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
+                                     skipDesk = true;
+                                         break;
+                                 }
                              }
+                                 if (skipDesk) {
+                                     skipDesk = false;
+                                 } else {
+                                     validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
+                                 }
                          }
-                         if (skipDesk) {
-                             skipDesk = false;
-                         } else {
-                             validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
-                         }
-                     }
-                     return validDesks;
+                         return validDesks;
                  }
              };
              %>",
