@@ -1,8 +1,8 @@
 {
   "id": "bookDesk",
   "include": [
-    "states.script",
-    "wql.script"
+        "states.script",
+        "wql.script"
   ],
   "endPoints": [
     {
@@ -95,38 +95,38 @@
   },
   "script": "<%
 
-              var fillDesks = function(areaID) {
-                if (empty areaID) {
-                  return [];
-                }
+             var fillDesks = function(areaID) {
+                 if (empty areaID) {
+                     return [];
+                 }
 
-                var bookings = bookings.data;
-                var desks = desksByAreaID.invoke({'areaID': areaID}).data;
-                if (empty bookings) {
-                  return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
-                } else {
-                  // For each desk, we check whether it's already Booked or requested by a worker for that specific date.
-                  // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
-                  var validDesks = [];
-                  var skipDesk = false;
-                  for (var desk : desks) {
-                    for (var booking : bookings) {
-                      if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
-                            && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
-                        skipDesk = true;
-                        break;
-                      }
-                    }
-                    if (skipDesk) {
-                      skipDesk = false;
-                    } else {
-                      validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
-                    }
-                  }
-                  return validDesks;
-                }
-              };
-            %>",
+                 var bookings = bookings.data;
+                 var desks = desksByAreaID.invoke({'areaID': areaID}).data;
+                 if (empty bookings) {
+                     return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
+                 } else {
+                     // For each desk, we check whether it's already Booked or requested by a worker for that specific date.
+                     // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
+                     var validDesks = [];
+                     var skipDesk = false;
+                     for (var desk : desks) {
+                         for (var booking : bookings) {
+                             if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
+                                 && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
+                                 skipDesk = true;
+                                     break;
+                             }
+                         }
+                         if (skipDesk) {
+                             skipDesk = false;
+                         } else {
+                             validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
+                         }
+                     }
+                     return validDesks;
+                 }
+             };
+             %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "edit",
@@ -141,19 +141,19 @@
           "displayKey": "name",
           "values": "<% areas.data %>",
           "onChange": "<%
-                        desksAvailableIList.clearError();
-                        if (!empty areasIList.value) {
-                          var desks = fillDesks(areasIList.value[0]);
-                          desksAvailableIList.setValues(desks);
-                          desksAvailableIList.visible = true;
-                          if (empty desks) {
-                              desksAvailableIList.setError('There are no desks available');
-                          }
-                        } else {
-                          desksAvailableIList.visible = false;
-                        }
-                        desksAvailableIList.setValue([]);
-                      %>"
+                       desksAvailableIList.clearError();
+                       if (!empty areasIList.value) {
+                           var desks = fillDesks(areasIList.value[0]);
+                               desksAvailableIList.setValues(desks);
+                               desksAvailableIList.visible = true;
+                               if (empty desks) {
+                                   desksAvailableIList.setError('There are no desks available');
+                               }
+                       } else {
+                           desksAvailableIList.visible = false;
+                       }
+                       desksAvailableIList.setValue([]);
+                       %>"
         },
         {
           "type": "instanceList",

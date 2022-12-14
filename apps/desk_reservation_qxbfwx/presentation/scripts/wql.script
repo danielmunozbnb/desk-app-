@@ -32,6 +32,10 @@ var getLocation = function(areaID) {
   var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas WHERE Area = "{0}"', areaID);
   query.urlEncode()
 };
+var getLocations = function() {
+  var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas');
+  query.urlEncode()
+};
 
 var getArea = function(workdayID) {
   var query = string:formatMessage('SELECT Area, name, workdayID, description, location FROM desk_reservation_qxbfwx_areas WHERE workdayID = "{0}"', workdayID);
@@ -49,6 +53,11 @@ var getDesksByAreaID = function(areaID) {
   var query = string:formatMessage('SELECT Desk, deskName FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
   query.urlEncode();
 };
+
+var getAreasByLocation = function(location) {
+  var query = string:formatMessage('SELECT Area, name, description, location FROM desk_reservation_qxbfwx_areas WHERE location in ("{0}")', location);
+  query.urlEncode();
+}
 
 var getBookingEventStatus = function(bookingID) {
   var query = string:formatMessage('SELECT status FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
@@ -68,6 +77,8 @@ var getBookingEventID = function(bookingID) {
   "getAreaName": getAreaName,
   "getDeskName": getDeskName,
   "getLocation": getLocation,
+  "getLocations": getLocations,
+  "getAreasByLocation": getAreasByLocation,
   "Desk": getDesk,
   "Area": getArea,
   "getDesksByAreaID": getDesksByAreaID,
