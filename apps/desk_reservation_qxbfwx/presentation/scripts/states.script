@@ -1,39 +1,102 @@
 var requested = "Requested";
 var requestedEFL = "In"; // EFL = Event First Letters
-var requestedFL = "Req"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
-var reserved = "Reserved";
-var reservedEFL = "Su";
-var reservedFL = "Res"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var requestedFL = "Re"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
+var booked = "Booked";
+var bookedEFL = "Su";
+var bookedFL = "Bo"; // FL = First Letters. The complete name is saved in booking's "state" field, not in Event.
 var denied = "Denied";
 var deniedEFL = "De";
 
 var canceled = "Canceled";
-var canceledFL = "Ca"; // FL = First Letters. This is saved in booking's "state" field, not in Event.
+var canceledFL = "Ca"; // FL = First Letters. Same as in Event Status.
 var checkedOut = "Checked-out";
 var checkedOutFL = "Ch";
 
-var isRequestedOrReserved = function(statusEndpoint, bookingID, bookingState) {
+var isRequestedOrBooked = function(statusEndpoint, bookingID, bookingState) {
   var status = statusEndpoint.invoke({'id': bookingID});
   if (empty status) {
     false;
   } else {
     status = status.data[0].status;
-    bookingState.startsWith(requestedFL) && (status.startsWith(requestedEFL) || status.startsWith(reservedEFL))
+    bookingState.startsWith(requestedFL) && (status.startsWith(requestedEFL) || status.startsWith(bookedEFL))
   }
+};
+
+var isRequested = function(bookingState) {
+  bookingState.startsWith(requestedFL);
+};
+
+var isRequestedOnly = function(statusEndpoint, bookingState) {
+  if (bookingState.startsWith(requestedFL)) {
+    var status = statusEndpoint.invoke({'id': bookingID});
+    if (empty status) {
+      return false;
+    } else {
+      return status.startsWith(requestedEFL);
+    }
+  } else {
+    return false;
+  }
+};
+
+var isCanceled = function(bookingState) {
+  bookingState.startsWith(canceledFL);
+};
+
+var isCheckedOut = function(bookingState) {
+  bookingState.startsWith(checkedOutFL);
+};
+
+var isBooked = function(statusEndpoint, bookingState) {
+  if (isRequested(bookingState)) {
+    var status = statusEndpoint.invoke({'id': bookingID});
+    if (empty status) {
+      return false;
+    } else {
+      return status.data[0].status.startsWith(bookedEFL);
+    }
+  } else {
+    return false;
+  }
+};
+
+var isStatusRequested = function(status) {
+  status.startsWith(requestedEFL);
+};
+
+var isStatusBooked = function(status) {
+  status.startsWith(bookedEFL);
+};
+
+var isStatusDenied = function(status) {
+  status.startsWith(deniedEFL);
+};
+
+var isStatusCanceled = function(status) {
+  status.startsWith(canceledFL);
 };
 
 {
   "requested": requested,
   "requestedEFL": requestedEFL,
   "requestedFL": requestedFL,
-  "reserved": reserved,
-  "reservedEFL": reservedEFL,
-  "reservedFL": reservedFL,
+  "booked": booked,
+  "bookedEFL": bookedEFL,
+  "bookedFL": bookedFL,
   "denied": denied,
   "deniedEFL": deniedEFL,
   "canceled": canceled,
   "canceledFL": canceledFL,
   "checkedOut": checkedOut,
   "checkedOutFL": checkedOutFL,
-  "isRequestedOrReserved": isRequestedOrReserved
+  "isRequestedOrBooked": isRequestedOrBooked,
+  "isRequested": isRequested,
+  "isRequestedOnly": isRequestedOnly,
+  "isCanceled": isCanceled,
+  "isCheckedOut": isCheckedOut,
+  "isBooked": isBooked,
+  "isStatusRequested": isStatusRequested,
+  "isStatusBooked": isStatusBooked,
+  "isStatusDenied": isStatusDenied,
+  "isStatusCanceled": isStatusCanceled
 }

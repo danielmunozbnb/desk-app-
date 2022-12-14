@@ -22,13 +22,6 @@
       "baseUrlType": "app",
       "url": "desks",
       "authType": "sso"
-    },
-    {
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "name": "areaByID",
-      "authType": "sso",
-      "url": "<% wql.getAreaName(id) %>",
-      "deferred": true
     }
   ],
   "presentation": {
@@ -95,7 +88,7 @@
                     "taskReference": {
                       "taskId": "editDesk",
                       "parameterBindings": {
-                        "deskId": "<% row.id %>"
+                        "deskID": "<% row.id %>"
                       }
                     }
                   }

@@ -1,5 +1,5 @@
 {
-  "id": "reservationsByWorker",
+  "id": "bookingsByWorker",
   "endPoints": [
     {
       "name": "bookings",

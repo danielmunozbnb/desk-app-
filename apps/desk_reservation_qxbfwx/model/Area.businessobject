@@ -14,7 +14,8 @@
       "id": 1,
       "name": "name",
       "label": "Name",
-      "type": "TEXT"
+      "type": "TEXT",
+      "useForDisplay": true
     },
     {
       "id": 2,

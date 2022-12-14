@@ -6,7 +6,7 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "checkOutReservation",
+        "name": "checkOutBooking",
         "baseUrlType": "app",
         "url": "<% 'bookings/' + queryParams.bookingId %>",
         "httpMethod": "PATCH",
@@ -24,7 +24,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Check-Out Reservation"
+      "label": "Check-Out Booking"
     },
     "body": {
       "type": "section",
@@ -33,7 +33,7 @@
         {
           "type": "readOnlyText",
           "label": "Check-Out?",
-          "value": "(show reservation)"
+          "value": "(show booking)"
         },
         {
           "type": "checkBox",

@@ -6,15 +6,9 @@
   ],
   "endPoints": [
     {
-      "name": "todaysReservation",
+      "name": "todaysDeskAndBookingAndEvents",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysReservAndState() %>",
-      "authType": "sso"
-    },
-    {
-      "name": "todaysDeskAndBooking",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysDeskAndBooking() %>",
+      "url": "<% wql.getTodaysDeskAndBookingAndEvents() %>",
       "authType": "sso"
     },
     {
@@ -39,10 +33,10 @@
       "deferred": true
     },
     {
-      "name": "bookingStatus",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getBookingEventStatus(bookingID) %>",
+      "name": "bookingEventStatus",
+      "baseUrlType": "workday-bp",
       "authType": "sso",
+      "url": "events/<% todaysDeskAndBookingAndEvents.data[0].businessProcesses[0].id %>",
       "deferred": true
     }
   ],
@@ -50,7 +44,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Desk Reservation Landing Page"
+      "label": "Desk Booking Landing Page"
     },
     "body": {
       "type": "section",
@@ -73,14 +67,15 @@
                   "label": "Today's booking",
                   "value": "<%
                             var noneText = '<h1 style=\"font-size:32px\"><b>None</b></h1>';
-                            var deskData = todaysDeskAndBooking.data;
+                            var deskData = todaysDeskAndBookingAndEvents.data;
                             if(empty deskData) {
                                 pageVariables.showTodaysBookingInfo = false;
                                 noneText
                             } else {
                                 deskData = deskData[0];
-                                var status = bookingStatus.invoke({'bookingID': deskData.workdayID}).data[0].status;
-                                if (!status.startsWith(states.reservedEFL)) {
+                                console.debug(bookingEventStatus.invoke());
+                                var status = bookingEventStatus.invoke().status.descriptor;
+                                if (!status.startsWith(states.bookedEFL)) {
                                   pageVariables.showTodaysBookingInfo = false;
                                   noneText
                                 } else {
@@ -113,7 +108,7 @@
                         "type": "taskReference",
                         "taskId": "checkOut",
                         "parameterBindings": {
-                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
+                          "bookingId": "<% todaysDeskAndBookingAndEvents.data[0].workdayID %>"
                         }
                       }
                     },
@@ -123,9 +118,9 @@
                       "action": "AUXILIARY",
                       "taskReference": {
                         "type": "taskReference",
-                        "taskId": "cancelReservation",
+                        "taskId": "cancelBooking",
                         "parameterBindings": {
-                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
+                          "bookingId": "<% todaysDeskAndBookingAndEvents.data[0].workdayID %>"
                         }
                       }
                     }
@@ -151,29 +146,20 @@
         },
         {
           "type": "button",
-          "label": "VIEW MY RESERVATIONS",
+          "label": "View My Bookings",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "viewMyReservations"
+            "taskId": "viewMyBookings"
           }
         },
         {
           "type": "button",
-          "label": "BOOK DESK",
+          "label": "Book Desk",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
             "taskId": "microViewAvailableDeskForDate"
-          }
-        },
-        {
-          "type": "button",
-          "label": "admin panel",
-          "action": "PRIMARY",
-          "taskReference": {
-            "type": "taskReference",
-            "taskId": "adminPanel"
           }
         }
       ]

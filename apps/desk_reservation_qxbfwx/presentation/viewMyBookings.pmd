@@ -1,0 +1,178 @@
+{
+  "id": "viewMyBookings",
+  "include": [
+    "states.script",
+    "wql.script"
+  ],
+  "endPoints": [
+    {
+      "name": "me",
+      "baseUrlType": "COMMON",
+      "authType": "sso",
+      "url": "workers/me"
+    },
+    {
+      "name": "myBookings",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "authType": "sso",
+      "url": "<% wql.getMyBookings(me.id) %>"
+    }
+  ],
+  "script": "<%
+    var mapBookingState = function(booking) {
+      if (states.isRequested(booking.state)) {
+        var eventStatus = booking.businessProcesses[0].status;
+        if (states.isStatusBooked(eventStatus)) {
+            booking.state = states.booked;
+        } else if (states.isStatusDenied(eventStatus)) {
+            booking.state = states.denied;
+        } else if (states.isStatusCanceled(eventStatus)) {
+            booking.state = states.canceled;
+        } else {
+            booking.state = states.requested;
+        }
+      }
+      return booking;
+    };
+  %>",
+  "presentation": {
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "View My Bookings"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "label": "Note",
+          "value": "You can click on the value of the state's column to see the status of a booking request."
+        },
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "rows": "<%
+                   console.debug(myBookings);
+                   for (var booking : myBookings.data) {
+                     booking = mapBookingState(booking);
+                   };
+                   myBookings.data;
+                   %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "bookingColumnId",
+              "label": "Desk",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "id": "bookingName",
+                "enabled": false,
+                "instanceList": [
+                  {
+                    "id": "<% row.desk.Desk.id %>",
+                    "descriptor": "<% row.desk.Desk.descriptor %>",
+                    "wid": "<% row.desk.Desk.id %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationCol",
+              "label": "Location",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "instanceList": [
+                  {
+                    "id": "<% row.location.id %>",
+                    "descriptor": "<% row.location.descriptor %>",
+                    "wid": "<% row.location.id %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "areaCol",
+              "label": "Area",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "id": "areaTextId",
+                "instanceList": [
+                  {
+                    "id": "<% row.desk.area.id %>",
+                    "descriptor": "<% row.desk.area.descriptor %>",
+                    "wid": "<% row.desk.area.id %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "Date",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "id": "dateCellID",
+                "instanceList": [
+                  {
+                    "id": "<% row.date %>",
+                    "descriptor": "<% row.date %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "stateCol",
+              "label": "State",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "id": "areaTextId",
+                "instanceList": [
+                  {
+                    "id": "<% row.workdayID %>",
+                    "descriptor": "<% row.state %>",
+                    "wid": "<% row.businessProcesses[0].workdayID %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnActions",
+              "cellTemplate": {
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "SECONDARY",
+                    "label": "Cancel",
+                    "visible": "<% row.state.startsWith(states.bookedFL) %>",
+                    "taskReference": {
+                      "taskId": "cancelBooking",
+                      "parameterBindings": {
+                        "bookingId": "<% row.workdayID %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

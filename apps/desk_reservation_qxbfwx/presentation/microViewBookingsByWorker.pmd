@@ -1,5 +1,5 @@
 {
-  "id": "microViewReservationsByWorker",
+  "id": "microViewBookingsByWorker",
   "endPoints": [
     {
       "baseUrlType": "COMMON",
@@ -33,7 +33,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "View Reservations By Worker",
+      "label": "View Bookings By Worker",
       "enabled": true
     },
     "pageType": "edit",

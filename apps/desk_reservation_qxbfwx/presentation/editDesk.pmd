@@ -3,13 +3,12 @@
   "include": [
         "wql.script"
   ],
-
   "endPoints": [
     {
-      "baseUrlType": "WORKDAY-WQL-QUERY",
       "name": "getDesk",
-      "authType": "sso",
-      "url": "<% wql.Desk(queryParams.deskId) %>"
+      "baseUrlType": "app",
+      "url": "desks/<% queryParams.deskID %>",
+      "authType": "sso"
     },
     {
       "name": "areas",
@@ -61,7 +60,7 @@
           "label": "Desks",
           "doNotAdd": true,
           "doNotRemove": true,
-          "rows": "<% getDesk.data %>",
+          "rows": "<% console.debug(getDesk); [getDesk] %>",
           "rowVariableName": "row",
           "columns": [
             {

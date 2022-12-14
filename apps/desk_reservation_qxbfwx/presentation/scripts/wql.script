@@ -1,10 +1,15 @@
-var getTodaysReservAndState = function() {
+var getTodaysBookingAndState = function() {
   var query = string:formatMessage('SELECT workdayID, state FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
   query.urlEncode();
 };
 
-var getTodaysDeskAndBooking = function() {
-  var query = string:formatMessage('SELECT desk, workdayID FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND state = "Requested"', date:now().format('yyyy-MM-dd'));
+var getMyBookings = function(workerID) {
+  var query = 'SELECT workdayID, desk{Desk, area}, businessProcesses{status, workdayID}, cf_LRV_Location AS location, date, state FROM desk_reservation_qxbfwx_bookings WHERE date >= "' + date:now().format('yyyy-MM-dd') + '" AND worker = "' + workerID + '" ORDER BY date ASC';
+  query.urlEncode();
+};
+
+var getTodaysDeskAndBookingAndEvents = function() {
+  var query = string:formatMessage('SELECT desk, workdayID, businessProcesses FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND state = "Requested"', date:now().format('yyyy-MM-dd'));
   query.urlEncode()
 };
 
@@ -43,21 +48,22 @@ var getDesk = function(deskID) {
 var getDesksByAreaID = function(areaID) {
   var query = string:formatMessage('SELECT Desk, deskName FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
   query.urlEncode();
-}
+};
 
 var getBookingEventStatus = function(bookingID) {
   var query = string:formatMessage('SELECT status FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
   query.urlEncode();
-}
+};
 
-var getBookingState = function(bookingID) {
-  var query = string:formatMessage('SELECT state FROM desk_reservation_qxbfwx_bookings WHERE workdayID = "{0}"', bookingID);
+var getBookingEventID = function(bookingID) {
+  var query = string:formatMessage('SELECT workdayID FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
   query.urlEncode();
-}
+};
 
 {
-  "getTodaysReservAndState": getTodaysReservAndState,
-  "getTodaysDeskAndBooking": getTodaysDeskAndBooking,
+  "getTodaysBookingAndState": getTodaysBookingAndState,
+  "getMyBookings": getMyBookings,
+  "getTodaysDeskAndBookingAndEvents": getTodaysDeskAndBookingAndEvents,
   "getAreaAndDeskName": getAreaAndDeskName,
   "getAreaName": getAreaName,
   "getDeskName": getDeskName,
@@ -66,5 +72,5 @@ var getBookingState = function(bookingID) {
   "Area": getArea,
   "getDesksByAreaID": getDesksByAreaID,
   "getBookingEventStatus": getBookingEventStatus,
-  "getBookingState": getBookingState
+  "getBookingEventID": getBookingEventID
 }

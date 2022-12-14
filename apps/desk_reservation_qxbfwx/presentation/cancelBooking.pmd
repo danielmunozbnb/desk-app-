@@ -1,5 +1,5 @@
 {
-  "id": "cancelReservation",
+  "id": "cancelBooking",
   "include": [
     "states.script"
   ],
@@ -14,7 +14,7 @@
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "cancelReserv",
+        "name": "cancelBooking",
         "baseUrlType": "app",
         "url": "<% 'bookings/' + queryParams.bookingId %>",
         "httpMethod": "PATCH",
@@ -32,7 +32,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Cancel Reservation"
+      "label": "Cancel Booking"
     },
     "body": {
       "type": "section",
@@ -40,8 +40,8 @@
       "children": [
         {
           "type": "readOnlyText",
-          "label": "Cancel reservation?",
-          "value":"(show reservation)"
+          "label": "Cancel booking?",
+          "value":"(show booking)"
         },
         {
           "type": "checkBox",

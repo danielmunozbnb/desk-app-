@@ -48,7 +48,7 @@
           {
             "outboundPath": "alreadyBooked",
             "value": "<%
-                      checkReservation();
+                      checkBooking();
                       %>"
           }
         ]
@@ -56,15 +56,15 @@
     ]
   },
   "script": "<%
-             var checkReservation = function() {
+             var checkBooking = function() {
                  fecha.clearError();
                  if (empty bookings.data) {
                    return false;
                  }
                  for (var booking : bookings.data){
                      if (booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd')
-                         && states.isRequestedOrReserved(bookingEventStatus, booking.id, booking.state)) {
-                         fecha.setError('Reservation already submitted for that day');
+                         && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
+                         fecha.setError('Booking already submitted for that day');
                          return true;
                      }
                  }
@@ -95,7 +95,7 @@
               "id": "fecha",
               "datePrecision": "DAY",
               "required": true,
-              "onChange":"<% checkReservation() %>"
+              "onChange":"<% checkBooking() %>"
             },
             {
               "type": "date",

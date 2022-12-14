@@ -2,7 +2,7 @@
   "id": "microDeskOccupationForDay",
   "endPoints": [
     {
-      "name": "reservations",
+      "name": "bookings",
       "baseUrlType": "app",
       "url": "/bookings",
       "authType": "sso"
@@ -31,7 +31,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "View Reservations for a Day",
+      "label": "View Bookings for a Day",
       "enabled": true
     },
     "pageType": "edit",

@@ -8,8 +8,14 @@
     {
       "name": "areas",
       "baseUrlType": "app",
-      "url": "/areas",
+      "url": "areas",
       "authType": "sso"
+    },
+    {
+      "name": "me",
+      "baseUrlType": "COMMON",
+      "authType": "sso",
+      "url": "workers/me"
     },
     {
       "name": "desksByAreaID",
@@ -32,7 +38,7 @@
       "authType": "sso"
     },
     {
-      "name": "reservations",
+      "name": "bookings",
       "baseUrlType": "app",
       "url": "/bookings",
       "authType": "sso"
@@ -50,7 +56,7 @@
         "name": "bookingPost",
         "baseUrlType": "app",
         "httpMethod": "POST",
-        "url": "bookings/",
+        "url": "bookings",
         "authType": "sso",
         "values": [
           {
@@ -78,6 +84,10 @@
           {
             "outboundPath": "businessProcessTarget.id",
             "value": "<% bookingPost.id %>"
+          },
+          {
+            "outboundPath": "description",
+            "value": "Booking request sent by <% me.descriptor %>."
           }
         ]
       }
@@ -90,19 +100,19 @@
                   return [];
                 }
 
-                var reservations = reservations.data;
+                var bookings = bookings.data;
                 var desks = desksByAreaID.invoke({'areaID': areaID}).data;
-                if (empty reservations) {
+                if (empty bookings) {
                   return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
                 } else {
-                  // For each desk, we check whether it's already reserved or requested by a worker for that specific date.
+                  // For each desk, we check whether it's already Booked or requested by a worker for that specific date.
                   // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
                   var validDesks = [];
                   var skipDesk = false;
                   for (var desk : desks) {
-                    for (var booking : reservations) {
+                    for (var booking : bookings) {
                       if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
-                            && states.isRequestedOrReserved(bookingEventStatus, booking.id, booking.state)) {
+                            && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
                         skipDesk = true;
                         break;
                       }

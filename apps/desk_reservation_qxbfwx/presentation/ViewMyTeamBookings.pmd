@@ -1,5 +1,5 @@
 {
-  "id": "ViewMyTeamReservations",
+  "id": "ViewMyTeamBookings",
   "endPoints": [
     {
       "baseUrlType": "COMMON",
