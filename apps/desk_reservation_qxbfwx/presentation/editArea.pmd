@@ -33,9 +33,10 @@
       }
     ]
   },
-  "onSubmit":"<% console.debug(queryParams.locationId);%>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
+    "micro": true,
+    "microFirstPageOnly": true,
     "pageType": "edit",
     "title": {
       "type": "title",
