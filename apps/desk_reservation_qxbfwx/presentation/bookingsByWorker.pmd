@@ -15,8 +15,6 @@
       "deferred": true
     }
   ],
-  "script": "<%
-            %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "body": {

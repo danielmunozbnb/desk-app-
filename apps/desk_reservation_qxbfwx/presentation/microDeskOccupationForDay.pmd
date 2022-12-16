@@ -17,9 +17,7 @@
         "values": [
           {
             "outboundPath": "selectedDate",
-            "value": "<%
-                      fecha.value.format('yyyy-MM-dd');
-                      %>"
+            "value": "<% fecha.value.format('yyyy-MM-dd'); %>"
           }
         ]
       }
@@ -50,7 +48,6 @@
               "datePrecision": "DAY",
               "required": true
             }
-
           ]
         }
       ]

@@ -6,29 +6,36 @@
   ],
   "endPoints": [
     {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "allLocations",
+      "authType": "sso",
+      "url": "data?query=SELECT%20locationName%2C%20workdayID%20FROM%20locations%20(locationUsagesForLocation%20%3D%20(46db411c4a5245fbb39834d8b2cba049))"
+    },
+    {
       "name": "areas",
       "baseUrlType": "app",
       "url": "areas",
       "authType": "sso"
     },
     {
-      "name": "me",
-      "baseUrlType": "COMMON",
-      "authType": "sso",
-      "url": "workers/me"
-    },
-    {
-      "name": "desksByAreaID",
+      "name": "getAreasByLocation",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getDesksByAreaID(areaID) %>",
+      "url": "<% wql.getAreasByLocation(location) %>",
       "authType": "sso",
       "deferred": true
     },
     {
-      "name": "bookingEventStatus",
+      "name": "occupiedDesksInDate",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getBookingEventStatus(id) %>",
       "authType": "sso",
+      "url": "<% wql.getOccupiedDesksInDateAndArea(date, areaID) %>",
+      "deferred": true
+    },
+    {
+      "name": "freeDeskOffArea",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "authType": "sso",
+      "url": "<% wql.getFreeDesksOfArea(ocDesks, areaID) %>",
       "deferred": true
     },
     {
@@ -38,16 +45,10 @@
       "authType": "sso"
     },
     {
-      "name": "bookings",
-      "baseUrlType": "app",
-      "url": "/bookings",
-      "authType": "sso"
-    },
-    {
-      "baseUrlType": "COMMON",
       "name": "currLoginUser",
+      "baseUrlType": "COMMON",
       "authType": "sso",
-      "url": "/workers/me"
+      "url": "workers/me"
     }
   ],
   "outboundData": {
@@ -79,7 +80,6 @@
         "url": "reservationNotificationEvents",
         "httpMethod": "POST",
         "authType": "sso",
-        "onSend": "<% console.debug(json:asJSON(self.data)); self.data; %>",
         "values": [
           {
             "outboundPath": "businessProcessTarget.id",
@@ -87,44 +87,39 @@
           },
           {
             "outboundPath": "description",
-            "value": "Booking request sent by <% me.descriptor %>."
+            "value": "Booking request sent by <% currLoginUser.descriptor %>."
           }
         ]
       }
     ]
   },
   "script": "<%
+             var fillAreas = function(location) {
+                 if (empty location) {
+                     return [];
+                 }
+                 var areas = getAreasByLocation.invoke({'location': location}).data;
+                 var validAreas = [];
+                 for (var area : areas) {
+                     validAreas.add({'id': area.Area.id, 'name': area.name});
+                 }
+                 return validAreas;
+             };
 
              var fillDesks = function(areaID) {
                  if (empty areaID) {
                      return [];
                  }
-
-                 var bookings = bookings.data;
-                 var desks = desksByAreaID.invoke({'areaID': areaID}).data;
-                 if (empty bookings) {
-                     return desks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName}});
-                 } else {
-                     // For each desk, we check whether it's already Booked or requested by a worker for that specific date.
-                     // We check that by iterating through all bookings. Only when no booking contains the desk, the desk is available.
-                     var validDesks = [];
-                         var skipDesk = false;
-                         for (var desk : desks) {
-                             for (var booking : bookings) {
-                                 if (desk.Desk.id == booking.desk.id && booking.date == flowVariables.selectedDate
-                                     && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
-                                     skipDesk = true;
-                                         break;
-                                 }
-                             }
-                                 if (skipDesk) {
-                                     skipDesk = false;
-                                 } else {
-                                     validDesks.add({'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor, 'deskName': desk.deskName});
-                                 }
-                         }
-                         return validDesks;
+                 var occupiedDesksList = occupiedDesksInDate.invoke({'date': flowVariables.selectedDate, 'areaID': areaID}).data;
+                 var occupiedDesksString = '';
+                 if (!empty occupiedDesksList) {
+                   for (var ocDesk : occupiedDesksList) {
+                     occupiedDesksString += ocDesk.desk.id + ',';
+                   }
+                   occupiedDesksString = occupiedDesksString.removeEnd(',');
                  }
+                 var freeDesks = freeDeskOffArea.invoke({'ocDesks': occupiedDesksString, 'areaID': areaID}).data;
+                 return freeDesks.map(desk => {{'id': desk.Desk.id, 'descriptor': desk.Desk.descriptor}});
              };
              %>",
   "presentation": {
@@ -136,6 +131,23 @@
       "children": [
         {
           "type": "instanceList",
+          "id": "locationIList",
+          "label": "Location",
+          "displayKey": "locationName",
+          "idKey":"workdayID",
+          "values": "<% allLocations.data %>",
+          "onChange": "<%
+                       var areas = fillAreas(locationIList.value[0]);
+                       areasIList.setValues(areas);
+                       areasIList.visible = true;
+                       if (empty areas) {
+                           areasIList.setError('There are no areas available');
+                       }
+                       areasIList.setValue([]);
+                       %>"
+        },
+        {
+          "type": "instanceList",
           "id": "areasIList",
           "label": "Areas",
           "displayKey": "name",
@@ -144,11 +156,11 @@
                        desksAvailableIList.clearError();
                        if (!empty areasIList.value) {
                            var desks = fillDesks(areasIList.value[0]);
-                               desksAvailableIList.setValues(desks);
-                               desksAvailableIList.visible = true;
-                               if (empty desks) {
-                                   desksAvailableIList.setError('There are no desks available');
-                               }
+                           desksAvailableIList.setValues(desks);
+                           desksAvailableIList.visible = true;
+                           if (empty desks) {
+                               desksAvailableIList.setError('There are no desks available');
+                           }
                        } else {
                            desksAvailableIList.visible = false;
                        }
@@ -159,7 +171,6 @@
           "type": "instanceList",
           "id": "desksAvailableIList",
           "label": "Desks available",
-          "displayKey": "deskName",
           "values": "<% [] %>",
           "valueOutBinding": "bookingPost.desk.id",
           "visible": true,

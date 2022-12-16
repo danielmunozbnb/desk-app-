@@ -1,19 +1,31 @@
-var getTodaysBookingAndState = function() {
-  var query = string:formatMessage('SELECT workdayID, state FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}"', date:now().format('yyyy-MM-dd'));
-  query.urlEncode();
-};
 
 var getMyBookings = function(workerID) {
   var query = 'SELECT workdayID, desk{Desk, area}, businessProcesses{status, workdayID}, cf_LRV_Location AS location, date, state FROM desk_reservation_qxbfwx_bookings WHERE date >= "' + date:now().format('yyyy-MM-dd') + '" AND worker = "' + workerID + '" ORDER BY date ASC';
   query.urlEncode();
 };
 
-var getTodaysDeskAndBookingAndEvents = function() {
-  var query = string:formatMessage('SELECT desk, workdayID, businessProcesses FROM desk_reservation_qxbfwx_bookings WHERE date = "{0}" AND state = "Requested"', date:now().format('yyyy-MM-dd'));
+var getAllBookings_WorkerID_Date_EventStatus_State = function() {
+  var query = 'SELECT worker{workdayID}, date, businessProcesses{status}, state FROM desk_reservation_qxbfwx_bookings WHERE date >= "' + date:now().format('yyyy-MM-dd') + '"';
+  query.urlEncode();
+};
+
+var getTodaysBookingInfo = function(workerID) {
+  var query = 'SELECT desk{deskName, area}, cf_LRV_Area{name, location} AS area FROM desk_reservation_qxbfwx_bookings WHERE ON businessProcesses status = "Successfully Completed" WHERE businessProcesses IS NOT EMPTY AND state = "Requested" AND worker = "' + workerID + '" AND date = "' + date:now().format('yyyy-MM-dd') + '"';
   query.urlEncode()
 };
 
-var getAreaAndDeskName = function(deskID) {
+var getOccupiedDesksInDateAndArea = function(date, areaID) {
+  var query = "SELECT desk FROM desk_reservation_qxbfwx_bookings WHERE ON businessProcesses status = 'Successfully Completed' WHERE ON desk area = '" + areaID + "' WHERE date = '" + date + "' AND businessProcesses IS NOT EMPTY AND state = 'Requested'";
+  query.urlEncode();
+};
+
+var getFreeDesksOfArea = function(ocDesks, areaID) {
+  // ocDesks = string of occupied desk IDs separated by commas ,
+  var query = string:formatMessage('SELECT Desk FROM desk_reservation_qxbfwx_desks WHERE area = "{0}" AND Desk NOT IN ({1})', areaID, ocDesks);
+  query.urlEncode();
+};
+
+var getArea_DeskName_ByDeskID = function(deskID) {
   var query = string:formatMessage('SELECT area, deskName FROM desk_reservation_qxbfwx_desks WHERE Desk = "{0}"', deskID);
   query.urlEncode()
 };
@@ -23,17 +35,13 @@ var getAreaName = function(areaID) {
   query.urlEncode()
 };
 
-var getDeskName = function(deskID) {
-  var query = string:formatMessage('SELECT name FROM desk_reservation_qxbfwx_desks WHERE Desk = "{0}"', deskID);
-  query.urlEncode()
-};
-
 var getLocation = function(areaID) {
   var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas WHERE Area = "{0}"', areaID);
   query.urlEncode()
 };
+
 var getLocations = function() {
-  var query = string:formatMessage('SELECT location FROM desk_reservation_qxbfwx_areas');
+  var query = 'SELECT location FROM desk_reservation_qxbfwx_areas';
   query.urlEncode()
 };
 
@@ -43,45 +51,33 @@ var getArea = function(workdayID) {
   query.urlEncode();
 };
 
-var getDesk = function(deskID) {
-  var query = string:formatMessage('SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', deskID);
-  console.info(query);
-  query.urlEncode();
-};
-
 var getDesksByAreaID = function(areaID) {
-  var query = string:formatMessage('SELECT Desk, deskName FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
+  var query = string:formatMessage('SELECT workdayID, deskName FROM desk_reservation_qxbfwx_desks WHERE area = "{0}"', areaID);
   query.urlEncode();
 };
 
 var getAreasByLocation = function(location) {
   var query = string:formatMessage('SELECT Area, name, description, location FROM desk_reservation_qxbfwx_areas WHERE location in ("{0}")', location);
   query.urlEncode();
-}
+};
 
 var getBookingEventStatus = function(bookingID) {
   var query = string:formatMessage('SELECT status FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
   query.urlEncode();
 };
 
-var getBookingEventID = function(bookingID) {
-  var query = string:formatMessage('SELECT workdayID FROM desk_reservation_qxbfwx_reservationNotificationEvents WHERE businessProcessTarget = "{0}"', bookingID);
-  query.urlEncode();
-};
-
 {
-  "getTodaysBookingAndState": getTodaysBookingAndState,
   "getMyBookings": getMyBookings,
-  "getTodaysDeskAndBookingAndEvents": getTodaysDeskAndBookingAndEvents,
-  "getAreaAndDeskName": getAreaAndDeskName,
+  "getTodaysBookingInfo": getTodaysBookingInfo,
+  "getOccupiedDesksInDateAndArea": getOccupiedDesksInDateAndArea,
+  "getAllBookings_WorkerID_Date_EventStatus_State": getAllBookings_WorkerID_Date_EventStatus_State,
+  "getArea_DeskName_ByDeskID": getArea_DeskName_ByDeskID,
+  "getFreeDesksOfArea": getFreeDesksOfArea,
   "getAreaName": getAreaName,
-  "getDeskName": getDeskName,
   "getLocation": getLocation,
   "getLocations": getLocations,
   "getAreasByLocation": getAreasByLocation,
-  "Desk": getDesk,
   "Area": getArea,
   "getDesksByAreaID": getDesksByAreaID,
-  "getBookingEventStatus": getBookingEventStatus,
-  "getBookingEventID": getBookingEventID
+  "getBookingEventStatus": getBookingEventStatus
 }

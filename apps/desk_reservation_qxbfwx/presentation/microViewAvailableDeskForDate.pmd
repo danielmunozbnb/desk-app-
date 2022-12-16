@@ -7,14 +7,20 @@
   "endPoints": [
     {
       "baseUrlType": "COMMON",
-      "name": "workers",
+      "name": "currWorker",
       "authType": "sso",
-      "url": "<%'/workers/me'%>"
+      "url": "<%'workers/me'%>"
+    },
+    {
+      "name": "bookingss",
+      "baseUrlType": "app",
+      "url": "bookings",
+      "authType": "sso"
     },
     {
       "name": "bookings",
-      "baseUrlType": "app",
-      "url": "bookings",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getAllBookings_WorkerID_Date_EventStatus_State(); %>",
       "authType": "sso"
     },
     {
@@ -62,8 +68,9 @@
                    return false;
                  }
                  for (var booking : bookings.data){
-                     if (booking.worker.id == workers.id && booking.date == fecha.value.format('yyyy-MM-dd')
-                         && states.isRequestedOrBooked(bookingEventStatus, booking.id, booking.state)) {
+                     var status = booking.businessProcesses[0].status;
+                     if (booking.worker.workdayID == currWorker.id && booking.date == fecha.value.format('yyyy-MM-dd')
+                         && (states.isStatusRequested(status) || states.isStatusBooked(status)) && states.isRequested(booking.state)) {
                          fecha.setError('Booking already submitted for that day');
                          return true;
                      }
@@ -78,8 +85,7 @@
     "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "Book Desk",
-      "enabled": true
+      "label": "Book Desk"
     },
     "body": {
       "type": "section",
