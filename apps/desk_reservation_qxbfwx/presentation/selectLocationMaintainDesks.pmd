@@ -1,5 +1,5 @@
 {
-  "id": "selectLocationMaintainAreas",
+  "id": "selectLocationMaintainDesks",
   "endPoints": [
     {
       "baseUrlType": "WORKDAY-WQL",
@@ -29,7 +29,7 @@
     "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "Workday Extend",
+      "label": "Select location for maintain desks",
       "enabled": false
     },
     "body": {

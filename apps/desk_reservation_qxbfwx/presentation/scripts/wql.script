@@ -49,6 +49,11 @@ var getDesksByAreaID = function(areaID) {
   query.urlEncode();
 }
 
+var getDesksByAreaIDS = function(areaIDS) {
+  var query = string:formatMessage('SELECT Desk, deskName, area, inUse FROM desk_reservation_qxbfwx_desks WHERE area IN ("{0}")', areaIDS);
+  query.urlEncode();
+}
+
 var getAreasByLocation = function(location) {
   var query = string:formatMessage('SELECT Area, name, description, location FROM desk_reservation_qxbfwx_areas WHERE location in ("{0}")', location);
   query.urlEncode();
@@ -76,6 +81,7 @@ var getBookingState = function(bookingID) {
   "Desk": getDesk,
   "Area": getArea,
   "getDesksByAreaID": getDesksByAreaID,
+  "getDesksByAreaIDS": getDesksByAreaIDS,
   "getBookingEventStatus": getBookingEventStatus,
   "getBookingState": getBookingState
 }

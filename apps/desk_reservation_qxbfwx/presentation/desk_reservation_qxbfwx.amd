@@ -161,7 +161,7 @@
           ]
         },
         {
-          "id": "maintainDesks",
+          "id": "maintainDesk",
           "endsFlow": true,
           "taskId": "maintainDesks"
         }
@@ -187,6 +187,29 @@
           "id": "maintainArea",
           "endsFlow": true,
           "taskId": "maintainAreas"
+        }
+      ]
+    },
+    {
+      "id": "maintainDesksFlow",
+      "name": "maintainDesksFlow",
+      "flowSteps": [
+        {
+          "id": "selectLocationMaintainDesks",
+          "startsFlow": true,
+          "taskId": "selectLocationMaintainDesks",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainDesks",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "maintainDesks",
+          "endsFlow": true,
+          "taskId": "maintainDesks"
         }
       ]
     }
@@ -351,6 +374,13 @@
       "routingPattern": "selectLocationMaintainAreas",
       "page": {
         "id": "selectLocationMaintainAreas"
+      }
+    },
+    {
+      "id": "selectLocationMaintainDesks",
+      "routingPattern": "selectLocationMaintainDesks",
+      "page": {
+        "id": "selectLocationMaintainDesks"
       }
     }
   ],

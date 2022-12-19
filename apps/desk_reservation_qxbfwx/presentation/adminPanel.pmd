@@ -27,7 +27,7 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "maintainDesks"
+            "taskId": "selectLocationMaintainDesks"
           }
         }
       ]

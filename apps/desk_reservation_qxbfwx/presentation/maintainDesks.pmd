@@ -9,7 +9,7 @@
       "name": "getAreaName",
       "authType": "sso",
       "url": "<% wql.getAreaName(id) %>",
-      "deferred":true
+      "deferred": true
     },
     {
       "name": "areas",
@@ -29,8 +29,48 @@
       "authType": "sso",
       "url": "<% wql.getAreaName(id) %>",
       "deferred": true
+    },
+    {
+      "name": "getAreasByLocation",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getAreasByLocation(location) %>",
+      "authType": "sso",
+      "deferred": true
+    },
+    {
+      "name": "desksByAreaID",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getDesksByAreaID(areaID) %>",
+      "authType": "sso",
+      "deferred": true
+    },
+    {
+      "name": "desksByAreaIDS",
+      "baseUrlType": "WORKDAY-WQL-QUERY",
+      "url": "<% wql.getDesksByAreaIDS(areaIDS) %>",
+      "authType": "sso",
+      "deferred": true
     }
   ],
+  "script": "<%
+             var fillDesks = function(location) {
+
+                 var areas = getAreasByLocation.invoke({'location': location}).data;
+                 var validAreas = [];
+                 for (var area : areas) {
+                     validAreas.add(area.Area.id);
+                 }
+                 console.debug(validAreas);
+                 var desks = desksByAreaIDS.invoke({'areaIDS': validAreas[0]}).data;
+                 return desks;
+             };
+             %>",
+  "onLoad": "<%
+             console.debug(flowVariables.location);
+
+             var desks = fillDesks(flowVariables.location);
+             pageVariables.desks = desks;
+             %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "view",
@@ -39,10 +79,104 @@
       "horizontal": false,
       "children": [
         {
+          "type": "textArea",
+          "id": "taskTitleParam",
+          "label": "Array of desks",
+          "value": "<% pageVariables.desks; %>",
+          "enabled": false
+        },
+        {
           "type": "grid",
           "id": "gridAreas",
           "label": "Desks",
           "rows": "<% desks.data %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "fieldSet",
+                "id": "fieldSetDeskNameID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "deskName",
+                    "value": "<% row.deskName %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "areaColumnId",
+              "label": "Area",
+              "cellTemplate": {
+                "type": "text",
+                "id": "deskArea",
+                "value": "<% var areaName = getAreaName.invoke({'id': row.area.id}); return areaName.data[0].name; %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "inUseId",
+              "label": "en uso",
+              "cellTemplate": {
+                "type": "text",
+                "id": "inUse",
+                "value": "<% row.inUse %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnActions",
+              "cellTemplate": {
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Edit",
+                    "taskReference": {
+                      "taskId": "editDesk",
+                      "parameterBindings": {
+                        "deskId": "<% row.id %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnDelete",
+              "cellTemplate": {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Delete",
+                    "taskReference": {
+                      "taskId": "deleteDesk",
+                      "parameterBindings": {
+                        "areaId": "<% row.id %>",
+                        "deskName": "<% row.deskName %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "id": "gridDesks",
+          "label": "Desks",
+          "rows": "<% pageVariables.desks; %>",
           "rowVariableName": "row",
           "columns": [
             {
