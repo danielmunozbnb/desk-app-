@@ -9,7 +9,7 @@
       "baseUrlType": "COMMON",
       "name": "currWorker",
       "authType": "sso",
-      "url": "<%'workers/me'%>"
+      "url": "<% 'workers/me' %>"
     },
     {
       "name": "bookingss",
@@ -26,7 +26,7 @@
     {
       "name": "bookingEventStatus",
       "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getBookingEventStatus(id) %>",
+      "url": "<% wql.getBookingEventStatus(id); %>",
       "authType": "sso",
       "deferred": true
     }
@@ -40,22 +40,7 @@
         "values": [
           {
             "outboundPath": "selectedDate",
-            "value": "<%
-                      fecha.value.format('yyyy-MM-dd');
-                      %>"
-          }
-        ]
-      },
-      {
-        "type": "outboundVariable",
-        "name": "dailyBooking",
-        "variableScope": "flow",
-        "values": [
-          {
-            "outboundPath": "alreadyBooked",
-            "value": "<%
-                      checkBooking();
-                      %>"
+            "value": "<% dateWdgt.value.format('yyyy-MM-dd') %>"
           }
         ]
       }
@@ -63,19 +48,23 @@
   },
   "script": "<%
              var checkBooking = function() {
-                 fecha.clearError();
+                 dateWdgt.clearError();
                  if (empty bookings.data) {
-                   return false;
+                     return null;
+                 }
+                 if (dateWdgt.value < date:getTodaysDate(date:getDateTimeZone(userTimeZone))) {
+                   dateWdgt.setError('You cannot book a desk for a past date!');
+                   return null;
                  }
                  for (var booking : bookings.data){
                      var status = booking.businessProcesses[0].status;
-                     if (booking.worker.workdayID == currWorker.id && booking.date == fecha.value.format('yyyy-MM-dd')
+                     if (booking.worker.workdayID == currWorker.id && booking.date == dateWdgt.value.format('yyyy-MM-dd')
                          && (states.isStatusRequested(status) || states.isStatusBooked(status)) && states.isRequested(booking.state)) {
-                         fecha.setError('Booking already submitted for that day');
-                         return true;
+                         dateWdgt.setError('Booking request already submitted for that day!');
+                         return null;
                      }
                  }
-                 return false;
+                 return null;
              }
              %>",
   "presentation": {
@@ -94,11 +83,11 @@
         {
           "type": "fieldSet",
           "title": "Select a date",
-          "id": "fechaFieldSet",
+          "id": "dateFieldSet",
           "children": [
             {
               "type": "date",
-              "id": "fecha",
+              "id": "dateWdgt",
               "datePrecision": "DAY",
               "required": true,
               "onChange":"<% checkBooking() %>"

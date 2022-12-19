@@ -10,7 +10,7 @@ var getAllBookings_WorkerID_Date_EventStatus_State = function() {
 };
 
 var getTodaysBookingInfo = function(workerID) {
-  var query = 'SELECT desk{deskName, area}, cf_LRV_Area{name, location} AS area FROM desk_reservation_qxbfwx_bookings WHERE ON businessProcesses status = "Successfully Completed" WHERE businessProcesses IS NOT EMPTY AND state = "Requested" AND worker = "' + workerID + '" AND date = "' + date:now().format('yyyy-MM-dd') + '"';
+  var query = 'SELECT workdayID, desk{deskName, area}, cf_LRV_Area{name, location} AS area FROM desk_reservation_qxbfwx_bookings WHERE ON businessProcesses status = "Successfully Completed" WHERE businessProcesses IS NOT EMPTY AND state = "Requested" AND worker = "' + workerID + '" AND date = "' + date:now().format('yyyy-MM-dd') + '"';
   query.urlEncode()
 };
 

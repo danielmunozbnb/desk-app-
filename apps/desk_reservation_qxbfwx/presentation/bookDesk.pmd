@@ -112,7 +112,8 @@
                  }
                  var occupiedDesksList = occupiedDesksInDate.invoke({'date': flowVariables.selectedDate, 'areaID': areaID}).data;
                  var occupiedDesksString = '';
-                 if (!empty occupiedDesksList) {
+                 // For some reason, occupiedDesksList can be [{}], so we need to check the emptiness of .desk, not just the list itself
+                 if (!empty occupiedDesksList[0].desk) {
                    for (var ocDesk : occupiedDesksList) {
                      occupiedDesksString += ocDesk.desk.id + ',';
                    }

@@ -35,13 +35,8 @@
           "transitions": [
             {
               "order": "a",
-              "value": "microBookDesk",
-              "condition": "<% flowVariables.alreadyBooked %>"
-            },
-            {
-              "order": "b",
               "value": "BookDesk",
-              "condition": "<% !flowVariables.alreadyBooked %>"
+              "condition": "<% true %>"
             }
           ]
         },
