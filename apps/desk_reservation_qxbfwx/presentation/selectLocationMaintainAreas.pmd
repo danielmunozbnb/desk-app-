@@ -1,0 +1,52 @@
+{
+  "id": "selectLocationMaintainAreas",
+  "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "allLocations",
+      "authType": "sso",
+      "url": "data?query=SELECT%20locationName%2C%20workdayID%20FROM%20locations%20(locationUsagesForLocation%20%3D%20(46db411c4a5245fbb39834d8b2cba049))"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "locationFlowVariable",
+        "variableScope": "flow",
+        "values": [
+          {
+            "outboundPath": "location",
+            "value": "<% locationIList.selectedEntries[0].id %>"
+          }
+        ]
+      }
+
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "Workday Extend",
+      "enabled": false
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "dropdown",
+          "id": "locationIList",
+          "label": "Location",
+          "displayKey": "locationName",
+          "idKey":"workdayID",
+          "values": "<% allLocations.data %>"
+
+        }
+
+      ]
+    }
+  }
+}
