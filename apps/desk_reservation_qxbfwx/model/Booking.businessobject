@@ -23,7 +23,8 @@
       "name": "desk",
       "label": "Desk",
       "type": "SINGLE_INSTANCE",
-      "target": "Desk"
+      "target": "Desk",
+      "useForDisplay": true
     },
     {
       "id": 3,

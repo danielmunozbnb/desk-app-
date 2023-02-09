@@ -9,11 +9,11 @@
     },
     "name": {
       "type": "string",
-      "pattern": "^[A-Z][A-Za-z0-9]*"
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+      "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
     },
     "fields": {
       "type": "array",
@@ -54,6 +54,15 @@
           },
           {
             "$ref": "#/definitions/derivedBoolean"
+          },
+          {
+            "$ref": "#/definitions/derivedInt"
+          },
+          {
+            "$ref": "#/definitions/derivedDecimal"
+          },
+          {
+            "$ref": "#/definitions/derivedDate"
           }
         ]
       }
@@ -70,10 +79,11 @@
       "properties": {
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         }
       },
       "required": [
@@ -104,10 +114,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -149,10 +160,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -194,10 +206,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -233,10 +246,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -272,10 +286,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -311,10 +326,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -363,10 +379,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -396,7 +413,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -411,10 +429,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -435,7 +454,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -450,10 +470,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -474,7 +495,150 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
+      ],
+      "additionalProperties": false
+    },
+    "derivedInt": {
+      "type": "object",
+      "id": "DerivedIntField",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32767
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
+        },
+        "securityDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "INTEGER"
+          ]
+        },
+        "expression": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "expression"
+      ],
+      "additionalProperties": false
+    },
+    "derivedDecimal": {
+      "type": "object",
+      "id": "DerivedDecimalField",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32767
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
+        },
+        "securityDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DECIMAL"
+          ]
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "expression": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "decimals",
+        "expression"
+      ],
+      "additionalProperties": false
+    },
+    "derivedDate": {
+      "type": "object",
+      "id": "DerivedDateField",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32767
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
+        },
+        "securityDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "DATE"
+          ]
+        },
+        "precision": {
+          "type": "string",
+          "enum": [
+            "MILLISECOND",
+            "SECOND",
+            "MINUTE",
+            "HOUR",
+            "DAY",
+            "MONTH",
+            "YEAR"
+          ]
+        },
+        "expression": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "precision",
+        "expression"
       ],
       "additionalProperties": false
     }

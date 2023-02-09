@@ -28,7 +28,7 @@
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+      "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
     }
   },
   "required": [

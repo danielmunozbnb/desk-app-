@@ -9,11 +9,11 @@
     },
     "name": {
       "type": "string",
-      "pattern": "^[A-Z][A-Za-z0-9]*"
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+      "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
     },
     "businessObject": {
       "type": "string"
@@ -26,38 +26,36 @@
     },
     "sortConfigs": {
       "type": "array",
-      "items": [
-        {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 32767
-            },
-            "order": {
-              "type": "string"
-            },
-            "field": {
-              "type": "string"
-            },
-            "direction": {
-              "type": "string",
-              "enum": [
-                "ASCENDING",
-                "DESCENDING"
-              ]
-            }
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32767
           },
-          "required": [
-            "id",
-            "order",
-            "field",
-            "direction"
-          ]
-        }
-      ],
-      "additionalProperties": false
+          "order": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "ASCENDING",
+              "DESCENDING"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "order",
+          "field",
+          "direction"
+        ],
+        "additionalProperties": false
+      }
     },
     "columns": {
       "type": "array",
@@ -87,9 +85,9 @@
           "id",
           "name",
           "order"
-        ]
-      },
-      "additionalProperties": false
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

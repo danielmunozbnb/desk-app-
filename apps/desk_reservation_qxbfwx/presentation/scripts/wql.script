@@ -50,7 +50,7 @@ var getDesksByAreaID = function(areaID) {
 }
 
 var getDesksByAreaIDS = function(areaIDS) {
-  var query = string:formatMessage('SELECT Desk, deskName, area, inUse FROM desk_reservation_qxbfwx_desks WHERE area IN ("{0}")', areaIDS);
+  var query = string:formatMessage('SELECT Desk, deskName, area, inUse FROM desk_reservation_qxbfwx_desks WHERE area IN ({0})', areaIDS);
   query.urlEncode();
 }
 

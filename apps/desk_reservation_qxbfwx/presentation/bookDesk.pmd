@@ -77,7 +77,7 @@
         "name": "bookingPost",
         "baseUrlType": "app",
         "httpMethod": "POST",
-        "url": "bookings/",
+        "url": "bookings",
         "authType": "sso",
         "values": [
           {

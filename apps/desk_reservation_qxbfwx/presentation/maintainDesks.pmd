@@ -57,11 +57,14 @@
 
                  var areas = getAreasByLocation.invoke({'location': location}).data;
                  var validAreas = [];
-                 for (var area : areas) {
-                     validAreas.add(area.Area.id);
+                 for (var area_var : areas) {
+                     validAreas.add(area_var.Area.id);
                  }
-                 console.debug(validAreas);
+                 //console.debug(validAreas);
+
+                 //ITERAR EL VALID AREAS ALMACENANDO EN UN ARRAY NUEVO
                  var desks = desksByAreaIDS.invoke({'areaIDS': validAreas[0]}).data;
+                 console.debug(desks);
                  return desks;
              };
              %>",
@@ -69,6 +72,7 @@
              console.debug(flowVariables.location);
 
              var desks = fillDesks(flowVariables.location);
+             console.debug(desks);
              pageVariables.desks = desks;
              %>",
   "presentation": {
@@ -115,7 +119,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "deskArea",
-                "value": "<% var areaName = getAreaName.invoke({'id': row.area.id}); return areaName.data[0].name; %>"
+                "value": "<%  %>"
               }
             },
             {
@@ -172,12 +176,13 @@
             }
           ]
         },
+
         {
           "type": "grid",
           "id": "gridDesks",
           "label": "Desks",
           "rows": "<% pageVariables.desks; %>",
-          "rowVariableName": "row",
+          "rowVariableName": "row_id",
           "columns": [
             {
               "type": "column",
@@ -190,7 +195,7 @@
                   {
                     "type": "text",
                     "id": "deskName",
-                    "value": "<% row.deskName %>"
+                    "value": "<% row_id.deskName %>"
                   }
                 ]
               }
@@ -200,10 +205,19 @@
               "columnId": "areaColumnId",
               "label": "Area",
               "cellTemplate": {
-                "type": "text",
-                "id": "deskArea",
-                "value": "<% var areaName = getAreaName.invoke({'id': row.area.id}); return areaName.data[0].name; %>"
+                "type": "fieldSet",
+                "id": "fieldSetidID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "area",
+                    "value": "<% //row_id.area.id
+                              var areaName = getAreaName.invoke({'id': row_id.area.id}); return areaName.data[0].name;
+                              %>"
+                  }
+                ]
               }
+
             },
             {
               "type": "column",
@@ -212,7 +226,7 @@
               "cellTemplate": {
                 "type": "text",
                 "id": "inUse",
-                "value": "<% row.inUse %>"
+                "value": "<% row_id.inUse %>"
               }
             },
             {
@@ -229,7 +243,7 @@
                     "taskReference": {
                       "taskId": "editDesk",
                       "parameterBindings": {
-                        "deskId": "<% row.id %>"
+                        "deskId": "<% row_id.id %>"
                       }
                     }
                   }
@@ -249,8 +263,8 @@
                     "taskReference": {
                       "taskId": "deleteDesk",
                       "parameterBindings": {
-                        "areaId": "<% row.id %>",
-                        "deskName": "<% row.deskName %>"
+                        "areaId": "<% row_id.id %>",
+                        "deskName": "<% row_id.deskName %>"
                       }
                     }
                   }

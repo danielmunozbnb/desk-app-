@@ -9,11 +9,11 @@
     },
     "name": {
       "type": "string",
-      "pattern": "^[A-Z][A-Za-z0-9]*"
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+      "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
     },
     "fields": {
       "type": "array",
@@ -79,10 +79,11 @@
       "properties": {
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         }
       },
       "required": [
@@ -110,10 +111,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -155,10 +157,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -200,10 +203,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -239,10 +243,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -278,10 +283,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -317,10 +323,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -369,10 +376,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -417,10 +425,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -441,7 +450,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -456,10 +466,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -480,7 +491,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -495,10 +507,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -519,7 +532,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -534,10 +548,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -564,7 +579,8 @@
         "id",
         "name",
         "type",
-        "decimals"
+        "decimals",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -579,10 +595,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -616,7 +633,8 @@
         "id",
         "name",
         "type",
-        "precision"
+        "precision",
+        "expression"
       ],
       "additionalProperties": false
     }
