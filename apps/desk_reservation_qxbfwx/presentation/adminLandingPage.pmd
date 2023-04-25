@@ -1,12 +1,12 @@
 {
-  "id": "adminPanel",
+  "id": "adminLandingPage",
   "endPoints": [
   ],
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "ADMIN'S PANEL"
+      "label": "Administrator's Landing Page"
     },
     "body": {
       "type": "section",
@@ -28,6 +28,15 @@
           "taskReference": {
             "type": "taskReference",
             "taskId": "selectLocationMaintainDesks"
+          }
+        },
+        {
+          "type": "button",
+          "label": "Maintain Bookings",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "maintainBookings"
           }
         }
       ]

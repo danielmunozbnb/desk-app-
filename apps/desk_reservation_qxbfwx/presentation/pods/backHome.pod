@@ -1,17 +1,14 @@
 {
-  "podId": "backHome",
-  "seed": {
-    "parameters": [
-    ],
-    "template": {
-
-      "type": "button",
-      "action": "LINK",
-      "label": "Home",
-      "taskReference": {
-        "taskId": "root"
-      }
-
+  "podId" : "backHome",
+  "seed" : {
+    "template" : {
+      "type" : "button",
+      "label" : "Home",
+      "taskReference" : {
+        "type" : "taskReference",
+        "taskId" : "home"
+      },
+      "action" : "LINK"
     }
   }
 }

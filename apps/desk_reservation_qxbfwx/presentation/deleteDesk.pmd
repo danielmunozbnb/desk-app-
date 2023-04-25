@@ -1,37 +1,65 @@
 {
-  "id": "deleteDesk",
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "baseUrlType": "app",
-        "name": "bookings",
-        "authType": "sso",
-        "url": "<%'desks/' + queryParams.areaId %>",
-        "httpMethod": "DELETE"
-      }
-    ]
+  "id" : "deleteDesk",
+  "endPoints" : [ {
+    "name" : "bookings",
+    "baseUrlType" : "app",
+    "url" : "bookings",
+    "isCollection" : true,
+    "authType" : "sso"
+  } ],
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "baseUrlType" : "app",
+      "name" : "bookings_delete",
+      "authType" : "sso",
+      "url" : "<%'desks/' + queryParams.deskId %>",
+      "exclude" : "<% pageVariables.isDeskBooked %>",
+      "httpMethod" : "DELETE"
+    } ]
   },
-  "presentation": {
-    "headerSize": "VPS_DEFAULT",
-    "pageType": "edit",
-    "micro": true,
-    "microFirstPageOnly": true,
+  "script" : "<%
+             var detectBooked = function(desk_id) {
 
-    "title": {
-      "type": "title",
-      "label": "Delete desk"
+                 var bookings = bookings.data;
+                 var inUse = false;
+                 for (var booking_var : bookings) {
+                     if(desk_id == booking_var.desk.id && booking_var.date >= date:now().format('yyyy-MM-dd')){
+                         inUse = true;
+                     }
+                 }
+                 return inUse;
+             };
+             %>",
+  "onLoad" : "<%
+                pageVariables.isDeskBooked=detectBooked(queryParams.deskId);
+                console.debug(pageVariables.isDeskBooked);
+
+            %>",
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "pageType" : "edit",
+    "micro" : true,
+    "microFirstPageOnly" : true,
+    "title" : {
+      "type" : "title",
+      "label" : "Delete desk"
     },
-    "body": {
-      "type": "section",
-      "horizontal": false,
-      "children": [
-        {
-          "type": "checkBox",
-          "id": "confirmationCheckBox",
-          "label": "<% 'Check to confirm you want to delete desk: ' + queryParams.deskName %>",
-          "required": true
-        }
-      ]
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "text",
+        "label" : "Can´t delete desk",
+        "value" : "Desk is already in the system",
+        "enabled" : false,
+        "render" : "<% pageVariables.isDeskBooked %>"
+      }, {
+        "type" : "checkBox",
+        "id" : "confirmationCheckBox",
+        "label" : "<% 'Check to confirm you want to delete desk: ' + queryParams.deskName %>",
+        "render" : "<% !pageVariables.isDeskBooked %>",
+        "required" : true
+      } ]
     }
   }
 }

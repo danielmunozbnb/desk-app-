@@ -1,0 +1,64 @@
+{
+  "id": "cancelReservation",
+  "include": [
+        "states.script"
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "cancelReserv",
+        "baseUrlType": "app",
+        "url": "bookings/<% queryParams.bookingData.workdayID %>",
+        "httpMethod": "PATCH",
+        "authType": "sso",
+        "values": [
+          {
+            "outboundPath": "state",
+            "value": "<% states.canceled %>"
+          }
+        ]
+      }
+    ]
+  },
+  "onLoad": "<% queryParams.bookingData = json:parse(queryParams.bookingData) %>",
+  "presentation": {
+    "micro": "true",
+    "microFirstPageOnly": "true",
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.doYouWantTocancelReservation %>"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "readOnlyText",
+          "label": "<% presentationLabels.date %>",
+          "value": "<% queryParams.bookingData.date %>"
+        },
+        {
+          "type": "readOnlyText",
+          "label": "<% presentationLabels.location %>",
+          "value": "<% queryParams.bookingData.location %>"
+        },
+        {
+          "type": "readOnlyText",
+          "label": "<% presentationLabels.area %>",
+          "value": "<% queryParams.bookingData.areaName %>"
+        },
+        {
+          "type": "readOnlyText",
+          "label": "<% presentationLabels.desk %>",
+          "value": "<% queryParams.bookingData.desk.descriptor %>"
+        },
+        {
+          "type": "checkBox",
+          "label": "<% presentationLabels.confirm %>",
+          "required": "<% true %>"
+        }
+      ]
+    }
+  }
+}

@@ -3,7 +3,7 @@
   "name": "BookingsReport",
   "businessObject": "Booking",
   "defaultSecurityDomains": [
-    "DeskReservation"
+    "SelfServiceDeskReservation"
   ],
   "sortConfigs": [
     {

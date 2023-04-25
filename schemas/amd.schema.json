@@ -27,15 +27,15 @@
       "items" : {
         "type" : "object",
         "id" : "urn:jsonschema:com:workday:vps:smd:FlowModel",
-        "required": [ "id", "flowSteps"],
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "The unique id of a flow definition. It can be used in a route to navigate to a flow."
+            "required" : true,
+            "description" : "The id used to denote this flow. It can be used in a route to navigate to a flow."
           },
           "name" : {
             "type" : "string",
-            "description" : "The unique name of a flow definition. This is used to link a task orchestration tag to a flow."
+            "description" : "The name for the flow. This is used to link a task orchestration tag to a flow."
           },
           "flowSteps" : {
             "type" : "array",
@@ -43,7 +43,6 @@
             "items" : {
               "type" : "object",
               "id" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel",
-              "required": [ "id", "taskId" ],
               "properties" : {
                 "id" : {
                   "type" : "string",
@@ -54,31 +53,27 @@
                   "items" : {
                     "type" : "object",
                     "id" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel:FlowStepLink",
-                    "required": ["order", "value", "condition"],
                     "properties" : {
                       "id" : {
                         "type" : "string"
                       },
                       "name" : {
-                        "type" : "string",
-                        "description": "The name of the transition."
+                        "type" : "string"
                       },
                       "descriptor" : {
-                        "type" : "string",
-                        "description": "The transition description."
+                        "type" : "string"
                       },
                       "order" : {
-                        "type" : "string",
-                        "description": "An alphanumeric string that specifies the transition order. We alphabetically sort the order values in transitions[] to determine the sequence of evaluating conditions.\nInclude this property even if you only have 1 item in your transitions[]."
+                        "type" : "string"
                       },
                       "value" : {
                         "type" : "object",
                         "$ref" : "urn:jsonschema:com:workday:vps:smd:FlowStepModel",
-                        "description" : "The reference ID of the next flow step when the condition returns true."
+                        "description" : "This property denotes the id of the task or flow step that will come next after the user successfully submits on the current flow step."
                       },
                       "condition" : {
                         "type" : "string",
-                        "description" : "An expression that evaluates to true or false.\nIf the expression is true, the app navigates to the flow step value.\n\nIf the expression is false, we evaluate the next ordered condition in the array.\n\nYou can specify \"true\" if the transition always needs to execute the flow step."
+                        "description" : "This binding determines whether or not a transition to the step defined for the value property will be executed."
                       }
                     }
                   }
@@ -113,16 +108,13 @@
                   }
                 },
                 "startsFlow" : {
-                  "type" : "boolean",
-                  "description": "Indicates whether this task is the initial step. If not specified, the first step in the flowSteps array starts the flow.\nIf you use this flow with a taskOrch, set startsFlow to true on the initial flow step. Set startsFlow to true on one and only 1 flow step."
+                  "type" : "boolean"
                 },
                 "endsFlow" : {
-                  "type" : "boolean",
-                  "description": "Indicates whether this task is the last step. If not specified, the last step in the flowSteps array ends the flow."
+                  "type" : "boolean"
                 },
                 "excludeFromFlow" : {
-                  "type" : "boolean",
-                  "description": "Indicates whether to exclude the step from a task orchestration flow."
+                  "type" : "boolean"
                 },
                 "cancelOutOfFlow" : {
                   "type" : "boolean",
@@ -130,23 +122,23 @@
                 },
                 "taskId" : {
                   "type" : "string",
-                  "description" : "The reference ID of the task to invoke with this step."
+                  "description" : "The task id associated with this flow step."
                 },
                 "skipStep" : {
                   "type" : "string",
-                  "description" : "A binding that determines whether or not to skip this flow step."
+                  "description" : "A binding that helps determine whether or not this step in the flow should be skipped."
                 },
                 "taskBindingName" : {
                   "type" : "string",
-                  "description" : "The task name associated with this flow step. If you use the flow with a taskOrch tag, taskBindingName displays as the step title."
+                  "description" : "A binding to the task name associated with this flow step. This name will be displayed as the title of the step in a Task Orchestration."
                 },
                 "name" : {
                   "type" : "string",
-                  "description" : "The name of the flow step. The name property is informational only, and not used."
+                  "description" : "The name of the flow step."
                 },
                 "descriptor" : {
                   "type" : "string",
-                  "description" : "The flow step description."
+                  "description" : "Description of the flow step."
                 }
               }
             }
@@ -463,6 +455,15 @@
             "type" : "string",
             "description" : "Description of the flow."
           },
+          "toggleEndPoint" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+            "description" : "The endpoint used to retrieve application toggles."
+          },
+          "flowBlob" : {
+            "type" : "string",
+            "description" : "An attribute that represents the flow model encoded as a string."
+          },
           "cancelOutOfFlow" : {
             "type" : "boolean",
             "description" : "If true, cancel button triggers will take a user out of the flow instead of going to the previous step."
@@ -475,27 +476,116 @@
         }
       }
     },
+    "pods" : {
+      "type" : "array",
+      "description" : "List of pods used by the site in the PMD. See 'pod'.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:pmd:tag:Pod",
+        "properties" : {
+          "podId" : {
+            "type" : "string",
+            "required" : true,
+            "description" : "The unique ID of the pod that is referenced by Pod tags to insert the pod into a specific place within the presentation."
+          },
+          "rawSeed" : {
+            "type" : "string",
+            "description" : "Same as @seed but the JSON is encoded into a string and will be deserialized upon reading the PMD."
+          },
+          "seed" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:Seed",
+            "description" : "The contents of the pod. This should contain a hierarchy of tags that can be constructed in place of the pod tag.",
+            "properties" : {
+              "endPoints" : {
+                "type" : "array",
+                "description" : "A list of endpoints to be used to retrieve data.",
+                "items" : {
+                  "type" : "object",
+                  "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint"
+                }
+              },
+              "toggleEndPoint" : {
+                "type" : "object",
+                "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+                "description" : "The endpoint used to retrieve application toggles."
+              },
+              "parameters" : {
+                "type" : "array",
+                "description" : "A list of parameter keys that defines what parameters are needed to populate values within the @template.",
+                "items" : {
+                  "type" : "string"
+                }
+              },
+              "template" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:workday:vps:pmd:tag:PmdTag",
+                "required" : true,
+                "description" : "A generic container that should be filled with a tag that will be processed in place of the pod tag.",
+                "properties" : {
+                  "label" : {
+                    "type" : "string",
+                    "description" : "Label is the text that is present either to the side or above for most widgets. If a widget is a non-simple widget this property is not guaranteed to be respected. Basic widgets include inputs such as Text and Date. A widget such as the top-layer Grid however will not display a label."
+                  },
+                  "id" : {
+                    "type" : "string",
+                    "description" : "The identifying string for this tag. This id must be unique per page to ensure proper page functions. If a generated id is provided, there is no reason to alter this property. This value can also be used to reference this tag from other tags. For instance, the following is valid:\n\"{\n  \"type\": \"text\",\n  \"id\": \"myId\"\n}, {\n  \"type\": \"text\",\n  \"value\": \"${myId.value}\"\n}"
+                  },
+                  "automationId" : {
+                    "type" : "string",
+                    "description" : "AutomationId is solely used for automating the UI elements. The automationId present on the DOM will be a transformation from this automationId. If this value is not present, id will instead be used to generate the automationId"
+                  },
+                  "customId" : {
+                    "type" : "string",
+                    "description" : "CustomId is an attribute used only by Mobile Benefits to execute application-specific logic."
+                  },
+                  "render" : {
+                    "type" : "string",
+                    "description" : "Render determines whether or not this tag will be turned into a widget. If this property is empty the widget will always be rendered. If true, then the widget will also be rendered. If false this tag, and all children tags, will not be rendered. This is different from @visible in that references to this tag/widget will not be stored in the case that this is false."
+                  },
+                  "bindingTemplates" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string"
+                    }
+                  },
+                  "configurableModel" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:configurables:ConfigurableModel",
+                    "description" : "Defines the configurations on this pmdTag in terms of which properties will allow logic to be used. See 'configurables' for more information."
+                  },
+                  "sortOrder" : {
+                    "type" : "string",
+                    "description" : "If 'sorted: true' on the 'section'/'fieldSet' parent of this widget, then this widget will be ordered within its parent according to this attribute, relative to its siblings.\nOrder is determined using Java String's 'compareTo' function.\nTypically use values like 'a', 'b', 'c', etc. where the widget with 'sortOrder: a' will coome before the widget with 'sortOrder: b', and the widget with 'sortOrder: b' will come before the widget with 'sortOrder: c' and so on."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "tasks" : {
       "type" : "array",
       "description" : "The tasks list defines the URLs that will be available to users of a site and declares which pages should be invoked when the URL patterns defined in those tasks are matched.",
       "items" : {
         "type" : "object",
         "id" : "urn:jsonschema:com:workday:vps:smd:TaskModel",
-        "required" : ["id", "routingPattern" ],
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "The unique id of a task that maps to a page. Flow definitions reference this task id."
+            "required" : true,
+            "description" : "Used in 'taskReference' and other places in PMD to refer and link to this task."
           },
           "routingPattern" : {
             "type" : "string",
+            "required" : true,
             "description" : "A Task's routing pattern defines a URL that should function on a site. When a user accesses a site, the site's Tasks are scanned & their routing patterns evaluated to see if any of them match the user's current URL.  When a match is found, that Task's page or flow is rendered.\nRouting patterns may contain tokens that become named values available in PMD via the queryParams object.\nExample:\nRouting Pattern:  /jobs/{jobId}\nPMD:                    ${queryParams.jobId}\nUsing this method, URL path elements become parameters of the page that the Task invokes."
           },
           "page" : {
             "type" : "object",
             "id" : "urn:jsonschema:com:workday:vps:smd:PageModel",
             "description" : "Page that this task references, see 'page'",
-            "required": [ "id" ],
             "properties" : {
               "id" : {
                 "type" : "string",
@@ -511,6 +601,18 @@
             "type" : "string",
             "description" : "The ID of the flow that this task references."
           },
+          "authenticated" : {
+            "type" : "boolean",
+            "description" : "When true, will redirect the user to sign-in page if they attempt to reach this page without being signed-in."
+          },
+          "authenticateRequiredAccountOnly" : {
+            "type" : "boolean",
+            "description" : "When true, will redirect the user to sign-in page if they attempt to reach this page without being signed-in, but ONLY if accounts are required for the site (if 'site's 'userAccountsRequired' is true)"
+          },
+          "accountHome" : {
+            "type" : "boolean",
+            "description" : "When true, this task will be what the user is routed to when they click on the user home page button. Should only be one task marked as true for the site."
+          },
           "flowId" : {
             "type" : "string"
           }
@@ -521,6 +623,246 @@
       "type" : "string",
       "required" : true
     },
+    "extTasks" : {
+      "type" : "array",
+      "description" : "Tasks that exist in another site that need to be referenced by this site.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:smd:ExternalTaskModel",
+        "properties" : {
+          "appId" : {
+            "type" : "string"
+          },
+          "siteId" : {
+            "type" : "string"
+          },
+          "metaDataSite" : {
+            "type" : "boolean"
+          },
+          "taskId" : {
+            "type" : "string"
+          },
+          "taskModel" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:smd:TaskModel"
+          },
+          "domainId" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "applicationBlob" : {
+      "type" : "string",
+      "description" : "JSON String of the ApplicationModel"
+    },
+    "systemUserName" : {
+      "type" : "string",
+      "description" : "Set as the subject in IDTokens attached to requests made by VPS"
+    },
+    "loginProtocolModel" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:smd:LoginProtocolModel",
+      "description" : "The login protocol that this application uses",
+      "properties" : {
+        "protocol" : {
+          "type" : "string",
+          "description" : "The protocol that the model defines",
+          "enum" : [ "WORKDAY_POST" ]
+        }
+      }
+    },
+    "accountCenter" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:workday:vps:pmd:tag:AccountCenterDefinition",
+      "description" : "Defines the tasks accessible through the Account Center page.",
+      "properties" : {
+        "items" : {
+          "type" : "array",
+          "description" : "A list of tree view item tags to be displayed in the Account Center",
+          "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:workday:vps:pmd:tag:tree:TreeViewItemTag",
+            "properties" : {
+              "label" : {
+                "type" : "string",
+                "description" : "Text that will represent the name of the tree item."
+              },
+              "id" : {
+                "type" : "string",
+                "description" : "The identifying string for this tag. This id must be unique per page to ensure proper page functions. If a generated id is provided, there is no reason to alter this property. This value can also be used to reference this tag from other tags. For instance, the following is valid:\n\"{\n  \"type\": \"text\",\n  \"id\": \"myId\"\n}, {\n  \"type\": \"text\",\n  \"value\": \"${myId.value}\"\n}"
+              },
+              "automationId" : {
+                "type" : "string",
+                "description" : "AutomationId is solely used for automating the UI elements. The automationId present on the DOM will be a transformation from this automationId. If this value is not present, id will instead be used to generate the automationId"
+              },
+              "customId" : {
+                "type" : "string",
+                "description" : "CustomId is an attribute used only by Mobile Benefits to execute application-specific logic."
+              },
+              "render" : {
+                "type" : "string",
+                "description" : "Render determines whether or not this tag will be turned into a widget. If this property is empty the widget will always be rendered. If true, then the widget will also be rendered. If false this tag, and all children tags, will not be rendered. This is different from @visible in that references to this tag/widget will not be stored in the case that this is false."
+              },
+              "bindingTemplates" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "string"
+                }
+              },
+              "configurableModel" : {
+                "type" : "object",
+                "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:configurables:ConfigurableModel",
+                "description" : "Defines the configurations on this pmdTag in terms of which properties will allow logic to be used. See 'configurables' for more information."
+              },
+              "sortOrder" : {
+                "type" : "string",
+                "description" : "If 'sorted: true' on the 'section'/'fieldSet' parent of this widget, then this widget will be ordered within its parent according to this attribute, relative to its siblings.\nOrder is determined using Java String's 'compareTo' function.\nTypically use values like 'a', 'b', 'c', etc. where the widget with 'sortOrder: a' will coome before the widget with 'sortOrder: b', and the widget with 'sortOrder: b' will come before the widget with 'sortOrder: c' and so on."
+              },
+              "required" : {
+                "type" : "string",
+                "description" : "When true, the user will get an error when he submits the page if he/she didn't enter a value for this widget"
+              },
+              "visible" : {
+                "type" : "string",
+                "description" : "When false, the widget will not appear on the page, but it will still exist in a hidden state.\nUse this instead of render if the widget can be toggled to a viewable state."
+              },
+              "enabled" : {
+                "type" : "string",
+                "description" : "When true, the user will be able to enter a value for the widget.\nWhen false, the user will only be able to view the widget and not interact with it."
+              },
+              "helpText" : {
+                "type" : "string",
+                "description" : "Text that will appear when the user hovers their cursor over this widget."
+              },
+              "guide" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:workday:vps:pmd:tag:GuideTag",
+                "description" : "Guide for this widget.",
+                "properties" : {
+                  "label" : {
+                    "type" : "string",
+                    "description" : "Label is the text that is present either to the side or above for most widgets. If a widget is a non-simple widget this property is not guaranteed to be respected. Basic widgets include inputs such as Text and Date. A widget such as the top-layer Grid however will not display a label."
+                  },
+                  "id" : {
+                    "type" : "string",
+                    "description" : "The identifying string for this tag. This id must be unique per page to ensure proper page functions. If a generated id is provided, there is no reason to alter this property. This value can also be used to reference this tag from other tags. For instance, the following is valid:\n\"{\n  \"type\": \"text\",\n  \"id\": \"myId\"\n}, {\n  \"type\": \"text\",\n  \"value\": \"${myId.value}\"\n}"
+                  },
+                  "automationId" : {
+                    "type" : "string",
+                    "description" : "AutomationId is solely used for automating the UI elements. The automationId present on the DOM will be a transformation from this automationId. If this value is not present, id will instead be used to generate the automationId"
+                  },
+                  "customId" : {
+                    "type" : "string",
+                    "description" : "CustomId is an attribute used only by Mobile Benefits to execute application-specific logic."
+                  },
+                  "render" : {
+                    "type" : "string",
+                    "description" : "Render determines whether or not this tag will be turned into a widget. If this property is empty the widget will always be rendered. If true, then the widget will also be rendered. If false this tag, and all children tags, will not be rendered. This is different from @visible in that references to this tag/widget will not be stored in the case that this is false."
+                  },
+                  "bindingTemplates" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "string"
+                    }
+                  },
+                  "configurableModel" : {
+                    "type" : "object",
+                    "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:configurables:ConfigurableModel",
+                    "description" : "Defines the configurations on this pmdTag in terms of which properties will allow logic to be used. See 'configurables' for more information."
+                  },
+                  "sortOrder" : {
+                    "type" : "string",
+                    "description" : "If 'sorted: true' on the 'section'/'fieldSet' parent of this widget, then this widget will be ordered within its parent according to this attribute, relative to its siblings.\nOrder is determined using Java String's 'compareTo' function.\nTypically use values like 'a', 'b', 'c', etc. where the widget with 'sortOrder: a' will coome before the widget with 'sortOrder: b', and the widget with 'sortOrder: b' will come before the widget with 'sortOrder: c' and so on."
+                  },
+                  "title" : {
+                    "type" : "string",
+                    "description" : "Guide title."
+                  },
+                  "text" : {
+                    "type" : "string",
+                    "description" : "Guide detailed description text."
+                  },
+                  "linkText" : {
+                    "type" : "string",
+                    "description" : "Text for the link that may provide more information about this guide."
+                  },
+                  "linkUrl" : {
+                    "type" : "string",
+                    "description" : "Url for the link that may provide more information about this guide."
+                  }
+                }
+              },
+              "icon" : {
+                "type" : "string",
+                "description" : "Icon that will be displayed next to the header label for tree items in the tree view display."
+              },
+              "subtitle" : {
+                "type" : "string",
+                "description" : "Text that will be displayed under the header label for tree items in the tree view display."
+              },
+              "detailsUri" : {
+                "type" : "string",
+                "description" : "URL used to load and display the details content panel. Example format: /{tenant}/inst/{instance-id}/rel-task/{task-id}.{extension}"
+              },
+              "taskReference" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:workday:vps:pmd:tag:site:TaskTag",
+                "description" : "Task details used to generate the URL for the details content panel if detailsUri is missing.",
+                "properties" : {
+                  "taskId" : {
+                    "type" : "string",
+                    "required" : true,
+                    "description" : "The wid of the task in XpressO. As this is a binding, multiple tasks may be referenced depending on the data but it is recommended to keep this field as simple as possible."
+                  },
+                  "parameters" : {
+                    "type" : "string",
+                    "description" : "Allows for an object to be passed into the taskTag as parameters. \"${json:create(json:attribute('testing', '1'))}\" for example will tell the taskTag that 'testing' has a value of '1' for routing purposes."
+                  },
+                  "parameterBindings" : {
+                    "type" : "object",
+                    "description" : "Allows for individual route parameters to be sent in with binding expressions as values. Example: \"parameterBindings\": {\n  \"page\": \"${data.routing.page}\",\n  \"routeParam\": \"3\"\n}\n",
+                    "additionalProperties" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              },
+              "childrenIids" : {
+                "type" : "array",
+                "description" : "Nodes keep track of their children nodes by their instance id's.",
+                "items" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "navigationLinks" : {
+      "type" : "array",
+      "description" : "Clickable tasks the user can select from in their navigation menu. This is only used on external sites.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:workday:vps:pmd:tag:site:HeaderLinkDefinition",
+        "properties" : {
+          "render" : {
+            "type" : "string",
+            "description" : "A boolean binding that indicates whether or not to render the header link. The link will render when this is null or set to true, and will not render when this is set to false."
+          },
+          "taskReference" : {
+            "type" : "object",
+            "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:TaskReference",
+            "description" : "The task that should be executed when clicked."
+          },
+          "label" : {
+            "type" : "string",
+            "description" : "A string binding that will be displayed as the link's label."
+          }
+        }
+      }
+    },
     "dataProviders" : {
       "type" : "array",
       "description" : "List of base URLs used by endpoints in the PMDs of the site.",
@@ -529,15 +871,21 @@
         "id" : "urn:jsonschema:com:workday:vps:pmd:tag:DataProvider",
         "properties" : {
           "key" : {
-            "type" : "string",
-            "description": "The unique id of a data provider. PMDs reference this key with their endpoints."
+            "type" : "string"
           },
           "value" : {
-            "type" : "string",
-            "description": "The base URL for the data provider API endpoints invoked by the PMDs."
+            "type" : "string"
+          },
+          "appDefault" : {
+            "type" : "boolean"
           }
         }
       }
+    },
+    "toggleEndPoint" : {
+      "type" : "object",
+      "$ref" : "urn:jsonschema:com:workday:vps:pmd:tag:EndPoint",
+      "description" : "The endpoint used to retrieve application toggles."
     },
     "universalFooterPodId" : {
       "type" : "string",

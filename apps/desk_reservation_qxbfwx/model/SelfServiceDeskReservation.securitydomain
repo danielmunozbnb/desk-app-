@@ -1,0 +1,6 @@
+{
+  "id": 1,
+  "name": "SelfServiceDeskReservation",
+  "label": "Self-Service: Desk Reservation",
+  "enabledForPageSecurity": false
+}

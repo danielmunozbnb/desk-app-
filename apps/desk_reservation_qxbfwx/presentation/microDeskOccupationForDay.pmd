@@ -2,7 +2,7 @@
   "id": "microDeskOccupationForDay",
   "endPoints": [
     {
-      "name": "bookings",
+      "name": "reservations",
       "baseUrlType": "app",
       "url": "/bookings",
       "authType": "sso"
@@ -17,7 +17,9 @@
         "values": [
           {
             "outboundPath": "selectedDate",
-            "value": "<% fecha.value.format('yyyy-MM-dd'); %>"
+            "value": "<%
+                      fecha.value.format('yyyy-MM-dd');
+                      %>"
           }
         ]
       }
@@ -29,7 +31,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "View Bookings for a Day",
+      "label": "View Reservations for a Day",
       "enabled": true
     },
     "pageType": "edit",
@@ -44,7 +46,7 @@
           "children": [
             {
               "type": "date",
-              "id": "fecha",
+              "id": "fechaDT",
               "datePrecision": "DAY",
               "required": true
             }

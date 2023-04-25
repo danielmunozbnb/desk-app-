@@ -1,28 +1,45 @@
 {
   "id": "home",
   "include": [
-    "states.script",
-    "wql.script"
+        "states.script",
+        "wql.script"
   ],
   "endPoints": [
     {
-      "name": "currLoginUser",
-      "baseUrlType": "COMMON",
-      "authType": "sso",
-      "url": "workers/me"
+      "name": "orch",
+      "baseUrlType": "orchestration",
+      "url": "<% site.applicationId + '/orchestrations/generateMap/launch' %>",
+      "authType": "sso"
     },
     {
-      "name": "todaysDesk",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getTodaysBookingInfo(currLoginUser.id) %>",
+      "name": "todaysDeskAndBooking",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.todaysDeskAndBooking() %>",
       "authType": "sso"
+    },
+    {
+      "name": "locationByAreaNameEP",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.locationByAreaName(areaName) %>",
+      "authType": "sso",
+      "deferred": true
     }
   ],
+  "script": "<%
+
+             var hideTodaysBooking = function(shouldHide, deskName, areaName, locationName) {
+                 var noneText = '<h1 style=\"font-size:32px\"><b>None</b></h1>';
+                 pageVariables.showTodaysBookingInfo = !shouldHide;
+                 return shouldHide ? noneText : '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
+                     + areaName + '<br/>' + locationName + '</p>';
+             };
+
+             %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Desk Booking Landing Page"
+      "label": "<% presentationLabels.landingPageTitle %>"
     },
     "body": {
       "type": "section",
@@ -42,24 +59,35 @@
                 {
                   "id": "today",
                   "type": "richText",
-                  "label": "Today's booking",
+                  "label": "<% presentationLabels.todaysBooking %>",
                   "value": "<%
-                            var deskData = todaysDesk.data;
-                            if(empty deskData) {
-                                pageVariables.showTodaysBookingInfo = false;
-                                return '<h1 style=\"font-size:32px\"><b>None</b></h1>';
+
+                            var todaysBooking = todaysDeskAndBooking.data;
+                            if(empty todaysBooking) {
+                                hideTodaysBooking(true, null, null, null)
+
                             } else {
-                                pageVariables.showTodaysBookingInfo = true;
-                                deskData = deskData[0];
+                                todaysBooking = todaysBooking[0];
 
-                                var deskName = deskData.desk.deskName;
-                                var areaName = deskData.area.name;
-                                var locationName = deskData.area.location.descriptor;
+                                if (!todaysBooking.status.startsWith(states.reservedEFL)) {
+                                    hideTodaysBooking(true, null, null, null)
 
-                                return '<h1 style=\"font-size:32px\"><b>' + deskName + '</b></h1><p>'
-                                    + areaName + '<br/>' + locationName + '</p>';
+                                } else {
+
+                                    var deskName = todaysBooking.booking.deskName;
+                                    var areaName = todaysBooking.booking.areaName;
+                                    var locationName = locationByAreaNameEP.invoke({'areaName': areaName}).data[0].location.descriptor;
+
+                                    hideTodaysBooking(false, deskName, areaName, locationName)
+                                }
                             }
                             %>"
+                },
+                {
+                  "type": "hidden",
+                  "id": "statusImage",
+                  "_label": "<% presentationLabels.ready %>",
+                  "_imageUri": "<% 'data:image/jpeg;charset=utf-8;base64,' + orch.value %>"
                 },
                 {
                   "type": "section",
@@ -69,25 +97,25 @@
                   "children": [
                     {
                       "type": "button",
-                      "label": "CHECK-OUT",
+                      "label": "<% presentationLabels.checkOut %>",
                       "action": "PRIMARY",
                       "taskReference": {
                         "type": "taskReference",
                         "taskId": "checkOut",
                         "parameterBindings": {
-                          "bookingId": "<% todaysDesk.data[0].workdayID %>"
+                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
                         }
                       }
                     },
                     {
                       "type": "button",
-                      "label": "CANCEL",
+                      "label": "<% presentationLabels.cancel %>",
                       "action": "AUXILIARY",
                       "taskReference": {
                         "type": "taskReference",
-                        "taskId": "cancelBooking",
+                        "taskId": "cancelReservation",
                         "parameterBindings": {
-                          "bookingId": "<% todaysDesk.data[0].workdayID %>"
+                          "bookingId": "<% todaysDeskAndBooking.data[0].workdayID %>"
                         }
                       }
                     }
@@ -113,20 +141,29 @@
         },
         {
           "type": "button",
-          "label": "View My Bookings",
+          "label": "<% presentationLabels.viewMyReservations %>",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "viewMyBookings"
+            "taskId": "viewMyReservations"
           }
         },
         {
           "type": "button",
-          "label": "Book Desk",
+          "label": "<% presentationLabels.bookDesk %>",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
             "taskId": "microViewAvailableDeskForDate"
+          }
+        },
+        {
+          "type": "button",
+          "label": "Map (debug)",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "showMap"
           }
         }
       ]

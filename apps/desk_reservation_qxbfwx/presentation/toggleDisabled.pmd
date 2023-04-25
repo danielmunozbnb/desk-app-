@@ -1,0 +1,50 @@
+{
+  "id" : "toggleDisabled",
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "baseUrlType" : "app",
+      "name" : "bookings_disable",
+      "authType" : "sso",
+      "url" : "<%'desks/' + queryParams.deskId %>",
+      "httpMethod" : "PATCH",
+      "onSend" : "<%
+                   (queryParams.deskDisabled)? patchDisableFalse() : patchDisableTrue();
+
+                   %>"
+    } ]
+  },
+  "script" : "<%
+             var patchDisableTrue = function() {
+                 var skillDetail = {
+                     'disabled': true
+                 };
+                 return skillDetail;
+             };
+             var patchDisableFalse = function() {
+                 var skillDetail = {
+                     'disabled': false
+                 };
+                 return skillDetail;
+             };
+             %>",
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "pageType" : "edit",
+    "micro" : true,
+    "microFirstPageOnly" : true,
+    "title" : {
+      "type" : "title",
+      "label" : "<% (queryParams.deskDisabled)? 'Enable Desk':'Disable Desk' %>"
+    },
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "checkBox",
+        "id" : "confirmationCheckBox",
+        "label" : "<% 'Check to confirm you want to '+ ((queryParams.deskDisabled)? 'enable' : 'disable') + ' desk: ' + queryParams.deskName  %>",
+        "required" : true
+      } ]
+    }
+  }
+}

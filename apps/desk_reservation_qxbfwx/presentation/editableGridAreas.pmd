@@ -1,35 +1,24 @@
 {
-  "id" : "editArea",
-  "include" : [ "wql.script" ],
-  "endPoints" : [ {
-    "baseUrlType" : "WORKDAY-WQL",
-    "name" : "areaName",
-    "authType" : "sso",
-    "url" : "<% wql.areaName(queryParams.areaId) %>"
-  } ],
+  "id" : "editableGridAreas",
+  "endPoints" : [ ],
   "outboundData" : {
     "outboundEndPoints" : [ {
-      "name" : "areaPATCH",
+      "name" : "areaPOST",
       "baseUrlType" : "app",
-      "httpMethod" : "PATCH",
-      "url" : "<% 'areas/' + queryParams.areaId %>",
+      "httpMethod" : "POST",
+      "url" : "areas/",
+      "exclude" : "<% !empty(itemId.value) %>",
       "authType" : "sso"
     } ]
   },
-  "onLoad" : "<%
-
-            var area = areaName.data;
-            pageVariables.area = area;
-            console.debug(area);
-            %>",
+  "onLoad" : "<% console.debug(pmdSessionVariables.selectedLocation.id);%>",
   "presentation" : {
     "headerSize" : "VPS_DEFAULT",
-    "micro" : true,
-    "microFirstPageOnly" : true,
     "pageType" : "edit",
     "title" : {
       "type" : "title",
-      "label" : "Edit Area"
+      "label" : "Create new Areas",
+      "enabled" : false
     },
     "body" : {
       "type" : "section",
@@ -37,44 +26,44 @@
       "children" : [ {
         "type" : "grid",
         "id" : "gridAreas",
-        "label" : "Areas",
-        "doNotAdd" : true,
-        "doNotRemove" : true,
-        "rows" : "<% pageVariables.area %>",
-        "rowVariableName" : "row",
+        "label" : "Desks",
+        "rows" : "",
         "columns" : [ {
           "type" : "column",
           "columnId" : "nameColumnId",
           "label" : "Name",
           "cellTemplate" : {
             "type" : "fieldSet",
-            "id" : "fieldSetAreakNameID",
+            "id" : "fieldSetDeskNameID",
             "children" : [ {
               "type" : "text",
               "id" : "areaName",
-              "value" : "<% row.name %>",
+              "value" : "",
               "valuesOut" : [ {
                 "value" : "<% self.value %>",
-                "valueOutBinding" : "areaPATCH.name"
+                "valueOutBinding" : "areaPOST.name"
+              }, {
+                "value" : "<% pmdSessionVariables.selectedLocation.id %>",
+                "valueOutBinding" : "areaPOST.location.id"
               } ]
             }, {
               "type" : "hidden",
               "id" : "itemId",
               "enabled" : false,
-              "value" : "<% row.workdayID %>"
+              "value" : ""
             } ]
           }
         }, {
           "type" : "column",
-          "columnId" : "floorColumnId",
+          "columnId" : "descriptionColumnId",
           "label" : "Description",
           "cellTemplate" : {
             "type" : "text",
-            "id" : "areaFloor",
-            "value" : "<% row.description %>",
+            "id" : "descriptionArea",
+            "values" : "",
             "valuesOut" : [ {
               "value" : "<% self.value %>",
-              "valueOutBinding" : "areaPATCH.description"
+              "valueOutBinding" : "areaPOST.description"
             } ]
           }
         } ]

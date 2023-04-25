@@ -1,0 +1,9 @@
+{
+  "id": 2,
+  "name": "ManageDeskReservationApp",
+  "label": "Manage Desk Reservation App",
+  "routePath": "adminLandingPage",
+  "securityDomains": [
+    "ManageDeskReservationApp"
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "id": 1,
-  "name": "WorkerLandingPage",
+  "name": "LandingPage",
   "label": "Desk Reservation Landing Page",
   "routePath": "/",
   "securityDomains": [
-    "DeskReservation"
+    "SelfServiceDeskReservation"
   ]
 }

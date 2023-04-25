@@ -1,36 +1,32 @@
 {
-  "id": "deleteArea",
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "baseUrlType": "app",
-        "name": "bookings",
-        "authType": "sso",
-        "url": "<%'areas/' + queryParams.areaId %>",
-        "httpMethod": "DELETE"
-      }
-    ]
+  "id" : "deleteArea",
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "baseUrlType" : "app",
+      "name" : "bookings",
+      "authType" : "sso",
+      "url" : "<%'areas/' + queryParams.areaId %>",
+      "httpMethod" : "DELETE"
+    } ]
   },
-  "presentation": {
-    "headerSize": "VPS_DEFAULT",
-    "micro": true,
-    "microFirstPageOnly": true,
-    "pageType": "edit",
-    "title": {
-      "type": "title",
-      "label": "Delete area"
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "micro" : true,
+    "microFirstPageOnly" : true,
+    "pageType" : "edit",
+    "title" : {
+      "type" : "title",
+      "label" : "Delete area"
     },
-    "body": {
-      "type": "section",
-      "horizontal": false,
-      "children": [
-        {
-          "type": "checkBox",
-          "id": "confirmationCheckBox",
-          "label": "Check to confirm you want to delete this area.",
-          "required": true
-        }
-      ]
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "checkBox",
+        "id" : "confirmationCheckBox",
+        "label" : "Check to confirm you want to delete this area.",
+        "required" : true
+      } ]
     }
   }
 }

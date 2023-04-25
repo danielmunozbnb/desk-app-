@@ -1,117 +1,96 @@
 {
-  "id": "editDesk",
-  "include": [
-        "wql.script"
-  ],
-  "endPoints": [
-    {
-      "name": "getDesk",
-      "baseUrlType": "app",
-      "url": "desks/<% queryParams.deskID %>",
-      "authType": "sso"
-    },
-    {
-      "name": "areas",
-      "baseUrlType": "app",
-      "url": "areas",
-      "authType": "sso"
-    },
-    {
-      "name": "desks",
-      "baseUrlType": "app",
-      "url": "desks",
-      "authType": "sso"
-    },
-    {
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "name": "areaByID",
-      "authType": "sso",
-      "url": "<% wql.getAreaName(id) %>",
-      "deferred": true
-    }
-  ],
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "name": "deskPATCH",
-        "baseUrlType": "app",
-        "httpMethod": "PATCH",
-        "url": "<% 'desks/' +  itemId.value%>",
-        "authType": "sso"
-      }
-    ]
+  "id" : "editDesk",
+  "include" : [ "wql.script" ],
+  "endPoints" : [ {
+    "baseUrlType" : "WORKDAY-WQL",
+    "name" : "desk",
+    "authType" : "sso",
+    "url" : "<% wql.desk(queryParams.deskId) %>"
+  }, {
+    "name" : "areas",
+    "baseUrlType" : "app",
+    "url" : "areas",
+    "authType" : "sso"
+  }, {
+    "name" : "desks",
+    "baseUrlType" : "app",
+    "url" : "desks",
+    "authType" : "sso"
+  }, {
+    "baseUrlType" : "WORKDAY-WQL",
+    "name" : "areaByID",
+    "authType" : "sso",
+    "url" : "<% wql.areaName(id) %>",
+    "deferred" : true
+  } ],
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "name" : "deskPATCH",
+      "baseUrlType" : "app",
+      "httpMethod" : "PATCH",
+      "url" : "<% 'desks/' +  itemId.value%>",
+      "authType" : "sso"
+    } ]
   },
-  "presentation": {
-    "headerSize": "VPS_DEFAULT",
-    "pageType": "edit",
-    "micro": true,
-    "microFirstPageOnly": true,
-    "title": {
-      "type": "title",
-      "label": "Edit Desk"
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "pageType" : "edit",
+    "micro" : true,
+    "microFirstPageOnly" : true,
+    "title" : {
+      "type" : "title",
+      "label" : "<% presentationLabels.editDesk %>"
     },
-    "body": {
-      "type": "section",
-      "horizontal": false,
-      "children": [
-        {
-          "type": "grid",
-          "id": "gridAreas",
-          "label": "Desks",
-          "doNotAdd": true,
-          "doNotRemove": true,
-          "rows": "<% console.debug(getDesk); [getDesk] %>",
-          "rowVariableName": "row",
-          "columns": [
-            {
-              "type": "column",
-              "columnId": "nameColumnId",
-              "label": "Name",
-              "cellTemplate": {
-                "type": "fieldSet",
-                "id": "fieldSetDeskNameID",
-                "children": [
-                  {
-                    "type": "text",
-                    "id": "deskName",
-                    "value": "<% row.deskName %>",
-                    "valuesOut": [
-                      {
-                        "value": "<% self.value %>",
-                        "valueOutBinding": "deskPATCH.deskName"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "hidden",
-                    "id": "itemId",
-                    "enabled": false,
-                    "value": "<% row.workdayID %>"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "column",
-              "columnId": "desksColumnId",
-              "label": "Area",
-              "cellTemplate": {
-                "type": "instanceList",
-                "id": "deskArea",
-                "values": "<% areas.data %>",
-                "selectedValuesAndDescriptors": "<% [{'id':row.area.id, 'name':areaByID.invoke({'id': row.area.id}).data[0].name}] %>",
-                "displayKey": "name",
-                "valuesOut": [
-                  {
-                    "value": "<% deskArea.value[0] %>",
-                    "valueOutBinding": "deskPATCH.area.id"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "grid",
+        "id" : "gridAreas",
+        "label" : "<% presentationLabels.desks %>",
+        "doNotAdd" : true,
+        "doNotRemove" : true,
+        "rows" : "<% desk.data %>",
+        "rowVariableName" : "row",
+        "columns" : [ {
+          "type" : "column",
+          "columnId" : "nameColumnId",
+          "label" : "<% presentationLabels.name %>",
+          "cellTemplate" : {
+            "type" : "fieldSet",
+            "id" : "fieldSetDeskNameID",
+            "children" : [ {
+              "type" : "text",
+              "id" : "deskName",
+              "value" : "<% row.deskName %>",
+              "valuesOut" : [ {
+                "value" : "<% self.value %>",
+                "valueOutBinding" : "deskPATCH.deskName"
+              } ]
+            }, {
+              "type" : "hidden",
+              "id" : "itemId",
+              "enabled" : false,
+              "value" : "<% row.workdayID %>"
+            } ]
+          }
+        }, {
+          "type" : "column",
+          "columnId" : "desksColumnId",
+          "label" : "<% presentationLabels.area %>",
+          "cellTemplate" : {
+            "type" : "instanceList",
+            "id" : "deskArea",
+            "values" : "<% areas.data %>",
+            "selectedValuesAndDescriptors" : "<% [{'id':row.area.id, 'name':areaByID.invoke({'id': row.area.id}).data[0].name}] %>",
+            "displayKey" : "name",
+            "valuesOut" : [ {
+              "value" : "<% deskArea.value[0] %>",
+              "valueOutBinding" : "deskPATCH.area.id"
+            } ]
+          }
+        } ]
+      } ]
     }
   }
 }

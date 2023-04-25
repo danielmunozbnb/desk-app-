@@ -1,25 +1,22 @@
 {
-  "id" : "microCancelDesk",
+  "id" : "microViewReservationsByWorker",
   "endPoints" : [ {
-    "baseUrlType" : "app",
-    "name" : "bookings",
-    "authType" : "sso",
-    "url" : "<%'bookings'%>"
-  }, {
     "baseUrlType" : "COMMON",
-    "name" : "currLoginUser",
+    "name" : "workers",
     "authType" : "sso",
-    "url" : "/workers/me"
+    "url" : "<%'/workers?search='+ instanceListQuery%>",
+    "exclude" : "<% empty instanceListQuery %>",
+    "deferred" : true
   } ],
   "outboundData" : {
     "outboundEndPoints" : [ {
       "type" : "outboundVariable",
-      "name" : "booking",
+      "name" : "workerOutbound",
       "variableScope" : "flow",
       "values" : [ {
-        "outboundPath" : "selectedBooking",
+        "outboundPath" : "selectedWorker",
         "value" : "<%
-                      bookingsList.value[0];
+                      worker.value[0];
                       %>"
       } ]
     } ]
@@ -39,18 +36,19 @@
       "horizontal" : false,
       "children" : [ {
         "type" : "instanceList",
-        "id" : "bookingsList",
-        "label" : "Select a booked desk!",
+        "id" : "worker",
+        "label" : "Select a Worker!",
         "required" : true,
         "multiSelect" : "false",
-        "values" : "<% var deskList = [];
-          for (var booking : bookings.data){
-            if(booking.worker.id = currLoginUser.id)
-                deskList.add({'wid':booking.id,'id':booking.id,'descriptor': booking.descriptor + booking.desk});
+        "values" : "<% [] %>",
+        "searchEndPoint" : "<% endpoints.workers %>",
+        "searchResultValues" : "<% var namesList = [];
+          for (var Worker : workers.data){
+
+              namesList.add({'wid':Worker.id,'id':Worker.id,'descriptor': Worker.descriptor, 'name': Worker.descriptor});
 
           }
-          return deskList;
-                     %>"
+          return namesList;%>"
       } ]
     }
   }

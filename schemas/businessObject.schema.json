@@ -9,11 +9,11 @@
     },
     "name": {
       "type": "string",
-      "pattern": "^[A-Z][A-Za-z0-9]*"
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-Z|0-9][A-Za-z0-9:\\-\\s]*"
+      "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
     },
     "fields": {
       "type": "array",
@@ -40,6 +40,9 @@
           },
           {
             "$ref": "#/definitions/relationship"
+          },
+          {
+            "$ref": "#/definitions/multiInstanceRelationship"
           }
         ]
       }
@@ -79,10 +82,11 @@
       "properties": {
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         }
       },
       "required": [
@@ -110,10 +114,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -135,6 +140,9 @@
         },
         "isPurgeable": {
           "type": "boolean"
+        },
+        "enableIndex": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -155,10 +163,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -178,6 +187,9 @@
           "maximum": 5
         },
         "isPurgeable": {
+          "type": "boolean"
+        },
+        "enableIndex": {
           "type": "boolean"
         }
       },
@@ -200,10 +212,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -218,6 +231,9 @@
           ]
         },
         "isPurgeable": {
+          "type": "boolean"
+        },
+        "enableIndex": {
           "type": "boolean"
         }
       },
@@ -239,10 +255,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -257,6 +274,9 @@
           ]
         },
         "isPurgeable": {
+          "type": "boolean"
+        },
+        "enableIndex": {
           "type": "boolean"
         }
       },
@@ -278,10 +298,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -296,6 +317,9 @@
           ]
         },
         "isPurgeable": {
+          "type": "boolean"
+        },
+        "enableIndex": {
           "type": "boolean"
         }
       },
@@ -317,10 +341,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -348,6 +373,9 @@
         },
         "isPurgeable": {
           "type": "boolean"
+        },
+        "enableIndex": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -369,10 +397,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -406,6 +435,50 @@
       ],
       "additionalProperties": false
     },
+    "multiInstanceRelationship": {
+      "type": "object",
+      "id": "MultiInstanceRelationship",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32767
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
+        },
+        "securityDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "MULTI_INSTANCE"
+          ]
+        },
+        "target": {
+          "type": "string"
+        },
+        "isPurgeable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "target"
+      ],
+      "additionalProperties": false
+    },
     "derivedText": {
       "type": "object",
       "id": "DerivedTextField",
@@ -417,10 +490,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -441,7 +515,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -456,10 +531,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -480,7 +556,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -495,10 +572,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -519,7 +597,8 @@
       "required": [
         "id",
         "name",
-        "type"
+        "type",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -534,10 +613,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -564,7 +644,8 @@
         "id",
         "name",
         "type",
-        "decimals"
+        "decimals",
+        "expression"
       ],
       "additionalProperties": false
     },
@@ -579,10 +660,11 @@
         },
         "name": {
           "type": "string",
-          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*"
+          "pattern": "^[a-z0-9]+([A-Z][a-z0-9]*)*$"
         },
         "label": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^([A-Z|0-9][A-Za-z0-9:\\-\\s]*)?$"
         },
         "securityDomains": {
           "type": "array",
@@ -616,7 +698,8 @@
         "id",
         "name",
         "type",
-        "precision"
+        "precision",
+        "expression"
       ],
       "additionalProperties": false
     }

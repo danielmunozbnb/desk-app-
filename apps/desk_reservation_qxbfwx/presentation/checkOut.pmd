@@ -1,46 +1,37 @@
 {
-  "id": "checkOut",
-  "include": [
-    "states.script"
-  ],
-  "outboundData": {
-    "outboundEndPoints": [
-      {
-        "name": "checkOutBooking",
-        "baseUrlType": "app",
-        "url": "<% 'bookings/' + queryParams.bookingId %>",
-        "httpMethod": "PATCH",
-        "authType": "sso",
-        "values": [
-          {
-            "outboundPath": "state",
-            "value": "<% states.checkedOut %>"
-          }
-        ]
-      }
-    ]
+  "id" : "checkOut",
+  "include" : [ "states.script" ],
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "name" : "checkOutReservation",
+      "baseUrlType" : "app",
+      "url" : "<% 'bookings/' + queryParams.bookingId %>",
+      "httpMethod" : "PATCH",
+      "authType" : "sso",
+      "values" : [ {
+        "outboundPath" : "state",
+        "value" : "<% states.checkedOut %>"
+      } ]
+    } ]
   },
-  "presentation": {
-    "headerSize": "VPS_DEFAULT",
-    "title": {
-      "type": "title",
-      "label": "Check-Out Booking"
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "title" : {
+      "type" : "title",
+      "label" : "Check-Out Reservation"
     },
-    "body": {
-      "type": "section",
-      "horizontal": false,
-      "children": [
-        {
-          "type": "readOnlyText",
-          "label": "Check-Out?",
-          "value": "(show booking)"
-        },
-        {
-          "type": "checkBox",
-          "label": "Confirm",
-          "required": true
-        }
-      ]
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "readOnlyText",
+        "label" : "Check-Out?",
+        "value" : "(show reservation)"
+      }, {
+        "type" : "checkBox",
+        "label" : "Confirm",
+        "required" : true
+      } ]
     }
   }
 }

@@ -1,0 +1,58 @@
+{
+  "id" : "maintainBookings",
+  "endPoints" : [ {
+    "name" : "bookings",
+    "baseUrlType" : "app",
+    "url" : "bookings?limit=100",
+    "authType" : "sso"
+  } ],
+  "outboundData" : {
+    "outboundEndPoints" : [ {
+      "name" : "bookingDELETE",
+      "baseUrlType" : "app",
+      "httpMethod" : "DELETE",
+      "url" : "<% 'bookings/' +  itemId.value %>",
+      "exclude" : "<% empty(itemId.value)%>",
+      "authType" : "sso"
+    } ]
+  },
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "pageType" : "edit",
+    "title" : {
+      "type" : "title",
+      "label" : "Workday Extend"
+    },
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "grid",
+        "id" : "gridAreas",
+        "label" : "Desks",
+        "rows" : "<% bookings.data %>",
+        "rowVariableName" : "row",
+        "deleteEndPoint" : "bookingDELETE",
+        "columns" : [ {
+          "type" : "column",
+          "columnId" : "nameColumnId",
+          "label" : "Name",
+          "cellTemplate" : {
+            "type" : "fieldSet",
+            "id" : "fieldSetDeskNameID",
+            "children" : [ {
+              "type" : "text",
+              "id" : "bookingName",
+              "value" : "<% row.descriptor %>"
+            }, {
+              "type" : "text",
+              "id" : "itemId",
+              "enabled" : false,
+              "value" : "<% row.id%>"
+            } ]
+          }
+        } ]
+      } ]
+    }
+  }
+}

@@ -2,18 +2,15 @@
   "id": 1,
   "name": "ReservationNotification",
   "label": "Reservation Notification",
-  "description": "Business Process which notifies a user group which reservations need to be approved.",
+  "description": "Business Process which notifies a user group of new reservations to be approved.",
   "targetBusinessObject": "Booking",
   "useForOrchestrate": false,
-  "allowsCancel": true,
+  "allowsCancel": false,
   "approvalStep": {
     "actions": [
       "APPROVE",
       "DENY"
     ],
     "pageRoute": "/approve/{eventId}"
-  },
-  "details": {
-    "pageRoute": "/viewEvent/{eventId}"
   }
 }

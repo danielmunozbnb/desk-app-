@@ -3,7 +3,7 @@
   "name": "Desk",
   "label": "Desk",
   "defaultSecurityDomains": [
-    "DeskReservation"
+    "SelfServiceDeskReservation"
   ],
   "defaultCollection": {
     "name": "desks",
@@ -41,6 +41,22 @@
       "name": "inUse",
       "label": "In Use",
       "type": "BOOLEAN"
+    },
+
+    {
+      "id": 6,
+      "name": "disabled",
+      "label": "Disabled",
+      "type": "BOOLEAN"
+    }
+  ],
+  "derivedFields": [
+    {
+      "id": 1,
+      "name": "areaName",
+      "type": "TEXT",
+      "label": "Area Name",
+      "expression": "area.name"
     }
   ]
 }

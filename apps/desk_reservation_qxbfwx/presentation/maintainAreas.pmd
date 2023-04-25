@@ -8,7 +8,7 @@
       "baseUrlType": "WORKDAY-WQL",
       "name": "allLocations",
       "authType": "sso",
-      "url": "data?query=SELECT%20locationName%2C%20workdayID%20FROM%20locations%20(locationUsagesForLocation%20%3D%20(46db411c4a5245fbb39834d8b2cba049))"
+      "url": "<% wql.allLocations() %>"
     },
     {
       "name": "areas",
@@ -17,9 +17,9 @@
       "authType": "sso"
     },
     {
-      "name": "getAreasByLocation",
-      "baseUrlType": "WORKDAY-WQL-QUERY",
-      "url": "<% wql.getAreasByLocation(location) %>",
+      "name": "areasByLocation",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.areasByLocation(location) %>",
       "authType": "sso",
       "deferred": true
     }
@@ -30,7 +30,7 @@
                      return [];
                  }
 
-                 var areas = getAreasByLocation.invoke({'location': location}).data;
+                 var areas = areasByLocation.invoke({'location': location}).data;
                  var validAreas = [];
                  for (var area : areas) {
                      validAreas.add({'id': area.Area.id, 'name': area.name, 'location': area.location, 'description': area.description, 'inUse': area.inUse});
@@ -40,18 +40,13 @@
 
              };
              %>",
-  "onLoad":"<%
-            console.debug(flowVariables.location);
-
-            var areas = fillAreas(flowVariables.location);
-            pageVariables.areas = areas;
-            %>",
+  "onLoad": "<% pageVariables.areas = fillAreas(pmdSessionVariables.selectedLocation.id) %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "view",
     "title": {
       "type": "title",
-      "label": "<%'Maintain Areas'%>"
+      "label": "<% presentationLabels.maintainAreas %>"
     },
     "body": {
       "type": "section",
@@ -117,8 +112,7 @@
                     "taskReference": {
                       "taskId": "editArea",
                       "parameterBindings": {
-                        "areaId": "<% row.id %>",
-                        "locationId": "<% row.location.id %>"
+                        "areaId": "<% row.id;%>"
                       }
                     }
                   }
@@ -138,7 +132,9 @@
                     "taskReference": {
                       "taskId": "deleteArea",
                       "parameterBindings": {
-                        "areaId": "<% row.id %>"
+                        "areaID": "<% row.id;
+                        console.debug(row.id);
+                                   %>"
                       }
                     }
                   }
@@ -149,10 +145,13 @@
         },
         {
           "type": "button",
-          "label": "New Area",
-          "action": "PRIMARY"
+          "label": "Create New Areas",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "editableGridAreas"
+          }
         }
-
       ]
     },
     "footer": {

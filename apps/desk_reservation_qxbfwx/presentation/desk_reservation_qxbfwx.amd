@@ -30,31 +30,25 @@
       "flowSteps": [
         {
           "id": "microBookDesk",
-          "taskId": "microViewAvailableDeskForDate",
-          "startsFlow": true,
           "transitions": [
             {
               "order": "a",
+              "value": "microBookDesk",
+              "condition": "<%flowVariables.alreadyBooked%>"
+            },
+            {
+              "order": "b",
               "value": "BookDesk",
-              "condition": "<% true %>"
+              "condition": "<%!flowVariables.alreadyBooked%>"
             }
-          ]
+          ],
+          "startsFlow": true,
+          "taskId": "microViewAvailableDeskForDate"
         },
         {
           "id": "BookDesk",
-          "taskId": "bookDesk",
-          "transitions": [
-            {
-              "order": "a",
-              "value": "end",
-              "condition": "true"
-            }
-          ]
-        },
-        {
-          "id": "end",
-          "taskId": "microFlowCompleted",
-          "endsFlow": true
+          "endsFlow": true,
+          "taskId": "bookDesk"
         }
       ]
     },
@@ -82,25 +76,25 @@
       ]
     },
     {
-      "id": "cancelBookingFlow",
-      "name": "cancelBookingFlow",
+      "id": "cancelReservationFlow",
+      "name": "cancelReservationFlow",
       "flowSteps": [
         {
           "id": "confirmCancel",
           "transitions": [
             {
               "order": "a",
-              "value": "viewMyBookings",
+              "value": "viewMyReservations",
               "condition": "true"
             }
           ],
           "startsFlow": true,
-          "taskId": "cancelBooking"
+          "taskId": "cancelReservation"
         },
         {
-          "id": "viewMyBookings",
+          "id": "viewMyReservations",
           "endsFlow": true,
-          "taskId": "viewMyBookings"
+          "taskId": "viewMyReservations"
         }
       ]
     },
@@ -118,12 +112,81 @@
             }
           ],
           "startsFlow": true,
-          "taskId": "microViewBookingsByWorker"
+          "taskId": "microViewReservationsByWorker"
         },
         {
           "id": "bookingsByWorker",
           "endsFlow": true,
-          "taskId": "bookingsByWorker"
+          "taskId": "reservationsByWorker"
+        }
+      ]
+    },
+    {
+      "id": "editDeskFlow",
+      "name": "editDeskFlow",
+      "flowSteps": [
+        {
+          "id": "editDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainDesks",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "editDesk"
+        },
+        {
+          "id": "maintainDesk",
+          "endsFlow": true,
+          "taskId": "maintainDesks"
+        }
+      ]
+    },
+    {
+      "id": "deleteDeskFlow",
+      "name": "deleteDeskFlow",
+      "flowSteps": [
+        {
+          "id": "deleteDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainDesks",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "deleteDesk"
+        },
+        {
+          "id": "maintainDesk2",
+          "endsFlow": true,
+          "taskId": "maintainDesks"
+        }
+      ]
+    },
+    {
+      "id": "toggleDisableDeskFlow",
+      "name": "toggleDisableDeskFlow",
+      "flowSteps": [
+        {
+          "id": "toggleDisableDesk",
+          "transitions": [
+            {
+              "order": "a",
+              "value": "maintainDesks12",
+              "condition": "true"
+            }
+          ],
+          "startsFlow": true,
+          "taskId": "toggleDisabled"
+        },
+        {
+          "id": "maintainDesks12",
+          "endsFlow": true,
+          "taskId": "maintainDesks"
         }
       ]
     },
@@ -136,7 +199,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "maintainAreas",
+              "value": "maintainArea1",
               "condition": "true"
             }
           ],
@@ -144,32 +207,9 @@
           "taskId": "editArea"
         },
         {
-          "id": "maintainAreas",
+          "id": "maintainArea1",
           "endsFlow": true,
           "taskId": "maintainAreas"
-        }
-      ]
-    },
-    {
-      "id": "editDeskFlow",
-      "name": "editDeskFlow",
-      "flowSteps": [
-        {
-          "id": "editDesk",
-          "startsFlow": true,
-          "taskId": "editDesk",
-          "transitions": [
-            {
-              "order": "a",
-              "value": "maintainDesks",
-              "condition": "true"
-            }
-          ]
-        },
-        {
-          "id": "maintainDesk",
-          "endsFlow": true,
-          "taskId": "maintainDesks"
         }
       ]
     },
@@ -179,15 +219,15 @@
       "flowSteps": [
         {
           "id": "selectLocationMaintainAreas",
-          "startsFlow": true,
-          "taskId": "selectLocationMaintainAreas",
           "transitions": [
             {
               "order": "a",
               "value": "maintainArea",
               "condition": "true"
             }
-          ]
+          ],
+          "startsFlow": true,
+          "taskId": "selectLocationMaintainAreas"
         },
         {
           "id": "maintainArea",
@@ -202,15 +242,15 @@
       "flowSteps": [
         {
           "id": "selectLocationMaintainDesks",
-          "startsFlow": true,
-          "taskId": "selectLocationMaintainDesks",
           "transitions": [
             {
               "order": "a",
               "value": "maintainDesks",
               "condition": "true"
             }
-          ]
+          ],
+          "startsFlow": true,
+          "taskId": "selectLocationMaintainDesks"
         },
         {
           "id": "maintainDesks",
@@ -222,7 +262,7 @@
   ],
   "tasks": [
     {
-      "id": "root",
+      "id": "home",
       "routingPattern": "/",
       "page": {
         "id": "home"
@@ -257,17 +297,17 @@
       }
     },
     {
-      "id": "microViewBookingsByWorker",
-      "routingPattern": "microViewBookingsByWorker",
+      "id": "microViewReservationsByWorker",
+      "routingPattern": "microViewReservationsByWorker",
       "page": {
-        "id": "microViewBookingsByWorker"
+        "id": "microViewReservationsByWorker"
       }
     },
     {
-      "id": "bookingsByWorker",
-      "routingPattern": "bookingsByWorker",
+      "id": "reservationsByWorker",
+      "routingPattern": "reservationsByWorker",
       "page": {
-        "id": "bookingsByWorker"
+        "id": "reservationsByWorker"
       }
     },
     {
@@ -285,17 +325,17 @@
       }
     },
     {
-      "id": "viewMyBookings",
-      "routingPattern": "viewMyBookings",
+      "id": "viewMyReservations",
+      "routingPattern": "viewMyReservations",
       "page": {
-        "id": "viewMyBookings"
+        "id": "viewMyReservations"
       }
     },
     {
-      "id": "ViewMyTeamBookings",
-      "routingPattern": "ViewMyTeamBookings",
+      "id": "ViewMyTeamReservations",
+      "routingPattern": "ViewMyTeamReservations",
       "page": {
-        "id": "ViewMyTeamBookings"
+        "id": "ViewMyTeamReservations"
       }
     },
     {
@@ -320,17 +360,17 @@
       }
     },
     {
-      "id": "cancelBooking",
-      "routingPattern": "cancelBooking",
+      "id": "cancelReservation",
+      "routingPattern": "cancelReservation",
       "page": {
-        "id": "cancelBooking"
+        "id": "cancelReservation"
       }
     },
     {
-      "id": "adminPanel",
-      "routingPattern": "adminPanel",
+      "id": "adminLandingPage",
+      "routingPattern": "adminLandingPage",
       "page": {
-        "id": "adminPanel"
+        "id": "adminLandingPage"
       }
     },
     {
@@ -376,27 +416,6 @@
       }
     },
     {
-      "id": "requestDetails",
-      "routingPattern": "/viewEvent/{eventId}",
-      "page": {
-        "id": "requestDetails"
-      }
-    },
-    {
-      "id": "requestEventCreated",
-      "routingPattern": "requestEventCreated",
-      "page": {
-        "id": "requestEventCreated"
-      }
-    },
-    {
-      "id": "microFlowCompleted",
-      "routingPattern": "microFlowCompleted",
-      "page": {
-        "id": "microFlowCompleted"
-      }
-    },
-    {
       "id": "selectLocationMaintainAreas",
       "routingPattern": "selectLocationMaintainAreas",
       "page": {
@@ -409,13 +428,59 @@
       "page": {
         "id": "selectLocationMaintainDesks"
       }
+    },
+    {
+      "id": "newDesk",
+      "routingPattern": "newDesk",
+      "page": {
+        "id": "newDesk"
+      }
+    },
+    {
+      "id": "maintainBookings",
+      "routingPattern": "maintainBookings",
+      "page": {
+        "id": "maintainBookings"
+      }
+    },
+    {
+      "id": "miantainBookingEvents",
+      "routingPattern": "miantainBookingEvents",
+      "page": {
+        "id": "miantainBookingEvents"
+      }
+    },
+    {
+      "id": "editableGridAreas",
+      "routingPattern": "editableGridAreas",
+      "page": {
+        "id": "editableGridAreas"
+      }
+    },
+    {
+      "id": "toggleDisabled",
+      "routingPattern": "toggleDisabled",
+      "page": {
+        "id": "toggleDisabled"
+      }
+    },
+    {
+      "id": "showMap",
+      "routingPattern": "showMap",
+      "page": {
+        "id": "showMap"
+      }
     }
   ],
   "applicationId": "desk_reservation_qxbfwx",
   "dataProviders": [
     {
       "key": "app",
-      "value": "https://api.workday.com/apps/desk_reservation_qxbfwx/v1/"
+      "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
+    },
+    {
+      "key": "orchestration",
+      "value": "https://api.workday.com/orchestrate/v1/apps/"
     },
     {
       "key": "workday",
@@ -427,15 +492,11 @@
     },
     {
       "key": "WORKDAY-WQL",
-      "value": "https://api.workday.com/wql/v1/"
-    },
-    {
-      "key": "WORKDAY-WQL-QUERY",
       "value": "https://api.workday.com/wql/v1/data?query="
     },
     {
       "key": "COMMON",
-      "value": "https://api.workday.com/common/v1/"
+      "value": "https://api.workday.com/common/v1"
     }
   ]
 }

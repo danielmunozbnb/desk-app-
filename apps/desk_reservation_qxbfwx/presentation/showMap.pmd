@@ -1,0 +1,31 @@
+{
+  "id" : "showMap",
+  "endPoints" : [ {
+    "name" : "orch",
+    "baseUrlType" : "orchestration",
+    "url" : "<% site.applicationId + '/orchestrations/generateMap/launch' %>",
+    "authType" : "sso"
+  } ],
+  "presentation" : {
+    "headerSize" : "VPS_DEFAULT",
+    "title" : {
+      "type" : "title",
+      "label" : "Workday Extend"
+    },
+    "body" : {
+      "type" : "section",
+      "horizontal" : false,
+      "children" : [ {
+        "type" : "text",
+        "id" : "hello",
+        "label" : "Showing spaces from: ",
+        "value" : "Office1"
+      }, {
+        "type" : "image",
+        "id" : "statusImage",
+        "label" : "Ready",
+        "imageUri" : "<% 'data:image/jpeg;charset=utf-8;base64,' + orch.value %>"
+      } ]
+    }
+  }
+}

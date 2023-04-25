@@ -3,7 +3,7 @@
   "name": "AreaRestrictedOrganization",
   "label": "Area Restricted Organization",
   "defaultSecurityDomains": [
-    "DeskReservation"
+    "SelfServiceDeskReservation"
   ],
   "defaultCollection": {
     "name": "areaRestrictedOrganizations",

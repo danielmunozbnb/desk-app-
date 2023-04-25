@@ -1,0 +1,172 @@
+{
+  "id": "viewMyReservations",
+  "include": [
+        "states.script",
+        "wql.script"
+  ],
+  "endPoints": [
+    {
+      "baseUrlType": "COMMON",
+      "name": "curWorker",
+      "authType": "sso",
+      "url": "<%'/workers/me'%>"
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "workerBookingsEP",
+      "authType": "sso",
+      "url": "<% wql.workerBookings(curWorker.id, date:now().format('yyyy-MM-dd'), states.requestedFL) %>",
+      "isCollection": true
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "areasAndLocationsEP",
+      "authType": "sso",
+      "url": "<% wql.areasAndLocationInCollection(areaNamesCollection) %>",
+      "deferred": true,
+      "isCollection": true
+    }
+  ],
+  "script": "<%
+
+             var retrieveBookings = function() {
+                 return workerBookingsEP.data.map(bookingEvent => {
+                     if (bookingEvent.status.startsWith(states.reservedEFL)) {
+                         bookingEvent.booking.state = states.reserved;
+                     } else if (bookingEvent.status.startsWith(states.deniedEFL)) {
+                         bookingEvent.booking.state = states.denied;
+                     } else {
+                         bookingEvent.booking.state = states.requested;
+                     }
+                     bookingEvent.booking
+                 });
+             };
+
+             %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.viewMyReservations %>"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "<% presentationLabels.yourReservations %>",
+          "rows": "<%
+                   var list = [];
+
+                   console.debug('bookings ', workerBookingsEP.data);
+                   var bookings = retrieveBookings();
+
+                   var areaNames = list:mapAttribute(bookings, 'areaName').distinct();
+                   var areaNamesAndLocs = areasAndLocationsEP.invoke({'areaNamesCollection': areaNames}).data;
+                   areaNamesAndLocs = list:toMap(areaNamesAndLocs, 'name');
+                   bookings.map(booking => {booking.add('location', areaNamesAndLocs[booking.areaName].location.descriptor)});
+
+                   %>",
+          "rowVariableName": "row",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "bookingColumnId",
+              "label": "<% presentationLabels.desks %>",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "instanceList",
+                "_TODO": "Clicking on a desk maybe should redirect to an editing page for that desk",
+                "id": "bookingName",
+                "enabled": false,
+                "instanceList": [
+                  {
+                    "id": "<% row.desk.id %>",
+                    "descriptor": "<% row.desk.descriptor %>",
+                    "wid": "<% row.desk.id %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "locationColumnId",
+              "label": "<% presentationLabels.location %>",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "id": "locationTextId",
+                "value": "<% row.location %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "areaColumnId",
+              "label": "<% presentationLabels.area %>",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "id": "areaTextId",
+                "value": "<% row.areaName %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "floorColumnId",
+              "label": "<% presentationLabels.date %>",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "id": "dateCellID",
+                "value": "<% row.date %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "stateCol",
+              "label": "<% presentationLabels.state %>",
+              "sortableAndFilterable": true,
+              "cellTemplate": {
+                "type": "text",
+                "id": "stateText",
+                "value": "<% row.state %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnActions",
+              "cellTemplate": {
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "AUXILIARY",
+                    "label": "<% presentationLabels.cancel %>",
+                    "visible": "<% row.state.startsWith(states.reservedFL) %>",
+                    "taskReference": {
+                      "taskId": "cancelReservation",
+                      "parameterBindings": {
+                        "bookingData": "<% json:asJSON(row) %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "action": "AUXILIARY",
+          "label": "<% presentationLabels.returnn %>",
+          "taskReference": {
+            "taskId": "home"
+          }
+        }
+      ]
+    }
+  }
+}

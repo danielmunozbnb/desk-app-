@@ -3,7 +3,7 @@
   "name": "Booking",
   "label": "Booking",
   "defaultSecurityDomains": [
-    "DeskReservation"
+    "SelfServiceDeskReservation"
   ],
   "defaultCollection": {
     "name": "bookings",
@@ -23,7 +23,8 @@
       "name": "desk",
       "label": "Desk",
       "type": "SINGLE_INSTANCE",
-      "target": "Desk"
+      "target": "Desk",
+      "useForDisplay": true
     },
     {
       "id": 3,
@@ -37,6 +38,15 @@
       "name": "state",
       "label": "State",
       "type": "TEXT"
+    }
+  ],
+  "derivedFields": [
+    {
+      "id": 1,
+      "name": "areaName",
+      "type": "TEXT",
+      "label": "Area Name",
+      "expression": "desk.areaName"
     }
   ]
 }
