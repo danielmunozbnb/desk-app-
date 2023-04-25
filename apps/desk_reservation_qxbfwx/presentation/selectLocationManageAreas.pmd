@@ -1,0 +1,100 @@
+{
+  "id": "selectLocationManageAreas",
+  "include": [
+    "wql.script"
+  ],
+  "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "allLocationsEP",
+      "authType": "sso",
+      "url": "<% wql.allLocations() %>"
+    },
+    {
+      "name": "areasByLocationEP",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.areasByLocation(location) %>",
+      "authType": "sso",
+      "deferred": true
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "type": "outboundVariable",
+        "name": "selectedOrg",
+        "variableScope": "session",
+        "values": [
+          {
+            "outboundPath": "selectedLocation.id",
+            "value": "<% locationIL.selectedEntries[0].id %>"
+          },
+          {
+            "outboundPath": "selectedLocation.descriptor",
+            "value": "<% locationIL.selectedEntries[0].descriptor %>"
+          }
+        ]
+      }
+    ]
+  },
+  "script": "<%
+
+             var fillAreas = function(selectedLocations) {
+                 if (empty selectedLocations)
+                     return [];
+
+                 var areas = areasByLocationEP.invoke({'location': selectedLocations[0].id}).data;
+                 console.debug('areas EP ', areasByLocationEP.invoke({'location': selectedLocations[0].id}));
+                 return areas.map(area => {{'id': area.Area.id, 'name': area.name}});
+             };
+
+             %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "micro": true,
+    "microFirstPageOnly": true,
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.selectLocation %>"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "instanceList",
+          "id": "locationIL",
+          "label": "<% presentationLabels.location %>",
+          "displayKey": "locationName",
+          "idKey": "workdayID",
+          "values": "<% allLocationsEP.data %>",
+          "onChange": "<%
+
+                       console.debug(locationIL.value[0]);
+                       var areas = fillAreas(locationIL.getSelectedEntries());
+                       areasIL.setValues(areas);
+                       // TODO: this breaks
+                       areasIL.visible = true;
+                       if (empty areas) {
+                           areasIL.setError(presentationLabels.noAreasAvailable);
+                       } else
+                           areasIL.clearError();
+
+                       areasIL.setValue([]);
+
+                       %>"
+        },
+        {
+          "type": "instanceList",
+          "id": "areasIL",
+          "label": "<% presentationLabels.areas %>",
+          "displayKey": "name",
+          "visible": false,
+          "required": true,
+          "values": "<% [] %>"
+        }
+      ]
+    }
+  }
+}

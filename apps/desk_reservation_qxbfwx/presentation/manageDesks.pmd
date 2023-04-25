@@ -1,0 +1,268 @@
+{
+  "id": "manageDesks",
+  "include": [
+        "wql.script"
+  ],
+  "endPoints": [
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "areaName",
+      "authType": "sso",
+      "url": "<% wql.areaName(id) %>",
+      "deferred": true
+    },
+    {
+      "name": "areas",
+      "baseUrlType": "app",
+      "url": "areas",
+      "authType": "sso"
+    },
+    {
+      "name": "bookings",
+      "baseUrlType": "app",
+      "url": "bookings",
+      "isCollection": true,
+      "authType": "sso"
+    },
+    {
+      "name": "desks",
+      "baseUrlType": "app",
+      "url": "desks",
+      "authType": "sso"
+    },
+    {
+      "baseUrlType": "WORKDAY-WQL",
+      "name": "areaByID",
+      "authType": "sso",
+      "url": "<% wql.areaName(id) %>",
+      "deferred": true
+    },
+    {
+      "name": "areasByLocation",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.areasByLocation(location) %>",
+      "authType": "sso",
+      "deferred": true
+    },
+    {
+      "name": "desksByAreaID",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.desksByAreaID(areaID) %>",
+      "authType": "sso",
+      "deferred": true
+    },
+    {
+      "name": "desksByAreaIDS",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.desksByAreaIDS(areaIDS) %>",
+      "authType": "sso",
+      "deferred": true
+    }
+  ],
+  "script": "<%
+             var fillDesks = function(location) {
+
+                 var areas = areasByLocation.invoke({'location': location}).data;
+                 var validAreas = areas.map(area => {area.Area.id});
+
+                 return validAreas.map(area => {desksByAreaIDS.invoke({'areaIDS': area}).data});
+             };
+
+             var detectBooked = function(desk_id) {
+
+                 var bookings = bookings.data;
+                 var inUse = false;
+                 for (var booking_var : bookings) {
+                     if(desk_id == booking_var.desk.id && booking_var.date >= date:now().format('yyyy-MM-dd')){
+                         inUse = true;
+                     }
+                 }
+                 return inUse;
+             };
+             var detectBookedEVER = function(desk_id) {
+
+                 var bookings = bookings.data;
+                 var inUse = false;
+                 for (var booking_var : bookings) {
+                     if(desk_id == booking_var.desk.id){
+                         inUse = true;
+                     }
+                 }
+                 return inUse;
+             };
+             %>",
+  "onLoad": "<%
+             //console.debug(flowVariables.location);
+             var desks = fillDesks(pmdSessionVariables.selectedLocation.id);
+
+             pageVariables.desks = list:flatten(desks);
+             console.debug(pageVariables.desks);
+             %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "view",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.manageDesks %>"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "text",
+          "id": "location_widget",
+          "label": "Showing desks from ",
+          "value": "<% pmdSessionVariables.selectedLocation.descriptor; %>",
+          "enabled": false
+        },
+        {
+          "type": "text",
+          "id": "location_widget",
+          "label": "(debug)",
+          "value": "En Uso-> si el desk esta asignado en un booking o esta solicitado para estarlo /// Desactivado-> Si el desk puede ser seleccionado o no por los trabajadores",
+          "enabled": false
+        },
+        {
+          "type": "grid",
+          "id": "gridDesks",
+          "label": "Desks",
+          "rows": "<%
+                   pageVariables.desks;
+                   %>",
+          "rowVariableName": "row_id",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "Name",
+              "cellTemplate": {
+                "type": "fieldSet",
+                "id": "fieldSetDeskNameID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "deskName",
+                    "value": "<% row_id.deskName %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "areaColumnId",
+              "label": "Area",
+              "cellTemplate": {
+                "type": "fieldSet",
+                "id": "fieldSetidID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "area",
+                    "value": "<% //row_id.area.id
+                              var areaName = areaName.invoke({'id': row_id.area.id}); return areaName.data[0].name;
+                              %>"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "inUseId",
+              "label": "en uso",
+              "cellTemplate": {
+                "type": "text",
+                "id": "inUse",
+                "value": "<% detectBooked(row_id.Desk.id); %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "disabledId",
+              "label": "Disabled",
+              "cellTemplate": {
+                "type": "text",
+                "id": "disabled",
+                "value": "<% row_id.disabled %>"
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnActions",
+              "cellTemplate": {
+                "type": "section",
+                "horizontal": true,
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Edit",
+                    "taskReference": {
+                      "taskId": "editDesk",
+                      "parameterBindings": {
+                        "deskId": "<% row_id.Desk.id %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnDelete",
+              "cellTemplate": {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Toggle Desk state",
+                    "taskReference": {
+                      "taskId": "toggleDisabled",
+                      "parameterBindings": {
+                        "deskId": "<% row_id.Desk.id %>",
+                        "deskName": "<% row_id.deskName %>",
+                        "deskDisabled": "<% row_id.disabled %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "column",
+              "columnId": "columnDelete1",
+              "cellTemplate": {
+                "type": "section",
+                "children": [
+                  {
+                    "type": "button",
+                    "action": "PRIMARY",
+                    "label": "Delete",
+                    "render": "<% !detectBookedEVER(row_id.Desk.id); %>",
+                    "taskReference": {
+                      "taskId": "deleteDesk",
+                      "parameterBindings": {
+                        "deskId": "<% row_id.Desk.id %>",
+                        "deskName": "<% row_id.deskName %>"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "label": "Add New Desks",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "editableGridDesks"
+          }
+        }
+      ]
+    }
+  }
+}

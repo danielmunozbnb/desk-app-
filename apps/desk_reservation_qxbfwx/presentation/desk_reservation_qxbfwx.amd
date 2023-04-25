@@ -130,7 +130,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "maintainDesks",
+              "value": "manageDesks",
               "condition": "true"
             }
           ],
@@ -140,7 +140,7 @@
         {
           "id": "maintainDesk",
           "endsFlow": true,
-          "taskId": "maintainDesks"
+          "taskId": "manageDesks"
         }
       ]
     },
@@ -153,7 +153,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "maintainDesks",
+              "value": "manageDesks",
               "condition": "true"
             }
           ],
@@ -163,7 +163,7 @@
         {
           "id": "maintainDesk2",
           "endsFlow": true,
-          "taskId": "maintainDesks"
+          "taskId": "manageDesks"
         }
       ]
     },
@@ -176,7 +176,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "maintainDesks12",
+              "value": "manageDesks12",
               "condition": "true"
             }
           ],
@@ -184,9 +184,9 @@
           "taskId": "toggleDisabled"
         },
         {
-          "id": "maintainDesks12",
+          "id": "manageDesks12",
           "endsFlow": true,
-          "taskId": "maintainDesks"
+          "taskId": "manageDesks"
         }
       ]
     },
@@ -199,7 +199,7 @@
           "transitions": [
             {
               "order": "a",
-              "value": "maintainArea1",
+              "value": "manageAreas1",
               "condition": "true"
             }
           ],
@@ -207,55 +207,55 @@
           "taskId": "editArea"
         },
         {
-          "id": "maintainArea1",
+          "id": "manageAreas1",
           "endsFlow": true,
-          "taskId": "maintainAreas"
+          "taskId": "manageAreas"
         }
       ]
     },
     {
-      "id": "maintainAreasFlow",
-      "name": "maintainAreasFlow",
+      "id": "manageAreasFlow",
+      "name": "manageAreasFlow",
       "flowSteps": [
         {
-          "id": "selectLocationMaintainAreas",
+          "id": "selectLocationManageAreas",
+          "startsFlow": true,
+          "taskId": "selectLocationManageAreas",
           "transitions": [
             {
               "order": "a",
-              "value": "maintainArea",
+              "value": "manageAreas",
               "condition": "true"
             }
-          ],
-          "startsFlow": true,
-          "taskId": "selectLocationMaintainAreas"
+          ]
         },
         {
-          "id": "maintainArea",
+          "id": "manageAreas",
           "endsFlow": true,
-          "taskId": "maintainAreas"
+          "taskId": "manageAreas"
         }
       ]
     },
     {
-      "id": "maintainDesksFlow",
-      "name": "maintainDesksFlow",
+      "id": "manageDesksFlow",
+      "name": "manageDesksFlow",
       "flowSteps": [
         {
-          "id": "selectLocationMaintainDesks",
+          "id": "selectLocationManageDesks",
           "transitions": [
             {
               "order": "a",
-              "value": "maintainDesks",
+              "value": "manageDesks",
               "condition": "true"
             }
           ],
           "startsFlow": true,
-          "taskId": "selectLocationMaintainDesks"
+          "taskId": "selectLocationManageDesks"
         },
         {
-          "id": "maintainDesks",
+          "id": "manageDesks",
           "endsFlow": true,
-          "taskId": "maintainDesks"
+          "taskId": "manageDesks"
         }
       ]
     }
@@ -276,10 +276,10 @@
       }
     },
     {
-      "id": "maintainAreas",
-      "routingPattern": "maintainAreas",
+      "id": "manageAreas",
+      "routingPattern": "manageAreas",
       "page": {
-        "id": "maintainAreas"
+        "id": "manageAreas"
       }
     },
     {
@@ -290,10 +290,10 @@
       }
     },
     {
-      "id": "maintainDesks",
-      "routingPattern": "maintainDesks",
+      "id": "manageDesks",
+      "routingPattern": "manageDesks",
       "page": {
-        "id": "maintainDesks"
+        "id": "manageDesks"
       }
     },
     {
@@ -416,17 +416,17 @@
       }
     },
     {
-      "id": "selectLocationMaintainAreas",
-      "routingPattern": "selectLocationMaintainAreas",
+      "id": "selectLocationManageAreas",
+      "routingPattern": "selectLocationManageAreas",
       "page": {
-        "id": "selectLocationMaintainAreas"
+        "id": "selectLocationManageAreas"
       }
     },
     {
-      "id": "selectLocationMaintainDesks",
-      "routingPattern": "selectLocationMaintainDesks",
+      "id": "selectLocationManageDesks",
+      "routingPattern": "selectLocationManageDesks",
       "page": {
-        "id": "selectLocationMaintainDesks"
+        "id": "selectLocationManageDesks"
       }
     },
     {
@@ -437,10 +437,10 @@
       }
     },
     {
-      "id": "maintainBookings",
-      "routingPattern": "maintainBookings",
+      "id": "manageBookings",
+      "routingPattern": "manageBookings",
       "page": {
-        "id": "maintainBookings"
+        "id": "manageBookings"
       }
     },
     {

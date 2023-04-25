@@ -1,5 +1,5 @@
 {
-  "id" : "selectLocationMaintainAreas",
+  "id" : "selectLocationManageDesks",
   "endPoints" : [ {
     "baseUrlType" : "WORKDAY-WQL",
     "name" : "allLocations",
@@ -8,6 +8,14 @@
   } ],
   "outboundData" : {
     "outboundEndPoints" : [ {
+      "type" : "outboundVariable",
+      "name" : "locationFlowVariable",
+      "variableScope" : "flow",
+      "values" : [ {
+        "outboundPath" : "location",
+        "value" : "<% locationIList.selectedEntries[0].id %>"
+      } ]
+    }, {
       "type" : "outboundVariable",
       "name" : "selectedOrg",
       "variableScope" : "session",
@@ -25,7 +33,7 @@
     "pageType" : "edit",
     "title" : {
       "type" : "title",
-      "label" : "Workday Extend",
+      "label" : "Select location for maintain desks",
       "enabled" : false
     },
     "body" : {

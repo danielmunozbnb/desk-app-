@@ -1,0 +1,69 @@
+{
+  "id": "manageBookings",
+  "endPoints": [
+    {
+      "name": "bookings",
+      "baseUrlType": "app",
+      "url": "bookings?limit=100",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "bookingDELETE",
+        "baseUrlType": "app",
+        "httpMethod": "DELETE",
+        "url": "<% 'bookings/' +  itemId.value %>",
+        "exclude": "<% empty(itemId.value)%>",
+        "authType": "sso"
+      }
+    ]
+  },
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.manageBookings %>"
+    },
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "grid",
+          "id": "gridAreas",
+          "label": "<% presentationLabels.desks %>",
+          "rows": "<% bookings.data %>",
+          "rowVariableName": "row",
+          "deleteEndPoint": "bookingDELETE",
+          "columns": [
+            {
+              "type": "column",
+              "columnId": "nameColumnId",
+              "label": "<% presentationLabel.name %>",
+              "cellTemplate": {
+                "type": "fieldSet",
+                "id": "fieldSetDeskNameID",
+                "children": [
+                  {
+                    "type": "text",
+                    "id": "bookingName",
+                    "value": "<% row.descriptor %>"
+                  },
+                  {
+                    "type": "text",
+                    "id": "itemId",
+                    "enabled": false,
+                    "value": "<% row.id %>"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

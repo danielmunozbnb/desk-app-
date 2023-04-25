@@ -18,7 +18,7 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "selectLocationMaintainAreas"
+            "taskId": "selectLocationManageAreas"
           }
         },
         {
@@ -27,7 +27,7 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "selectLocationMaintainDesks"
+            "taskId": "selectLocationManageDesks"
           }
         },
         {
@@ -36,7 +36,7 @@
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "maintainBookings"
+            "taskId": "manageBookings"
           }
         }
       ]

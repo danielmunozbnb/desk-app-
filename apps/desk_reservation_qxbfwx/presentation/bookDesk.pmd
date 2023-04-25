@@ -85,6 +85,7 @@
     ]
   },
   "script": "<%
+
              var fillAreas = function(selectedLocations) {
                  if (empty selectedLocations)
                      return [];
@@ -145,50 +146,50 @@
       "children": [
         {
           "type": "instanceList",
-          "id": "locationIList",
+          "id": "locationIL",
           "label": "<% presentationLabels.location %>",
           "displayKey": "locationName",
           "idKey": "workdayID",
           "values": "<% allLocationsEP.data %>",
           "onChange": "<%
-                       console.debug(locationIList.value[0]);
-                       var areas = fillAreas(locationIList.getSelectedEntries());
-                       areasIList.setValues(areas);
-                       areasIList.visible = true;
+                       console.debug(locationIL.value[0]);
+                       var areas = fillAreas(locationIL.getSelectedEntries());
+                       areasIL.setValues(areas);
+                       areasIL.visible = true;
                        if (empty areas) {
-                           areasIList.setError(presentationLabels.noAreasAvailable);
+                           areasIL.setError(presentationLabels.noAreasAvailable);
                        } else
-                           areasIList.clearError();
+                           areasIL.clearError();
 
-                       areasIList.setValue([]);
+                       areasIL.setValue([]);
                        %>"
         },
         {
           "type": "instanceList",
-          "id": "areasIList",
+          "id": "areasIL",
           "label": "<% presentationLabels.areas %>",
           "displayKey": "name",
           "visible": true,
           "required": true,
           "values": "<% [] %>",
           "onChange": "<%
-                       desksAvailableIList.clearError();
-                       if (!empty areasIList.value) {
-                           var desks = fillDesks(areasIList.value[0]);
-                               desksAvailableIList.setValues(desks);
-                               desksAvailableIList.visible = true;
+                       desksAvailableIL.clearError();
+                       if (!empty areasIL.value) {
+                           var desks = fillDesks(areasIL.value[0]);
+                               desksAvailableIL.setValues(desks);
+                               desksAvailableIL.visible = true;
                                if (empty desks) {
-                                   desksAvailableIList.setError(presentationLabels.noDesksAvailable);
+                                   desksAvailableIL.setError(presentationLabels.noDesksAvailable);
                                }
                        } else {
-                           desksAvailableIList.visible = false;
+                           desksAvailableIL.visible = false;
                        }
-                       desksAvailableIList.setValue([]);
+                       desksAvailableIL.setValue([]);
                        %>"
         },
         {
           "type": "instanceList",
-          "id": "desksAvailableIList",
+          "id": "desksAvailableIL",
           "label": "<% presentationLabels.availableDesks %>",
           "displayKey": "deskName",
           "values": "<% [] %>",
