@@ -8,12 +8,12 @@
     "url" : "<% wql.desk(queryParams.deskId) %>"
   }, {
     "name" : "areas",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "areas",
     "authType" : "sso"
   }, {
     "name" : "desks",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "desks",
     "authType" : "sso"
   }, {
@@ -26,7 +26,7 @@
   "outboundData" : {
     "outboundEndPoints" : [ {
       "name" : "deskPATCH",
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "httpMethod" : "PATCH",
       "url" : "<% 'desks/' +  itemId.value%>",
       "authType" : "sso"

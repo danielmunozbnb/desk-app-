@@ -2,14 +2,14 @@
   "id" : "deleteDesk",
   "endPoints" : [ {
     "name" : "bookings",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "bookings",
     "isCollection" : true,
     "authType" : "sso"
   } ],
   "outboundData" : {
     "outboundEndPoints" : [ {
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "name" : "bookings_delete",
       "authType" : "sso",
       "url" : "<%'desks/' + queryParams.deskId %>",
@@ -21,13 +21,13 @@
              var detectBooked = function(desk_id) {
 
                  var bookings = bookings.data;
-                 var inUse = false;
+                 var visible = false;
                  for (var booking_var : bookings) {
                      if(desk_id == booking_var.desk.id && booking_var.date >= date:now().format('yyyy-MM-dd')){
-                         inUse = true;
+                         visible = true;
                      }
                  }
-                 return inUse;
+                 return visible;
              };
              %>",
   "onLoad" : "<%

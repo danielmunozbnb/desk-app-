@@ -3,7 +3,7 @@
   "endPoints": [
     {
       "name": "reservations",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "/bookings",
       "authType": "sso"
     }

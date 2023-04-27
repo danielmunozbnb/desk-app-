@@ -1,7 +1,7 @@
 {
   "id" : "microCancelDesk",
   "endPoints" : [ {
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "name" : "bookings",
     "authType" : "sso",
     "url" : "<%'bookings'%>"

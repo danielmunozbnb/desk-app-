@@ -1,28 +1,24 @@
 {
-  "id": "editArea",
-  "include": [
-        "wql.script"
-  ],
+  "id": "microAddNewAreas",
   "outboundData": {
     "outboundEndPoints": [
       {
-        "name": "areaPATCH",
+        "name": "areaPOST",
         "baseUrlType": "APP",
-        "httpMethod": "PATCH",
-        "url": "areas/<% queryParams.area.id %>",
+        "httpMethod": "POST",
+        "url": "areas",
         "authType": "sso"
       }
     ]
   },
-  "onLoad": "<% queryParams.area = json:parse(queryParams.area) %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
+    "pageType": "edit",
     "micro": true,
     "microFirstPageOnly": true,
-    "pageType": "edit",
     "title": {
       "type": "title",
-      "label": "<% presentationLabels.editArea %>"
+      "label": "<% presentationLabels.addNewAreas %>"
     },
     "body": {
       "type": "section",
@@ -32,27 +28,26 @@
           "type": "grid",
           "id": "gridAreas",
           "label": "<% presentationLabels.areas %>",
-          "doNotAdd": true,
-          "doNotRemove": true,
-          "rows": "<% [queryParams.area] %>",
-          "rowVariableName": "row",
+          "rows": "",
           "columns": [
             {
               "type": "column",
-              "columnId": "nameColumnId",
+              "columnId": "nameCol",
               "label": "<% presentationLabels.name %>",
               "cellTemplate": {
                 "type": "fieldSet",
-                "id": "fieldSetAreakNameID",
                 "children": [
                   {
                     "type": "text",
-                    "id": "areaName",
-                    "value": "<% row.name %>",
+                    "required": true,
                     "valuesOut": [
                       {
                         "value": "<% self.value %>",
-                        "valueOutBinding": "areaPATCH.name"
+                        "valueOutBinding": "areaPOST.name"
+                      },
+                      {
+                        "value": "<% pmdSessionVariables.selectedLocation.id %>",
+                        "valueOutBinding": "areaPOST.location.id"
                       }
                     ]
                   }
@@ -61,15 +56,14 @@
             },
             {
               "type": "column",
-              "columnId": "floorColumn",
+              "columnId": "descriptionCol",
               "label": "<% presentationLabels.description %>",
               "cellTemplate": {
                 "type": "text",
-                "value": "<% row.description %>",
                 "valuesOut": [
                   {
                     "value": "<% self.value %>",
-                    "valueOutBinding": "areaPATCH.description"
+                    "valueOutBinding": "areaPOST.description"
                   }
                 ]
               }
@@ -80,11 +74,11 @@
               "label": "<% presentationLabels.visible %>",
               "cellTemplate": {
                 "type": "checkBox",
-                "value": "<% row.visible %>",
+                "value": true,
                 "valuesOut": [
                   {
                     "value": "<% self.value %>",
-                    "valueOutBinding": "areaPATCH.visible"
+                    "valueOutBinding": "areaPOST.visible"
                   }
                 ]
               }

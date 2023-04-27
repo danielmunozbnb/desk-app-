@@ -258,6 +258,50 @@
           "taskId": "manageDesks"
         }
       ]
+    },
+    {
+      "id": "addNewAreasToManageAreasFlow",
+      "flowSteps": [
+        {
+          "id": "microAddNewAreas",
+          "taskId": "microAddNewAreas",
+          "startsFlow": true,
+          "transitions": [
+            {
+              "value": "manageAreas2",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "manageAreas2",
+          "taskId": "manageAreas",
+          "endsFlow": true
+        }
+      ]
+    },
+    {
+      "id": "deleteAreaToManageAreasFlow",
+      "flowSteps": [
+        {
+          "id": "deleteArea",
+          "taskId": "deleteArea",
+          "startsFlow": true,
+          "transitions": [
+            {
+              "value": "manageAreas3",
+              "order": "a",
+              "condition": "true"
+            }
+          ]
+        },
+        {
+          "id": "manageAreas3",
+          "taskId": "manageAreas",
+          "endsFlow": true
+        }
+      ]
     }
   ],
   "tasks": [
@@ -451,10 +495,10 @@
       }
     },
     {
-      "id": "editableGridAreas",
-      "routingPattern": "editableGridAreas",
+      "id": "microAddNewAreas",
+      "routingPattern": "microAddNewAreas",
       "page": {
-        "id": "editableGridAreas"
+        "id": "microAddNewAreas"
       }
     },
     {
@@ -475,7 +519,7 @@
   "applicationId": "desk_reservation_qxbfwx",
   "dataProviders": [
     {
-      "key": "app",
+      "key": "APP",
       "value": "https://api.workday.com/apps/<% site.applicationId %>/v1/"
     },
     {

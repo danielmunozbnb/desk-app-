@@ -8,7 +8,7 @@
     {
       "name": "orch",
       "baseUrlType": "orchestration",
-      "url": "<% site.applicationId + '/orchestrations/generateMap/launch' %>",
+      "url": "<% site.applicationId %>/orchestrations/generateMap/launch",
       "authType": "sso"
     },
     {
@@ -74,8 +74,8 @@
 
                                 } else {
 
-                                    var deskName = todaysBooking.booking.deskName;
-                                    var areaName = todaysBooking.booking.areaName;
+                                    var deskName = todaysBooking.booking.desk.descriptor;
+                                    var areaName = todaysBooking.booking.areaName; console.debug('locationByAreaNameEP ', locationByAreaNameEP.invoke({'areaName': areaName}));
                                     var locationName = locationByAreaNameEP.invoke({'areaName': areaName}).data[0].location.descriptor;
 
                                     hideTodaysBooking(false, deskName, areaName, locationName)

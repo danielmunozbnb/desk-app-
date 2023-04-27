@@ -2,7 +2,7 @@
   "id" : "toggleDisabled",
   "outboundData" : {
     "outboundEndPoints" : [ {
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "name" : "bookings_disable",
       "authType" : "sso",
       "url" : "<%'desks/' + queryParams.deskId %>",

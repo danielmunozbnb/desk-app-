@@ -34,7 +34,7 @@
     },
     {
       "name": "reservationsEP",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "/bookings",
       "authType": "sso"
     },
@@ -49,7 +49,7 @@
     "outboundEndPoints": [
       {
         "name": "bookingPost",
-        "baseUrlType": "app",
+        "baseUrlType": "APP",
         "httpMethod": "POST",
         "url": "bookings",
         "authType": "sso",
@@ -70,7 +70,7 @@
       },
       {
         "name": "notificationEvent",
-        "baseUrlType": "app",
+        "baseUrlType": "APP",
         "url": "reservationNotificationEvents",
         "httpMethod": "POST",
         "authType": "sso",

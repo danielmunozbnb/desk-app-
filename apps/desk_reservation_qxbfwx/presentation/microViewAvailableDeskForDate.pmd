@@ -13,7 +13,7 @@
     },
     {
       "name": "bookings",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "bookings?limit=100",
       "authType": "sso"
     },

@@ -3,7 +3,7 @@
   "endPoints": [
     {
       "name": "bookings",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "bookings?limit=100",
       "authType": "sso"
     }
@@ -12,7 +12,7 @@
     "outboundEndPoints": [
       {
         "name": "bookingDELETE",
-        "baseUrlType": "app",
+        "baseUrlType": "APP",
         "httpMethod": "DELETE",
         "url": "<% 'bookings/' +  itemId.value %>",
         "exclude": "<% empty(itemId.value)%>",

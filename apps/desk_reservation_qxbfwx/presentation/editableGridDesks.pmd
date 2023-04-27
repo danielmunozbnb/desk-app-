@@ -9,12 +9,12 @@
     "deferred" : true
   }, {
     "name" : "areas",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "areas",
     "authType" : "sso"
   }, {
     "name" : "desks",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "desks",
     "authType" : "sso"
   }, {
@@ -45,21 +45,21 @@
   "outboundData" : {
     "outboundEndPoints" : [ {
       "name" : "deskPUT",
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "httpMethod" : "PUT",
       "url" : "<% 'desks/' +  itemId.value%>",
       "exclude" : "<% empty(itemId.value) %>",
       "authType" : "sso"
     }, {
       "name" : "deskPOST",
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "httpMethod" : "POST",
       "url" : "desks/",
       "exclude" : "<% !empty(itemId.value) %>",
       "authType" : "sso"
     }, {
       "name" : "deskDELETE",
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "httpMethod" : "DELETE",
       "url" : "<% 'desks/' +  itemId.value%>",
       "exclude" : "<% empty(itemId.value)%>",

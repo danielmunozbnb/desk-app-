@@ -2,7 +2,7 @@
   "id" : "deskOccupationForDay",
   "endPoints" : [ {
     "name" : "bookings",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "bookings",
     "authType" : "sso"
   }, {

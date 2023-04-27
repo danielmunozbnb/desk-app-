@@ -11,9 +11,9 @@
       "url": "<% wql.allLocations() %>"
     },
     {
-      "name": "areasByLocationEP",
+      "name": "hasLocationAreasEP",
       "baseUrlType": "WORKDAY-WQL",
-      "url": "<% wql.areasByLocation(location) %>",
+      "url": "<% wql.hasLocationAreas(location) %>",
       "authType": "sso",
       "deferred": true
     }
@@ -44,7 +44,6 @@
                      return [];
 
                  var areas = areasByLocationEP.invoke({'location': selectedLocations[0].id}).data;
-                 console.debug('areas EP ', areasByLocationEP.invoke({'location': selectedLocations[0].id}));
                  return areas.map(area => {{'id': area.Area.id, 'name': area.name}});
              };
 
@@ -66,33 +65,21 @@
           "type": "instanceList",
           "id": "locationIL",
           "label": "<% presentationLabels.location %>",
+          "required": true,
           "displayKey": "locationName",
           "idKey": "workdayID",
           "values": "<% allLocationsEP.data %>",
           "onChange": "<%
 
-                       console.debug(locationIL.value[0]);
-                       var areas = fillAreas(locationIL.getSelectedEntries());
-                       areasIL.setValues(areas);
-                       // TODO: this breaks
-                       areasIL.visible = true;
-                       if (empty areas) {
-                           areasIL.setError(presentationLabels.noAreasAvailable);
-                       } else
-                           areasIL.clearError();
+                       if (empty locationIL.getSelectedEntries())
+                           return [];
 
-                       areasIL.setValue([]);
+                       if (empty hasLocationAreasEP.invoke({'location': locationIL.getSelectedEntries()[0].id}).data) {
+                           self.setError(presentationLabels.noAreasAvailable);
+                       } else
+                           self.clearError();
 
                        %>"
-        },
-        {
-          "type": "instanceList",
-          "id": "areasIL",
-          "label": "<% presentationLabels.areas %>",
-          "displayKey": "name",
-          "visible": false,
-          "required": true,
-          "values": "<% [] %>"
         }
       ]
     }

@@ -6,7 +6,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "Administrator's Landing Page"
+      "label": "<% presentationLabels.administratorsLandingPage %>"
     },
     "body": {
       "type": "section",
@@ -14,7 +14,7 @@
       "children": [
         {
           "type": "button",
-          "label": "Maintain Areas",
+          "label": "<% presentationLabels.manageAreas %>",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
@@ -23,7 +23,7 @@
         },
         {
           "type": "button",
-          "label": "Maintain Desks",
+          "label": "<% presentationLabels.manageDesks %>",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",
@@ -32,7 +32,7 @@
         },
         {
           "type": "button",
-          "label": "Maintain Bookings",
+          "label": "<% presentationLabels.manageBookings %>",
           "action": "PRIMARY",
           "taskReference": {
             "type": "taskReference",

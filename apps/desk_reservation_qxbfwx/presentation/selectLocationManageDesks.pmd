@@ -1,10 +1,13 @@
 {
   "id" : "selectLocationManageDesks",
+  "include": [
+    "wql.script"
+  ],
   "endPoints" : [ {
     "baseUrlType" : "WORKDAY-WQL",
     "name" : "allLocations",
     "authType" : "sso",
-    "url" : "data?query=SELECT%20locationName%2C%20workdayID%20FROM%20locations%20(locationUsagesForLocation%20%3D%20(46db411c4a5245fbb39834d8b2cba049))"
+    "url" : "<% wql.allLocations() %>"
   } ],
   "outboundData" : {
     "outboundEndPoints" : [ {

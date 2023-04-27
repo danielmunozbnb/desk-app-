@@ -1,32 +1,67 @@
 {
-  "id" : "deleteArea",
-  "outboundData" : {
-    "outboundEndPoints" : [ {
-      "baseUrlType" : "app",
-      "name" : "bookings",
-      "authType" : "sso",
-      "url" : "<%'areas/' + queryParams.areaId %>",
-      "httpMethod" : "DELETE"
-    } ]
+  "id": "deleteArea",
+  "include": [
+    "wql.script"
+  ],
+  "endPoints": [
+    {
+      "name": "numOfDesksInAreaEP",
+      "baseUrlType": "WORKDAY-WQL",
+      "url": "<% wql.numOfDesksInArea(json:parse(queryParams.area).id) %>",
+      "authType": "sso"
+    }
+  ],
+  "outboundData": {
+    "outboundEndPoints": [
+      {
+        "name": "deleteArea",
+        "baseUrlType": "APP",
+        "authType": "sso",
+        "url": "areas/<% queryParams.area.id %>",
+        "httpMethod": "DELETE"
+      }
+    ]
   },
-  "presentation" : {
-    "headerSize" : "VPS_DEFAULT",
-    "micro" : true,
-    "microFirstPageOnly" : true,
-    "pageType" : "edit",
-    "title" : {
-      "type" : "title",
-      "label" : "Delete area"
+  "onLoad": "<% queryParams.area = json:parse(queryParams.area) %>",
+  "presentation": {
+    "headerSize": "VPS_DEFAULT",
+    "micro": true,
+    "microFirstPageOnly": true,
+    "pageType": "edit",
+    "title": {
+      "type": "title",
+      "label": "<% presentationLabels.deleteArea %>"
     },
-    "body" : {
-      "type" : "section",
-      "horizontal" : false,
-      "children" : [ {
-        "type" : "checkBox",
-        "id" : "confirmationCheckBox",
-        "label" : "Check to confirm you want to delete this area.",
-        "required" : true
-      } ]
+    "body": {
+      "type": "section",
+      "horizontal": false,
+      "children": [
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "<b><% presentationLabels.area %>  </b><% queryParams.area.name %>"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "<b><% presentationLabels.location %>  </b><% queryParams.area.location.descriptor %>"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "<b><% presentationLabels.description %>  </b><% queryParams.area.description %>"
+        },
+        {
+          "type": "richText",
+          "enabled": false,
+          "value": "<b><% presentationLabels.numberOfDesks %>  </b><% numOfDesksInAreaEP.data[0].count %>"
+        },
+        {
+          "type": "checkBox",
+          "label": "<% presentationLabels.areYouSureYouWantToDeleteThisArea %>",
+          "required": true
+        }
+      ]
     }
   }
 }

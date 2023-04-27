@@ -7,7 +7,7 @@
     "url" : "<%'/workers/me'%>"
   }, {
     "name" : "bookings",
-    "baseUrlType" : "app",
+    "baseUrlType" : "APP",
     "url" : "bookings",
     "authType" : "sso"
   }, {
@@ -20,7 +20,7 @@
   "outboundData" : {
     "outboundEndPoints" : [ {
       "name" : "bookingPost",
-      "baseUrlType" : "app",
+      "baseUrlType" : "APP",
       "httpMethod" : "PATCH",
       "url" : "<% 'bookings/' + hidden1id.value%>",
       "exclude" : "<% empty hidden1id.value%>",

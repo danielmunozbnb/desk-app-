@@ -7,7 +7,7 @@
     "outboundEndPoints": [
       {
         "name": "cancelReserv",
-        "baseUrlType": "app",
+        "baseUrlType": "APP",
         "url": "bookings/<% queryParams.bookingData.workdayID %>",
         "httpMethod": "PATCH",
         "authType": "sso",
@@ -27,7 +27,7 @@
     "headerSize": "VPS_DEFAULT",
     "title": {
       "type": "title",
-      "label": "<% presentationLabels.doYouWantTocancelReservation %>"
+      "label": "<% presentationLabels.doYouWantToCancelReservation %>"
     },
     "body": {
       "type": "section",

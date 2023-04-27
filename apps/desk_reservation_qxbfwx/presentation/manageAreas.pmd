@@ -5,42 +5,12 @@
   ],
   "endPoints": [
     {
-      "baseUrlType": "WORKDAY-WQL",
-      "name": "allLocations",
-      "authType": "sso",
-      "url": "<% wql.allLocations() %>"
-    },
-    {
-      "name": "areas",
-      "baseUrlType": "app",
-      "url": "areas",
+      "name": "areasByLocationEP",
+      "baseUrlType": "APP",
+      "url": "areas?location=<% pmdSessionVariables.selectedLocation.id %>",
       "authType": "sso"
-    },
-    {
-      "name": "areasByLocation",
-      "baseUrlType": "WORKDAY-WQL",
-      "url": "<% wql.areasByLocation(location) %>",
-      "authType": "sso",
-      "deferred": true
     }
   ],
-  "script": "<%
-
-             var fillAreas = function(location) {
-                 if (empty location) {
-                     return [];
-                 }
-
-                 var areas = areasByLocation.invoke({'location': location}).data;
-                 var validAreas = [];
-                 for (var area : areas) {
-                     validAreas.add({'id': area.Area.id, 'name': area.name, 'location': area.location, 'description': area.description, 'inUse': area.inUse});
-                 }
-                 return validAreas;
-             };
-
-             %>",
-  "onLoad": "<% pageVariables.areas = fillAreas(pmdSessionVariables.selectedLocation.id) %>",
   "presentation": {
     "headerSize": "VPS_DEFAULT",
     "pageType": "view",
@@ -53,50 +23,55 @@
       "horizontal": false,
       "children": [
         {
+          "type": "button",
+          "label": "<% presentationLabels.addNewAreas %>",
+          "action": "PRIMARY",
+          "taskReference": {
+            "type": "taskReference",
+            "taskId": "microAddNewAreas"
+          }
+        },
+        {
           "type": "grid",
           "id": "gridAreas",
-          "label": "<%'Areas'%>",
-          "rows": "<% pageVariables.areas %>",
+          "label": "<% presentationLabels.areas %>",
+          "rows": "<% areasByLocationEP.data %>",
           "rowVariableName": "row",
           "columns": [
             {
               "type": "column",
               "columnId": "nameColumnId",
-              "label": "Name",
+              "label": "<% presentationLabels.name %>",
               "cellTemplate": {
                 "type": "text",
-                "id": "areaName",
                 "value": "<% row.name %>"
               }
             },
             {
               "type": "column",
               "columnId": "locationColumnId",
-              "label": "Location",
+              "label": "<% presentationLabels.location %>",
               "cellTemplate": {
                 "type": "text",
-                "id": "areaName",
                 "value": "<% row.location.descriptor %>"
               }
             },
             {
               "type": "column",
               "columnId": "floorColumnId",
-              "label": "Descripción",
+              "label": "<% presentationLabels.description %>",
               "cellTemplate": {
                 "type": "text",
-                "id": "areaFloor",
                 "value": "<% row.description %>"
               }
             },
             {
               "type": "column",
-              "columnId": "inUseColumnId",
-              "label": "en uso",
+              "columnId": "visibleColumnId",
+              "label": "<% presentationLabels.visible %>",
               "cellTemplate": {
                 "type": "text",
-                "id": "areaUse",
-                "value": "<% row.inUse %>"
+                "value": "<% row.visible %>"
               }
             },
             {
@@ -108,11 +83,11 @@
                   {
                     "type": "button",
                     "action": "PRIMARY",
-                    "label": "Edit",
+                    "label": "<% presentationLabels.edit %>",
                     "taskReference": {
                       "taskId": "editArea",
                       "parameterBindings": {
-                        "areaId": "<% row.id;%>"
+                        "area": "<% json:asJSON(row) %>"
                       }
                     }
                   }
@@ -128,13 +103,11 @@
                   {
                     "type": "button",
                     "action": "PRIMARY",
-                    "label": "Delete",
+                    "label": "<% presentationLabels.delete %>",
                     "taskReference": {
                       "taskId": "deleteArea",
                       "parameterBindings": {
-                        "areaID": "<% row.id;
-                        console.debug(row.id);
-                                   %>"
+                        "area": "<% json:asJSON(row) %>"
                       }
                     }
                   }
@@ -145,21 +118,12 @@
         },
         {
           "type": "button",
-          "label": "Create New Areas",
-          "action": "PRIMARY",
+          "label": "<% presentationLabels.returnn %>",
+          "action": "AUXILIARY",
           "taskReference": {
             "type": "taskReference",
-            "taskId": "editableGridAreas"
+            "taskId": "adminLandingPage"
           }
-        }
-      ]
-    },
-    "footer": {
-      "type": "footer",
-      "children": [
-        {
-          "type": "pod",
-          "podId": "backHome"
         }
       ]
     }

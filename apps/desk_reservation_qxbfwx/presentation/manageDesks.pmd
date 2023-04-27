@@ -13,20 +13,20 @@
     },
     {
       "name": "areas",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "areas",
       "authType": "sso"
     },
     {
       "name": "bookings",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "bookings",
       "isCollection": true,
       "authType": "sso"
     },
     {
       "name": "desks",
-      "baseUrlType": "app",
+      "baseUrlType": "APP",
       "url": "desks",
       "authType": "sso"
     },
@@ -71,24 +71,24 @@
              var detectBooked = function(desk_id) {
 
                  var bookings = bookings.data;
-                 var inUse = false;
+                 var visible = false;
                  for (var booking_var : bookings) {
                      if(desk_id == booking_var.desk.id && booking_var.date >= date:now().format('yyyy-MM-dd')){
-                         inUse = true;
+                         visible = true;
                      }
                  }
-                 return inUse;
+                 return visible;
              };
              var detectBookedEVER = function(desk_id) {
 
                  var bookings = bookings.data;
-                 var inUse = false;
+                 var visible = false;
                  for (var booking_var : bookings) {
                      if(desk_id == booking_var.desk.id){
-                         inUse = true;
+                         visible = true;
                      }
                  }
-                 return inUse;
+                 return visible;
              };
              %>",
   "onLoad": "<%
@@ -150,7 +150,7 @@
             },
             {
               "type": "column",
-              "columnId": "areaColumnId",
+              "columnId": "areaCol",
               "label": "Area",
               "cellTemplate": {
                 "type": "fieldSet",
@@ -168,11 +168,10 @@
             },
             {
               "type": "column",
-              "columnId": "inUseId",
-              "label": "en uso",
+              "columnId": "visibleCol",
+              "label": "<% presentationLabels.visible %>",
               "cellTemplate": {
                 "type": "text",
-                "id": "inUse",
                 "value": "<% detectBooked(row_id.Desk.id); %>"
               }
             },

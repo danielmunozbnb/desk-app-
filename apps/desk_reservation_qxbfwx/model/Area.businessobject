@@ -32,8 +32,8 @@
     },
     {
       "id": 4,
-      "name": "inUse",
-      "label": "In Use",
+      "name": "visible",
+      "label": "Visible",
       "type": "BOOLEAN"
     }
   ]

@@ -33,7 +33,8 @@ var location = function(areaID) {
 
 
 var locationByAreaName = function(areaName) {
-  var query = 'SELECT location FROM desk_reservation_qxbfwx_areas WHERE areaName = "' + areaName + '"';
+  var query = 'SELECT location FROM desk_reservation_qxbfwx_areas WHERE name = "' + areaName + '"';
+  console.debug('locationByAreaName ', query);
   query.urlEncode();
 };
 
@@ -58,7 +59,7 @@ var area = function(workdayID) {
 
 
 var desk = function(deskID) {
-  var query = string:formatMessage('SELECT deskName, inUse, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', deskID);
+  var query = string:formatMessage('SELECT deskName, visible, workdayID, area FROM desk_reservation_qxbfwx_desks WHERE workdayID = "{0}"', deskID);
   console.info(query);
   query.urlEncode();
 };
@@ -71,13 +72,13 @@ var desksByAreaID = function(areaID) {
 
 
 var desksByAreaIDS = function(areaIDS) {
-  var query = string:formatMessage('SELECT Desk, deskName, area, inUse, disabled FROM desk_reservation_qxbfwx_desks WHERE area IN ({0})', areaIDS);
+  var query = string:formatMessage('SELECT Desk, deskName, area, visible, disabled FROM desk_reservation_qxbfwx_desks WHERE area IN ({0})', areaIDS);
   query.urlEncode();
 };
 
 
-var areasByLocation = function(location) {
-  var query = 'SELECT Area, name, description, location FROM desk_reservation_qxbfwx_areas WHERE location = "' + location + '"';
+var areasByLocation = function(locationID) {
+  var query = 'SELECT Area, name, description, location FROM desk_reservation_qxbfwx_areas WHERE location = "' + locationID + '"';
   console.debug('areasByLocation ', query);
   query.urlEncode();
 };
@@ -126,6 +127,21 @@ var areasAndLocationInCollection = function(areaNamesCollection) {
 };
 
 
+var hasLocationAreas = function(locationID) {
+  // You have to check whether response's .data has any objects or not
+  var query = 'SELECT name FROM desk_reservation_qxbfwx_areas WHERE location = "' + locationID + '" LIMIT 1';
+  console.debug('hasLocationAreas ', query);
+  query.urlEncode();
+};
+
+
+var numOfDesksInArea = function(areaID) {
+  var query = 'SELECT COUNT() AS count FROM desk_reservation_qxbfwx_desks WHERE area = "' + areaID + '"';
+  //console.debug('numOfDesksInArea ', query);
+  query.urlEncode();
+};
+
+
 {
   "todaysDeskAndBooking": todaysDeskAndBooking,
   "areaAndDeskName": areaAndDeskName,
@@ -143,5 +159,7 @@ var areasAndLocationInCollection = function(areaNamesCollection) {
   "bookingEventStatus": bookingEventStatus,
   "bookingState": bookingState,
   "workerBookings": workerBookings,
-  "areasAndLocationInCollection": areasAndLocationInCollection
+  "areasAndLocationInCollection": areasAndLocationInCollection,
+  "hasLocationAreas": hasLocationAreas,
+  "numOfDesksInArea": numOfDesksInArea
 }
